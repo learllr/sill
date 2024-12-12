@@ -15,67 +15,65 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { GalleryVerticalEnd, Settings } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const data = {
   navMain: [
     {
       title: "Gestion de chantiers",
-      url: "#",
       items: [
-        { title: "Chantiers", url: "#" },
-        { title: "Fournisseurs", url: "#", isActive: true },
-        { title: "Sous-traitants", url: "#" },
-        { title: "Clients", url: "#" },
-        { title: "Architectes", url: "#" },
+        { title: "Chantiers", url: "/projects" },
+        { title: "Fournisseurs", url: "/suppliers" },
+        { title: "Sous-traitants", url: "/subcontractors" },
+        { title: "Clients", url: "/clients" },
+        { title: "Architectes", url: "/architects" },
       ],
     },
     {
       title: "Suivi de devis et factures",
-      url: "#",
       items: [
-        { title: "Devis", url: "#" },
-        { title: "Factures", url: "#" },
+        { title: "Devis", url: "/quotes" },
+        { title: "Factures", url: "/invoices" },
       ],
     },
     {
       title: "Services RH",
-      url: "#",
       items: [
-        { title: "Salariés", url: "#" },
-        { title: "Notes de services", url: "#" },
+        { title: "Salariés", url: "/employees" },
+        { title: "Notes de services", url: "/memos" },
       ],
     },
     {
       title: "Services administratifs",
-      url: "#",
       items: [
-        { title: "Banque", url: "#" },
-        { title: "Statut SILL", url: "#" },
+        { title: "Banque", url: "/bank" },
+        { title: "Statut SILL", url: "/sill-status" },
       ],
     },
     {
       title: "Comptabilité",
-      url: "#",
-      items: [{ title: "Comptabilité ZIED", url: "#" }],
+      items: [{ title: "Comptabilité ZIED", url: "/zied-accounting" }],
     },
   ],
 };
 
 function AppSidebar({ ...props }) {
+  const location = useLocation();
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link to="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">SILL</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -85,20 +83,22 @@ function AppSidebar({ ...props }) {
           <SidebarMenu>
             {data.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url} className="font-medium">
-                    {item.title}
-                  </a>
-                </SidebarMenuButton>
+                <div className="font-semibold text-sm text-sidebar-foreground px-3 mt-3 mb-2">
+                  {item.title}
+                </div>
                 {item.items?.length ? (
                   <SidebarMenuSub>
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton
                           asChild
-                          isActive={subItem.isActive}
+                          className={`${
+                            location.pathname === subItem.url
+                              ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                              : ""
+                          }`}
                         >
-                          <a href={subItem.url}>{subItem.title}</a>
+                          <Link to={subItem.url}>{subItem.title}</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
@@ -114,7 +114,7 @@ function AppSidebar({ ...props }) {
   );
 }
 
-export default function Body() {
+export default function Body({ children }) {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -141,14 +141,7 @@ export default function Body() {
             </button>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarContent>
     </SidebarProvider>
   );
