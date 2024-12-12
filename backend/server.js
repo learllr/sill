@@ -5,6 +5,8 @@ import { authenticateToken } from "./middlewares/authMiddleware.js";
 import db from "./orm/models/index.js";
 import authentificationRoutes from "./routes/authentificationRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import participantRoutes from "./routes/participantRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -34,6 +36,8 @@ app.use((req, res, next) => {
 
 app.use("/api/authentification", authentificationRoutes);
 app.use("/api/user", authenticateToken, userRoutes);
+app.use("/api/project", projectRoutes);
+app.use("/api/participant", participantRoutes);
 
 db.sequelize
   .sync()

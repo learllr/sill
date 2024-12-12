@@ -12,6 +12,7 @@ module.exports = {
         {
           firstName: "Léa",
           lastName: "ROULLIER",
+          email: "leleroullier@gmail.com",
           password: hashedPassword1,
           roleId: 1,
           createdAt: new Date(),
@@ -20,6 +21,7 @@ module.exports = {
         {
           firstName: "Sarah",
           lastName: "MARTINS",
+          email: "sarah.martins@gmail.com",
           password: hashedPassword2,
           roleId: 2,
           createdAt: new Date(),

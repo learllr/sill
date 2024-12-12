@@ -1,4 +1,3 @@
-import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -12,10 +11,10 @@ import {
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { GalleryVerticalEnd, Settings } from "lucide-react";
+import { GalleryVerticalEnd } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import Header from "./Header.jsx";
 
 const data = {
   navMain: [
@@ -23,10 +22,10 @@ const data = {
       title: "Gestion de chantiers",
       items: [
         { title: "Chantiers", url: "/projects" },
-        { title: "Fournisseurs", url: "/suppliers" },
-        { title: "Sous-traitants", url: "/subcontractors" },
-        { title: "Clients", url: "/clients" },
-        { title: "Architectes", url: "/architects" },
+        { title: "Fournisseurs", url: "/participant/1" },
+        { title: "Sous-traitants", url: "/participant/2" },
+        { title: "Clients", url: "/participant/3" },
+        { title: "Architectes", url: "/participant/4" },
       ],
     },
     {
@@ -119,28 +118,7 @@ export default function Body({ children }) {
     <SidebarProvider>
       <AppSidebar />
       <SidebarContent>
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
-          <div className="flex items-center gap-2">
-            <SidebarTrigger />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              className="flex items-center justify-center rounded-full p-2 hover:bg-gray-100"
-              aria-label="Settings"
-            >
-              <Settings className="h-6 w-6 text-gray-600" />
-            </button>
-            <button
-              className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-              onClick={() => {
-                console.log("Déconnexion");
-              }}
-            >
-              Déconnexion
-            </button>
-          </div>
-        </header>
+        <Header />
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarContent>
     </SidebarProvider>

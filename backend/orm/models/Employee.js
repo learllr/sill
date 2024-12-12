@@ -84,7 +84,7 @@ export default (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-          is: /^(\\+\\d{1,3}[- ]?)?\\d{10}$/,
+          is: /^[0-9]{10}$/,
         },
       },
       email: {

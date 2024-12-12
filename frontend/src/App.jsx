@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./components/Home.jsx";
 import Projects from "./components/navbar/project-management/Projects.jsx";
-import Suppliers from "./components/navbar/project-management/Suppliers.jsx";
+import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
+import Participants from "./components/navbar/project-management/Participants.jsx";
+import ParticipantDetails from "./components/navbar/project-management/ParticipantDetails.jsx";
 
 export default function App() {
   const [deviceType, setDeviceType] = useState("");
@@ -29,10 +31,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/projects" element={<Projects />} />
-        <Route path="/suppliers" element={<Suppliers />} />
-        <Route path="/subcontractors" element={<h1>Subcontractors</h1>} />
-        <Route path="/clients" element={<h1>Clients</h1>} />
-        <Route path="/architects" element={<h1>Architects</h1>} />
+        <Route path="/project/:id" element={<ProjectDetails />} />
+        <Route path="/participant/:typeId" element={<Participants />} />
+        <Route
+          path="/participant/:typeId/:id"
+          element={<ParticipantDetails />}
+        />
         <Route path="/quotes-invoices" element={<h1>Quotes and Invoices</h1>} />
         <Route path="/quotes" element={<h1>Quotes</h1>} />
         <Route path="/invoices" element={<h1>Invoices</h1>} />
