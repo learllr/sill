@@ -31,9 +31,6 @@ export default (sequelize) => {
       contactPerson: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          len: [0, 100],
-        },
       },
       address: {
         type: DataTypes.STRING,
@@ -42,23 +39,14 @@ export default (sequelize) => {
       phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          is: /^[0-9]{10}$/,
-        },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          isEmail: true,
-        },
       },
       website: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          isUrl: true,
-        },
       },
     },
     {

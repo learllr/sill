@@ -16,6 +16,7 @@ import {
   Trash,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatPhone } from "../../../../utils/textUtils.js";
 
 export default function ParticipantDetails() {
   const { id, typeId } = useParams();
@@ -94,17 +95,11 @@ export default function ParticipantDetails() {
               {participant.name}
             </h1>
             <div className="flex space-x-4">
-              <Button
-                onClick={handleEdit}
-                className="bg-yellow-500 text-white hover:bg-yellow-600 text-sm flex items-center rounded-md"
-              >
+              <Button onClick={handleEdit}>
                 <Edit className="h-4 w-4 mr-1" />
                 Modifier
               </Button>
-              <Button
-                onClick={handleDelete}
-                className="bg-red-500 text-white hover:bg-red-600 text-sm flex items-center rounded-md"
-              >
+              <Button onClick={handleDelete} variant="destructive">
                 <Trash className="h-4 w-4 mr-1" />
                 Supprimer
               </Button>
@@ -192,16 +187,11 @@ export default function ParticipantDetails() {
                   <Button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm rounded-md"
+                    variant="secondary"
                   >
                     Annuler
                   </Button>
-                  <Button
-                    type="submit"
-                    className="bg-blue-500 text-white hover:bg-blue-600 text-sm rounded-md"
-                  >
-                    Enregistrer
-                  </Button>
+                  <Button type="submit">Enregistrer</Button>
                 </div>
               </form>
             ) : (
@@ -219,7 +209,8 @@ export default function ParticipantDetails() {
                   <li className="flex items-center text-gray-700">
                     <Phone className="h-5 w-5 text-amber-400 mr-3" />
                     <span>
-                      <strong>Téléphone :</strong> {participant.phone}
+                      <strong>Téléphone :</strong>{" "}
+                      {formatPhone(participant.phone)}
                     </span>
                   </li>
                 )}

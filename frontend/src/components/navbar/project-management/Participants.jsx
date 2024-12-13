@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
-import { Plus, UserPlus } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogTrigger,
@@ -15,12 +15,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import { Separator } from "@/components/ui/separator";
 
 export default function Participants() {
   const navigate = useNavigate();
   const { typeId } = useParams();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const typeMapping = {
+    1: "Fournisseurs",
+    2: "Sous-traitants",
+    3: "Clients",
+    4: "Architectes",
+  };
+
+  const title = typeMapping[typeId] || "participants";
 
   const fetchParticipants = async () => {
     const response = await axios.get(`/participant/${typeId}`);
@@ -61,11 +71,13 @@ export default function Participants() {
   };
 
   if (isLoading)
-    return <Body children={<p>Chargement des participants...</p>} />;
+    return <Body children={<p>Chargement des {title.toLowerCase()}...</p>} />;
   if (error)
     return (
       <Body
-        children={<p>Erreur lors de la récupération des participants.</p>}
+        children={
+          <p>Erreur lors de la récupération des {title.toLowerCase()}.</p>
+        }
       />
     );
 
@@ -75,29 +87,29 @@ export default function Participants() {
         <div className="px-4 w-full">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-700">
-              Liste des participants
+              Liste des {title.toLowerCase()}
             </h1>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button
-                  onClick={() => reset()}
-                  className="px-4 py-2 bg-green-500 text-white hover:bg-green-600 flex items-center text-sm rounded-md"
-                >
+                <Button onClick={() => reset()}>
                   <Plus className="mr-1 h-4 w-4" /> Ajouter
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Ajouter un participant</DialogTitle>
+                  <DialogTitle>
+                    Ajouter un {title.slice(0, -1).toLowerCase()}
+                  </DialogTitle>
+                  <Separator />
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Nom
                     </label>
                     <Input
                       {...register("name", { required: "Nom requis" })}
-                      placeholder="Nom du participant"
+                      placeholder={`Nom du ${title.slice(0, -1).toLowerCase()}`}
                     />
                     {errors.name && (
                       <p className="text-red-500 text-sm mt-1">
@@ -105,8 +117,9 @@ export default function Participants() {
                       </p>
                     )}
                   </div>
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Interlocuteur
                     </label>
                     <Input
@@ -115,7 +128,7 @@ export default function Participants() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Téléphone
                     </label>
                     <Input
@@ -124,7 +137,7 @@ export default function Participants() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Email
                     </label>
                     <Input
@@ -143,16 +156,27 @@ export default function Participants() {
                       </p>
                     )}
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Adresse
+                    </label>
+                    <Input {...register("address")} placeholder="Adresse" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Site
+                    </label>
+                    <Input {...register("website")} placeholder="Site Web" />
+                  </div>
                   <DialogFooter>
                     <Button
                       type="button"
+                      variant="secondary"
                       onClick={() => setIsDialogOpen(false)}
                     >
                       Annuler
                     </Button>
-                    <Button type="submit" className="bg-blue-500 text-white">
-                      Ajouter
-                    </Button>
+                    <Button type="submit">Ajouter</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

@@ -91,9 +91,9 @@ function AppSidebar({ ...props }) {
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton
                           asChild
-                          className={`${
+                          className={`hover:bg-gray-50 text-gray-700 ${
                             location.pathname === subItem.url
-                              ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                              ? "text-primary bg-gray-100 font-semibold"
                               : ""
                           }`}
                         >
