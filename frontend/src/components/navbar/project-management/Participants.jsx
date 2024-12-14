@@ -1,21 +1,23 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "../../../axiosConfig.js";
-import Body from "../../common/Body.jsx";
-import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
+import { Plus } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { getTypeName } from "../../../../utils/typeUtils.js";
+import axios from "../../../axiosConfig.js";
+import Body from "../../common/Body.jsx";
 
 export default function Participants() {
   const navigate = useNavigate();
@@ -23,14 +25,8 @@ export default function Participants() {
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const typeMapping = {
-    1: "Fournisseurs",
-    2: "Sous-traitants",
-    3: "Clients",
-    4: "Architectes",
-  };
-
-  const title = typeMapping[typeId] || "participants";
+  const titlePlural = getTypeName(typeId, true);
+  const titleSingular = getTypeName(typeId, false);
 
   const fetchParticipants = async () => {
     const response = await axios.get(`/participant/${typeId}`);
@@ -70,24 +66,13 @@ export default function Participants() {
     createParticipant.mutate(data);
   };
 
-  if (isLoading)
-    return <Body children={<p>Chargement des {title.toLowerCase()}...</p>} />;
-  if (error)
-    return (
-      <Body
-        children={
-          <p>Erreur lors de la récupération des {title.toLowerCase()}.</p>
-        }
-      />
-    );
-
   return (
     <Body
       children={
         <div className="px-4 w-full">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-700">
-              Liste des {title.toLowerCase()}
+              Liste des {titlePlural.toLowerCase()}
             </h1>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
@@ -98,8 +83,12 @@ export default function Participants() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>
-                    Ajouter un {title.slice(0, -1).toLowerCase()}
+                    Ajouter un {titleSingular.toLowerCase()}
                   </DialogTitle>
+                  <DialogDescription>
+                    Remplissez le formulaire ci-dessous pour ajouter un{" "}
+                    {titleSingular.toLowerCase()} à la liste.
+                  </DialogDescription>
                   <Separator />
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -109,7 +98,7 @@ export default function Participants() {
                     </label>
                     <Input
                       {...register("name", { required: "Nom requis" })}
-                      placeholder={`Nom du ${title.slice(0, -1).toLowerCase()}`}
+                      placeholder={`Nom du ${titleSingular.toLowerCase()}`}
                     />
                     {errors.name && (
                       <p className="text-red-500 text-sm mt-1">
@@ -117,7 +106,6 @@ export default function Participants() {
                       </p>
                     )}
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Interlocuteur
@@ -164,7 +152,7 @@ export default function Participants() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Site
+                      Site Web
                     </label>
                     <Input {...register("website")} placeholder="Site Web" />
                   </div>
@@ -182,25 +170,33 @@ export default function Participants() {
               </DialogContent>
             </Dialog>
           </div>
-          <ul>
-            {participants.map((participant) => (
-              <li key={participant.id} className="mb-4">
-                <button
-                  onClick={() =>
-                    navigate(`/participant/${typeId}/${participant.id}`)
-                  }
-                  className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
-                >
-                  <div className="flex flex-col items-start">
-                    <p className="leading-tight">{participant.name}</p>
-                  </div>
-                  <p className="text-sm text-gray-400 whitespace-nowrap">
-                    {new Date(participant.createdAt).toLocaleDateString()}
-                  </p>
-                </button>
-              </li>
-            ))}
-          </ul>
+          {isLoading ? (
+            <p>Chargement des {titlePlural.toLowerCase()}...</p>
+          ) : error ? (
+            <p className="text-red-500">
+              Erreur lors de la récupération des {titlePlural.toLowerCase()}.
+            </p>
+          ) : (
+            <ul>
+              {participants.map((participant) => (
+                <li key={participant.id} className="mb-4">
+                  <button
+                    onClick={() =>
+                      navigate(`/participant/${typeId}/${participant.id}`)
+                    }
+                    className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
+                  >
+                    <div className="flex flex-col items-start">
+                      <p className="leading-tight">{participant.name}</p>
+                    </div>
+                    <p className="text-sm text-gray-400 whitespace-nowrap">
+                      {new Date(participant.createdAt).toLocaleDateString()}
+                    </p>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       }
     />

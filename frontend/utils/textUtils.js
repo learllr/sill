@@ -7,11 +7,18 @@ export const formatToUpperCase = (value) => {
 };
 
 export const highlightText = (text, query) => {
-  const parts = text.split(new RegExp(`(${query})`, "gi"));
+  if (!query) return text;
+
+  const regex = new RegExp(
+    `(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+    "gi"
+  );
+  const parts = text.split(regex);
+
   return parts
     .map((part, index) =>
       part.toLowerCase() === query.toLowerCase()
-        ? `<span key=${index} class="font-bold">${part}</span>`
+        ? `<span class="font-bold">${part}</span>`
         : part
     )
     .join("");

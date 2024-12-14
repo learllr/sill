@@ -18,10 +18,10 @@ export default function Projects() {
     error,
   } = useQuery("projects", fetchProjects);
 
-  if (isLoading) return <Body children={<p>Chargement des projets...</p>} />;
+  if (isLoading) return <Body children={<p>Chargement des chantiers...</p>} />;
   if (error)
     return (
-      <Body children={<p>Erreur lors de la récupération des projets.</p>} />
+      <Body children={<p>Erreur lors de la récupération des chantiers.</p>} />
     );
 
   return (
@@ -30,7 +30,7 @@ export default function Projects() {
         <div className="flex justify-center items-center">
           <div className="px-4 w-full">
             <h1 className="text-2xl font-semibold text-gray-700 mb-6">
-              Liste des projets
+              Liste des chantiers
             </h1>
             <ul>
               {projects.map((project) => (

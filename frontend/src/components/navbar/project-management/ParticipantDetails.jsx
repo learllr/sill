@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useParams, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import axios from "../../../../src/axiosConfig.js";
-import Body from "../../common/Body";
+import { Button } from "@/components/ui/button";
 import {
-  User,
-  UserCheck,
-  Phone,
-  Mail,
-  MapPin,
-  Globe,
   Calendar,
   Edit,
+  Globe,
+  Mail,
+  MapPin,
+  Phone,
   Trash,
+  User,
+  UserCheck,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "../../../../src/axiosConfig.js";
 import { formatPhone } from "../../../../utils/textUtils.js";
+import Body from "../../common/Body";
 
 export default function ParticipantDetails() {
   const { id, typeId } = useParams();
