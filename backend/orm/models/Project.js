@@ -20,14 +20,6 @@ export default (sequelize) => {
           len: [3, 100],
         },
       },
-      billingClientId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Clients",
-          key: "id",
-        },
-      },
     },
     {
       sequelize,
@@ -40,12 +32,31 @@ export default (sequelize) => {
   Project.associate = (models) => {
     Project.belongsTo(models.Client, {
       foreignKey: "billingClientId",
-      as: "billingClient",
+      as: "client",
     });
 
-    Project.hasMany(models.TypeParticipant, {
+    Project.belongsToMany(models.Participant, {
+      through: models.ProjectParticipant,
       foreignKey: "projectId",
-      as: "participantProjects",
+      otherKey: "participantId",
+      as: "suppliers",
+      scope: { typeId: 1 },
+    });
+
+    Project.belongsToMany(models.Participant, {
+      through: models.ProjectParticipant,
+      foreignKey: "projectId",
+      otherKey: "participantId",
+      as: "subcontractors",
+      scope: { typeId: 2 },
+    });
+
+    Project.belongsToMany(models.Participant, {
+      through: models.ProjectParticipant,
+      foreignKey: "projectId",
+      otherKey: "participantId",
+      as: "architects",
+      scope: { typeId: 4 },
     });
   };
 

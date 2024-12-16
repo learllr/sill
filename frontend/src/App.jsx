@@ -1,31 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./components/Home.jsx";
-import Projects from "./components/navbar/project-management/Projects.jsx";
-import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
-import Participants from "./components/navbar/project-management/Participants.jsx";
+import Bank from "./components/navbar/aministrative-services/Bank.jsx";
 import ParticipantDetails from "./components/navbar/project-management/ParticipantDetails.jsx";
+import Participants from "./components/navbar/project-management/Participants.jsx";
+import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
+import Projects from "./components/navbar/project-management/Projects.jsx";
 
 export default function App() {
-  const [deviceType, setDeviceType] = useState("");
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 640) {
-        setDeviceType("MOBILE (sm)");
-      } else if (width >= 640 && width < 1024) {
-        setDeviceType("TABLETTE (md)");
-      } else {
-        setDeviceType("ORDI (lg)");
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   return (
     <Router>
       <Routes>
@@ -47,7 +29,7 @@ export default function App() {
           path="/administrative-services"
           element={<h1>Administrative Services</h1>}
         />
-        <Route path="/bank" element={<h1>Bank</h1>} />
+        <Route path="/bank" element={<Bank />} />
         <Route path="/sill-status" element={<h1>SILL Status</h1>} />
         <Route path="/accounting" element={<h1>Accounting</h1>} />
         <Route path="/zied-accounting" element={<h1>ZIED Accounting</h1>} />

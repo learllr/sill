@@ -4,12 +4,13 @@ import express from "express";
 import { authenticateToken } from "./middlewares/authMiddleware.js";
 import db from "./orm/models/index.js";
 import authentificationRoutes from "./routes/authentificationRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import projectRoutes from "./routes/projectRoutes.js";
+import documentRoutes from "./routes/documentRoutes.js";
 import participantRoutes from "./routes/participantRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 const frontendUrl = "http://localhost:5173";
 
 app.use(express.json());
@@ -38,6 +39,7 @@ app.use("/api/authentification", authentificationRoutes);
 app.use("/api/user", authenticateToken, userRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/participant", participantRoutes);
+app.use("/api/document", documentRoutes);
 
 db.sequelize
   .sync()

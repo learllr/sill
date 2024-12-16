@@ -29,9 +29,7 @@ export default function Projects() {
       children={
         <div className="flex justify-center items-center">
           <div className="px-4 w-full">
-            <h1 className="text-2xl font-semibold text-gray-700 mb-6">
-              Liste des chantiers
-            </h1>
+            <h1 className="text-2xl font-semibold mb-6">Liste des chantiers</h1>
             <ul>
               {projects.map((project) => (
                 <li key={project.id} className="mb-4">

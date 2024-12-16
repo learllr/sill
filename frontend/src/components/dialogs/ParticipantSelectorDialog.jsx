@@ -38,8 +38,8 @@ export default function ParticipantSelectorDialog({
     participant.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const title = getTypeName(typeId, false).toLowerCase(); // Singular
-  const titlePlural = getTypeName(typeId, true).toLowerCase(); // Plural
+  const title = getTypeName(typeId, false).toLowerCase();
+  const titlePlural = getTypeName(typeId, true).toLowerCase();
 
   return (
     <Dialog open={true} onOpenChange={onClose}>

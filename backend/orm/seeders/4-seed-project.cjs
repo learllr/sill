@@ -19,7 +19,7 @@ module.exports = {
         },
         {
           name: "Aménagement Bureau",
-          billingClientId: 1,
+          billingClientId: null,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

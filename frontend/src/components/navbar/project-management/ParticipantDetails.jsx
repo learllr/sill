@@ -91,9 +91,7 @@ export default function ParticipantDetails() {
       children={
         <div className="px-4 w-full">
           <div className="flex justify-between items-center mb-4 border-gray-300 pb-2">
-            <h1 className="text-2xl font-semibold text-gray-700">
-              {participant.name}
-            </h1>
+            <h1 className="text-2xl font-semibold">{participant.name}</h1>
             <div className="flex space-x-4">
               <Button onClick={handleEdit}>
                 <Edit className="h-4 w-4 mr-1" />

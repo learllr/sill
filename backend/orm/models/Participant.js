@@ -63,8 +63,10 @@ export default (sequelize) => {
       as: "type",
     });
 
-    Participant.hasMany(models.Project, {
+    Participant.belongsToMany(models.Project, {
+      through: models.ProjectParticipant,
       foreignKey: "participantId",
+      otherKey: "projectId",
       as: "projects",
     });
   };
