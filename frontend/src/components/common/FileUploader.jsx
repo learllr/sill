@@ -84,7 +84,6 @@ export default function FileUploader({ onFileUpload }) {
       title: fileTitle,
     });
 
-    alert("Fichier téléchargé avec succès !");
     handleRemoveFile();
   };
 

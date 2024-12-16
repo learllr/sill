@@ -1,6 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import path from "path";
 import { authenticateToken } from "./middlewares/authMiddleware.js";
 import db from "./orm/models/index.js";
 import authentificationRoutes from "./routes/authentificationRoutes.js";
@@ -15,6 +16,8 @@ const frontendUrl = "http://localhost:5173";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/uploads", express.static(path.resolve("uploads")));
 
 const corsOptions = {
   origin: frontendUrl,

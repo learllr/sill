@@ -4,14 +4,17 @@ import {
   deleteDocument,
   getAllDocuments,
   getDocumentById,
+  getDocumentByTypeId,
   updateDocument,
 } from "../controllers/DocumentController.js";
+import { upload } from "../middlewares/multerConfig.js";
 
 const router = express.Router();
 
 router.get("/", getAllDocuments);
 router.get("/:id", getDocumentById);
-router.post("/", createDocument);
+router.get("/type/:typeId", getDocumentByTypeId);
+router.post("/", upload.single("file"), createDocument);
 router.put("/:id", updateDocument);
 router.delete("/:id", deleteDocument);
 

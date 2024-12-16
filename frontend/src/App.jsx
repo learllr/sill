@@ -2,6 +2,7 @@ import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./components/Home.jsx";
 import Bank from "./components/navbar/aministrative-services/Bank.jsx";
+import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
 import ParticipantDetails from "./components/navbar/project-management/ParticipantDetails.jsx";
 import Participants from "./components/navbar/project-management/Participants.jsx";
 import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
@@ -30,7 +31,7 @@ export default function App() {
           element={<h1>Administrative Services</h1>}
         />
         <Route path="/bank" element={<Bank />} />
-        <Route path="/sill-status" element={<h1>SILL Status</h1>} />
+        <Route path="/sill-status" element={<SillStatus />} />
         <Route path="/accounting" element={<h1>Accounting</h1>} />
         <Route path="/zied-accounting" element={<h1>ZIED Accounting</h1>} />
         <Route path="*" element={<h1>404 Not Found</h1>} />

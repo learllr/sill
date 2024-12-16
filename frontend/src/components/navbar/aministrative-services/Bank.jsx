@@ -7,7 +7,7 @@ export default function Bank() {
     <Body>
       <div className="px-4 w-full">
         <h1 className="text-2xl font-semibold mb-6">Banque</h1>
-        <EditableContent initialContent={null} documentTypeId={1} />
+        <EditableContent initialContent={null} documentTypeId={16} />
       </div>
     </Body>
   );

@@ -5,7 +5,6 @@ export const getAllDocuments = async (req, res) => {
     const documents = await DocumentDAO.getAllDocuments();
     res.status(200).json(documents);
   } catch (error) {
-    console.error("Erreur lors de la récupération des documents :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération des documents" });
@@ -15,16 +14,32 @@ export const getAllDocuments = async (req, res) => {
 export const getDocumentById = async (req, res) => {
   try {
     const { id } = req.params;
-
     const document = await DocumentDAO.getDocumentById(id);
-
     if (!document) {
       return res.status(404).json({ error: "Document non trouvé" });
+    }
+    res.status(200).json(document);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération du document" });
+  }
+};
+
+export const getDocumentByTypeId = async (req, res) => {
+  try {
+    const { typeId } = req.params;
+    const document = await DocumentDAO.getDocumentByType(typeId);
+
+    if (!document) {
+      return res.status(200).json({
+        message: "Aucun document trouvé pour ce type",
+        document: null,
+      });
     }
 
     res.status(200).json(document);
   } catch (error) {
-    console.error("Erreur lors de la récupération du document :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération du document" });
@@ -33,7 +48,20 @@ export const getDocumentById = async (req, res) => {
 
 export const createDocument = async (req, res) => {
   try {
-    const { title, typeId, projectId, imagePath } = req.body;
+    const { title, typeId, projectId: projectIdFromBody } = req.body;
+    let imagePath = null;
+
+    if (req.file) {
+      imagePath = req.file.filename;
+    }
+
+    if ([16, 17].includes(Number(typeId))) {
+      await DocumentDAO.deleteDocumentsByTypeId(typeId);
+    }
+
+    const projectId = [16, 17].includes(Number(typeId))
+      ? null
+      : projectIdFromBody;
 
     const document = await DocumentDAO.createDocument({
       title,
@@ -42,7 +70,10 @@ export const createDocument = async (req, res) => {
       imagePath,
     });
 
-    res.status(201).json({ message: "Document créé avec succès", document });
+    res.status(201).json({
+      message: `Document de type ${typeId} créé avec succès`,
+      document,
+    });
   } catch (error) {
     console.error("Erreur lors de la création du document :", error);
     res.status(500).json({ error: "Erreur lors de la création du document" });
@@ -69,7 +100,6 @@ export const updateDocument = async (req, res) => {
       .status(200)
       .json({ message: "Document mis à jour avec succès", updatedDocument });
   } catch (error) {
-    console.error("Erreur lors de la mise à jour du document :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la mise à jour du document" });
@@ -90,7 +120,6 @@ export const deleteDocument = async (req, res) => {
 
     res.status(200).json({ message: "Document supprimé avec succès" });
   } catch (error) {
-    console.error("Erreur lors de la suppression du document :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la suppression du document" });

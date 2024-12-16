@@ -1,56 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "../../axiosConfig.js";
 import FileUploader from "./FileUploader.jsx";
 
-export default function EditableContent({
-  initialContent,
-  documentTypeId,
-  onUploadComplete,
-}) {
-  const [content, setContent] = useState(initialContent);
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+export default function EditableContent({ documentTypeId, onUploadComplete }) {
+  const [content, setContent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const uploadDocumentToDatabase = async (fileData) => {
+  const fetchDocumentByType = async () => {
     try {
-      const response = await fetch("/documents", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: fileData.title || "Document",
-          typeId: documentTypeId,
-          imagePath: fileData.url,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          "Erreur lors de l'ajout du document dans la base de données"
-        );
+      const response = await axios.get(`/document/type/${documentTypeId}`);
+      if (response.data && response.data.imagePath) {
+        setContent(response.data.imagePath);
+        setIsEditing(false);
+      } else {
+        setIsEditing(true);
       }
-
-      const document = await response.json();
-      return document;
     } catch (error) {
-      console.error("Erreur lors de l'ajout du document :", error);
-      throw error;
+      console.error("Erreur lors de la récupération du document :", error);
+      setIsEditing(true);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchDocumentByType();
+  }, [documentTypeId]);
+
+  const uploadDocumentToServer = async (fileData) => {
+    const formData = new FormData();
+    formData.append("file", fileData.file);
+    formData.append("title", fileData.title || "Document");
+    formData.append("typeId", documentTypeId);
+
+    const response = await axios.post("/document", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data.document;
   };
 
   const handleFileUpload = async (data) => {
     try {
-      const fileUrl = URL.createObjectURL(data.file);
-
-      await uploadDocumentToDatabase({
-        title: data.title || "Document",
-        url: fileUrl,
-      });
-
-      setContent(fileUrl);
+      const uploadedDocument = await uploadDocumentToServer(data);
+      setContent(uploadedDocument.imagePath);
       setIsEditing(false);
 
       if (onUploadComplete) {
-        onUploadComplete(data);
+        onUploadComplete(uploadedDocument);
       }
     } catch (error) {
       console.error("Erreur lors du téléversement :", error);
@@ -61,32 +63,31 @@ export default function EditableContent({
     setIsEditing(true);
   };
 
+  if (loading) {
+    return <p className="text-center">Chargement...</p>;
+  }
+
   return (
-    <div>
+    <div className="w-full max-w-md mx-auto text-center">
       {isEditing ? (
         <FileUploader onFileUpload={handleFileUpload} />
       ) : content ? (
         <div className="relative">
           <img
-            src={content}
+            src={`${BASE_URL}/uploads/${content}`}
             alt="Contenu affiché"
             className="w-full rounded-lg"
           />
           <button
             onClick={handleEdit}
-            className="absolute top-2 right-2 bg-blue-600 text-white rounded-full w-6 h-6 flex justify-center items-center text-sm hover:bg-blue-700"
+            className="absolute top-2 right-2 bg-blue-600 text-white rounded-full w-8 h-8 flex justify-center items-center text-sm hover:bg-blue-700"
             aria-label="Modifier le contenu"
           >
             ✎
           </button>
         </div>
       ) : (
-        <button
-          onClick={handleEdit}
-          className="w-full h-52 border-2 border-dashed border-gray-300 flex justify-center items-center rounded-lg text-gray-500 hover:bg-gray-50"
-        >
-          <span className="text-sm">Cliquez pour ajouter un contenu</span>
-        </button>
+        <FileUploader onFileUpload={handleFileUpload} />
       )}
     </div>
   );
