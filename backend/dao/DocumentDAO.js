@@ -56,7 +56,16 @@ export default class DocumentDAO {
   }
 
   static async deleteDocument(document) {
-    return await Document.destroy();
+    if (document.imagePath) {
+      const filePath = path.resolve("uploads", document.imagePath);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    return await Document.destroy({
+      where: { id: document.id },
+    });
   }
 
   static async deleteDocumentsByTypeId(typeId) {

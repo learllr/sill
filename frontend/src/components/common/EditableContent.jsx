@@ -8,12 +8,18 @@ export default function EditableContent({ documentTypeId, onUploadComplete }) {
   const [content, setContent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [existingFileData, setExistingFileData] = useState(null);
 
   const fetchDocumentByType = async () => {
     try {
       const response = await axios.get(`/document/type/${documentTypeId}`);
       if (response.data && response.data.imagePath) {
         setContent(response.data.imagePath);
+        setExistingFileData({
+          id: response.data.id,
+          fileName: response.data.imagePath,
+          title: response.data.title || "Document",
+        });
         setIsEditing(false);
       } else {
         setIsEditing(true);
@@ -47,15 +53,29 @@ export default function EditableContent({ documentTypeId, onUploadComplete }) {
 
   const handleFileUpload = async (data) => {
     try {
-      const uploadedDocument = await uploadDocumentToServer(data);
-      setContent(uploadedDocument.imagePath);
-      setIsEditing(false);
+      if (data) {
+        const uploadedDocument = await uploadDocumentToServer(data);
+        setContent(uploadedDocument.imagePath);
+        setExistingFileData({
+          id: uploadedDocument.id,
+          fileName: uploadedDocument.imagePath,
+          title: uploadedDocument.title,
+        });
+        setIsEditing(false);
 
-      if (onUploadComplete) {
-        onUploadComplete(uploadedDocument);
+        if (onUploadComplete) {
+          onUploadComplete(uploadedDocument);
+        }
+      } else {
+        setContent(null);
+        setExistingFileData(null);
+        setIsEditing(true);
       }
     } catch (error) {
-      console.error("Erreur lors du téléversement :", error);
+      console.error(
+        "Erreur lors du téléversement ou de la suppression :",
+        error
+      );
     }
   };
 
@@ -70,7 +90,10 @@ export default function EditableContent({ documentTypeId, onUploadComplete }) {
   return (
     <div className="w-full max-w-md mx-auto text-center">
       {isEditing ? (
-        <FileUploader onFileUpload={handleFileUpload} />
+        <FileUploader
+          onFileUpload={handleFileUpload}
+          defaultData={existingFileData}
+        />
       ) : content ? (
         <div className="relative">
           <img

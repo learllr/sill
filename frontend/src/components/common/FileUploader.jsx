@@ -1,16 +1,62 @@
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaFilePdf, FaFileWord } from "react-icons/fa";
+import axios from "../../axiosConfig.js";
 
-export default function FileUploader({ onFileUpload }) {
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+export default function FileUploader({ onFileUpload, defaultData = null }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewContent, setPreviewContent] = useState(null);
-  const [fileTitle, setFileTitle] = useState("Titre du document");
+  const [fileTitle, setFileTitle] = useState(null);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (defaultData) {
+      setFileTitle(defaultData.title || null);
+      setSelectedFile({
+        file: null,
+        size: null,
+        displayType: getDisplayType(defaultData.fileName),
+      });
+
+      if (defaultData.fileName) {
+        const fileType = defaultData.fileName.split(".").pop();
+        if (["jpg", "jpeg", "png"].includes(fileType)) {
+          setPreviewContent(
+            <img
+              src={`${BASE_URL}/uploads/${defaultData.fileName}`}
+              alt="Aperçu"
+              className="w-full h-full object-cover rounded-lg"
+            />
+          );
+        } else if (fileType === "pdf") {
+          setPreviewContent(
+            <div className="flex justify-center items-center w-full h-full">
+              <FaFilePdf size={100} className="text-red-600" />
+            </div>
+          );
+        } else if (fileType === "docx") {
+          setPreviewContent(
+            <div className="flex justify-center items-center w-full h-full">
+              <FaFileWord size={100} className="text-blue-600" />
+            </div>
+          );
+        }
+      }
+    }
+  }, [defaultData]);
+
+  const getDisplayType = (fileName) => {
+    const fileType = fileName.split(".").pop();
+    if (["jpg", "jpeg", "png"].includes(fileType)) return "Image";
+    if (fileType === "pdf") return "PDF";
+    if (fileType === "docx") return "Word";
+    return "Fichier";
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         setError("La taille du fichier ne doit pas dépasser 5 Mo.");
@@ -66,21 +112,34 @@ export default function FileUploader({ onFileUpload }) {
     }
   };
 
-  const handleRemoveFile = () => {
+  const handleRemoveFile = async () => {
+    if (defaultData && defaultData.id) {
+      try {
+        await axios.delete(`/document/${defaultData.id}`);
+      } catch (error) {
+        console.error("Erreur :", error);
+        setError("Une erreur est survenue lors de la suppression du fichier.");
+        return;
+      }
+    }
     setSelectedFile(null);
     setPreviewContent(null);
-    setFileTitle("Titre du document");
+    setFileTitle(null);
     setError("");
+
+    if (onFileUpload) {
+      onFileUpload(null);
+    }
   };
 
   const handleUpload = () => {
-    if (!selectedFile) {
+    if (!selectedFile && !defaultData) {
       alert("Veuillez sélectionner un fichier avant de téléverser.");
       return;
     }
 
     onFileUpload?.({
-      file: selectedFile.file,
+      file: selectedFile?.file || null,
       title: fileTitle,
     });
 
@@ -100,15 +159,23 @@ export default function FileUploader({ onFileUpload }) {
             {previewContent ? (
               <div className="relative w-full h-full">
                 {previewContent}
-                <div className="absolute top-2 left-2 max-w-72 bg-black bg-opacity-70 text-white text-sm px-2 py-1 rounded">
-                  {fileTitle}
-                </div>
-                <div className="absolute bottom-2 left-2 bg-white bg-opacity-70 text-black text-sm px-2 py-1 rounded">
-                  {((selectedFile?.size || 0) / 1024 / 1024).toFixed(2)} MB
-                </div>
-                <div className="absolute bottom-2 right-2 bg-white bg-opacity-70 text-black text-sm px-2 py-1 rounded">
-                  {selectedFile?.displayType}
-                </div>
+                {fileTitle && (
+                  <div className="absolute top-2 left-2 max-w-72 bg-black bg-opacity-70 text-white text-sm px-2 py-1 rounded">
+                    {fileTitle}
+                  </div>
+                )}
+                {selectedFile && (
+                  <>
+                    {selectedFile.size && (
+                      <div className="absolute bottom-2 left-2 bg-white bg-opacity-70 text-black text-sm px-2 py-1 rounded">
+                        {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </div>
+                    )}
+                    <div className="absolute bottom-2 right-2 bg-white bg-opacity-70 text-black text-sm px-2 py-1 rounded">
+                      {selectedFile?.displayType}
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <div className="text-gray-500 text-center">
@@ -127,7 +194,7 @@ export default function FileUploader({ onFileUpload }) {
             )}
           </label>
 
-          {selectedFile && (
+          {(selectedFile || defaultData) && (
             <button
               onClick={handleRemoveFile}
               className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex justify-center items-center text-sm hover:bg-red-700"
@@ -140,12 +207,11 @@ export default function FileUploader({ onFileUpload }) {
 
         {selectedFile && (
           <div className="flex flex-col w-full mt-4 md:mt-0">
-            <label className="block text-sm font-medium mb-2">Titre</label>
             <input
               type="text"
               value={fileTitle}
               onChange={handleTitleChange}
-              placeholder="Entrez un titre (75 caractères max.)"
+              placeholder="Entrez le titre du document (75 caractères max.)"
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md p-2"
             />
             <Button className="mt-4 w-full md:w-auto" onClick={handleUpload}>
