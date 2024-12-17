@@ -1,4 +1,12 @@
+import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
+import {
+  FaFileDownload,
+  FaFilePdf,
+  FaFileWord,
+  FaPencilAlt,
+  FaTrashAlt,
+} from "react-icons/fa";
 import axios from "../../axiosConfig.js";
 import FileUploader from "./FileUploader.jsx";
 
@@ -83,31 +91,96 @@ export default function EditableContent({ documentTypeId, onUploadComplete }) {
     setIsEditing(true);
   };
 
+  const handleRemoveFile = async () => {
+    try {
+      if (existingFileData && existingFileData.id) {
+        await axios.delete(`/document/${existingFileData.id}`);
+        setContent(null);
+        setExistingFileData(null);
+        setIsEditing(true);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression du fichier :", error);
+    }
+  };
+
+  const getFilePreview = (fileName) => {
+    const fileType = fileName.split(".").pop().toLowerCase();
+    if (["jpg", "jpeg", "png"].includes(fileType)) {
+      return (
+        <img
+          src={`${BASE_URL}/uploads/${fileName}`}
+          alt="Contenu affiché"
+          className="w-full rounded-lg"
+        />
+      );
+    } else if (fileType === "pdf") {
+      return (
+        <div className="flex items-center justify-center w-full h-full bg-gray-50 rounded-lg shadow-sm">
+          <FaFilePdf size={50} className="text-red-600" />
+        </div>
+      );
+    } else if (fileType === "docx" || fileType === "doc") {
+      return (
+        <div className="flex items-center justify-center w-full h-full bg-gray-50 rounded-lg shadow-sm">
+          <FaFileWord size={50} className="text-blue-600" />
+        </div>
+      );
+    }
+    return null;
+  };
+
   if (loading) {
     return <p className="text-center">Chargement...</p>;
   }
 
   return (
-    <div className="w-full max-w-md mx-auto text-center">
+    <div className="w-full text-center">
       {isEditing ? (
         <FileUploader
           onFileUpload={handleFileUpload}
           defaultData={existingFileData}
         />
       ) : content ? (
-        <div className="relative">
-          <img
-            src={`${BASE_URL}/uploads/${content}`}
-            alt="Contenu affiché"
-            className="w-full rounded-lg"
-          />
-          <button
-            onClick={handleEdit}
-            className="absolute top-2 right-2 bg-blue-600 text-white rounded-full w-8 h-8 flex justify-center items-center text-sm hover:bg-blue-700"
-            aria-label="Modifier le contenu"
-          >
-            ✎
-          </button>
+        <div className="relative max-w-sm mx-auto flex items-center justify-center">
+          <div className="w-96 h-56 flex items-center justify-center overflow-hidden rounded-lg bg-gray-50 shadow-md">
+            {getFilePreview(content)}
+          </div>
+
+          <div className="absolute top-2 right-2 flex space-x-2">
+            <Button
+              onClick={handleEdit}
+              className="rounded-full w-8 h-8 flex justify-center items-center [&_svg]:!size-3"
+              aria-label="Modifier le contenu"
+            >
+              <FaPencilAlt />
+            </Button>
+
+            <Button
+              onClick={handleRemoveFile}
+              className="rounded-full w-8 h-8 flex justify-center items-center [&_svg]:!size-3"
+              variant="destructive"
+              aria-label="Supprimer le contenu"
+            >
+              <FaTrashAlt />
+            </Button>
+          </div>
+
+          <div className="absolute bottom-2 right-2">
+            <a
+              href={`${BASE_URL}/uploads/${content}`}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                className="rounded-full w-10 h-10 flex justify-center items-center"
+                aria-label="Télécharger le fichier"
+              >
+                <FaFileDownload />
+              </Button>
+            </a>
+          </div>
         </div>
       ) : (
         <FileUploader onFileUpload={handleFileUpload} />

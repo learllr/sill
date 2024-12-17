@@ -40,7 +40,7 @@ export default (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-          isUrl: true,
+          notEmpty: true,
         },
       },
     },

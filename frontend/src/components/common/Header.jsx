@@ -1,7 +1,8 @@
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import SearchBar from "./SearchBar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Settings } from "lucide-react";
+import SearchBar from "./SearchBar";
 
 export default function Header() {
   return (
@@ -16,20 +17,24 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-4 shrink-0">
-        <button
-          className="flex items-center justify-center rounded-full p-2 hover:bg-gray-100"
+        <Button
+          variant="ghost"
+          size="icon"
           aria-label="Settings"
+          className="flex items-center justify-center rounded-full [&_svg]:!size-6 text-gray-600"
         >
-          <Settings className="h-6 w-6 text-gray-600" />
-        </button>
-        <button
-          className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+          <Settings />
+        </Button>
+
+        <Button
+          variant="destructive"
+          className="px-4 py-2 text-white"
           onClick={() => {
             console.log("Déconnexion");
           }}
         >
           Déconnexion
-        </button>
+        </Button>
       </div>
     </header>
   );

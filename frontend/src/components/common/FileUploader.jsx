@@ -1,19 +1,18 @@
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { FaFilePdf, FaFileWord } from "react-icons/fa";
-import axios from "../../axiosConfig.js";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function FileUploader({ onFileUpload, defaultData = null }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewContent, setPreviewContent] = useState(null);
-  const [fileTitle, setFileTitle] = useState(null);
+  const [fileTitle, setFileTitle] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (defaultData) {
-      setFileTitle(defaultData.title || null);
+      setFileTitle(defaultData.title || "");
       setSelectedFile({
         file: null,
         size: null,
@@ -59,7 +58,7 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
     const file = event.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setError("La taille du fichier ne doit pas dépasser 5 Mo.");
+        setError("La taille du document ne doit pas dépasser 5 Mo.");
         return;
       }
 
@@ -104,6 +103,7 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
 
   const handleTitleChange = (event) => {
     const value = event.target.value;
+
     if (value.length > 75) {
       setError("Le titre ne peut pas dépasser 75 caractères.");
     } else {
@@ -112,29 +112,25 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
     }
   };
 
-  const handleRemoveFile = async () => {
-    if (defaultData && defaultData.id) {
-      try {
-        await axios.delete(`/document/${defaultData.id}`);
-      } catch (error) {
-        console.error("Erreur :", error);
-        setError("Une erreur est survenue lors de la suppression du fichier.");
-        return;
-      }
-    }
+  const handleRemoveFile = () => {
     setSelectedFile(null);
     setPreviewContent(null);
-    setFileTitle(null);
     setError("");
-
-    if (onFileUpload) {
-      onFileUpload(null);
-    }
   };
 
   const handleUpload = () => {
-    if (!selectedFile && !defaultData) {
-      alert("Veuillez sélectionner un fichier avant de téléverser.");
+    if (!selectedFile) {
+      setError("Veuillez ajouter un document.");
+      return;
+    }
+
+    if (!fileTitle || fileTitle.length < 3) {
+      setError("Le titre doit contenir au moins 3 caractères.");
+      return;
+    }
+
+    if (fileTitle.length > 75) {
+      setError("Le titre ne peut pas dépasser 75 caractères.");
       return;
     }
 
@@ -149,7 +145,13 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
   return (
     <div className="p-4 w-full max-w-4xl mx-auto flex flex-col items-center space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:space-x-6 w-full">
-        <div className="hover:bg-slate-50 relative w-full">
+        <div
+          className={`hover:bg-slate-50 relative w-full ${
+            previewContent
+              ? ""
+              : "max-w-md mx-auto flex items-center justify-center"
+          }`}
+        >
           <label
             htmlFor="file-upload"
             className={`relative flex justify-center items-center w-full h-52 border-2 border-dashed border-gray-300 rounded-lg transition ${
@@ -180,7 +182,7 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
             ) : (
               <div className="text-gray-500 text-center">
                 <p className="text-4xl font-bold">+</p>
-                <p className="text-sm">Cliquez pour ajouter un fichier</p>
+                <p className="text-sm">Cliquez pour ajouter un document</p>
               </div>
             )}
             {!selectedFile && (
@@ -194,7 +196,7 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
             )}
           </label>
 
-          {(selectedFile || defaultData) && (
+          {(selectedFile || previewContent) && (
             <button
               onClick={handleRemoveFile}
               className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex justify-center items-center text-sm hover:bg-red-700"
@@ -205,20 +207,18 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
           )}
         </div>
 
-        {selectedFile && (
-          <div className="flex flex-col w-full mt-4 md:mt-0">
-            <input
-              type="text"
-              value={fileTitle}
-              onChange={handleTitleChange}
-              placeholder="Entrez le titre du document (75 caractères max.)"
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md p-2"
-            />
-            <Button className="mt-4 w-full md:w-auto" onClick={handleUpload}>
-              Enregistrer
-            </Button>
-          </div>
-        )}
+        <div className="flex flex-col w-full mt-4 md:mt-0">
+          <input
+            type="text"
+            value={fileTitle}
+            onChange={handleTitleChange}
+            placeholder="Entrez le titre du document (75 caractères max)"
+            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md p-2"
+          />
+          <Button className="mt-4 w-full md:w-auto" onClick={handleUpload}>
+            Enregistrer
+          </Button>
+        </div>
       </div>
 
       {error && (
