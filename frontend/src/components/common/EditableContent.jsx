@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
-import {
-  FaFileDownload,
-  FaFilePdf,
-  FaFileWord,
-  FaPencilAlt,
-  FaTrashAlt,
-} from "react-icons/fa";
+import { FaFilePdf, FaFileWord, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import axios from "../../axiosConfig.js";
 import FileUploader from "./FileUploader.jsx";
 
@@ -143,9 +137,15 @@ export default function EditableContent({ documentTypeId, onUploadComplete }) {
         />
       ) : content ? (
         <div className="relative max-w-sm mx-auto flex items-center justify-center">
-          <div className="w-96 h-56 flex items-center justify-center overflow-hidden rounded-lg bg-gray-50 shadow-md">
+          <a
+            href={`${BASE_URL}/uploads/${content}`}
+            download
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-96 h-56 flex items-center justify-center overflow-hidden rounded-lg bg-gray-50 shadow-md"
+          >
             {getFilePreview(content)}
-          </div>
+          </a>
 
           <div className="absolute top-2 right-2 flex space-x-2">
             <Button
@@ -164,22 +164,6 @@ export default function EditableContent({ documentTypeId, onUploadComplete }) {
             >
               <FaTrashAlt />
             </Button>
-          </div>
-
-          <div className="absolute bottom-2 right-2">
-            <a
-              href={`${BASE_URL}/uploads/${content}`}
-              download
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                className="rounded-full w-10 h-10 flex justify-center items-center"
-                aria-label="Télécharger le fichier"
-              >
-                <FaFileDownload />
-              </Button>
-            </a>
           </div>
         </div>
       ) : (
