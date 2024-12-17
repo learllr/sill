@@ -40,8 +40,8 @@ export default class DocumentDAO {
     });
   }
 
-  static async getDocumentByType(typeId) {
-    return await Document.findOne({
+  static async getDocumentsByType(typeId) {
+    return await Document.findAll({
       where: { typeId },
       attributes: ["id", "title", "imagePath", "typeId", "createdAt"],
     });

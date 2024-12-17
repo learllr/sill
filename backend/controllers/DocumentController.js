@@ -26,23 +26,24 @@ export const getDocumentById = async (req, res) => {
   }
 };
 
-export const getDocumentByTypeId = async (req, res) => {
+export const getDocumentsByTypeId = async (req, res) => {
   try {
     const { typeId } = req.params;
-    const document = await DocumentDAO.getDocumentByType(typeId);
+    const documents = await DocumentDAO.getDocumentsByType(typeId);
 
-    if (!document) {
+    if (!documents || documents.length === 0) {
       return res.status(200).json({
         message: "Aucun document trouvé pour ce type",
-        document: null,
+        documents: [],
       });
     }
 
-    res.status(200).json(document);
+    res.status(200).json({ documents });
   } catch (error) {
+    console.error("Erreur lors de la récupération des documents :", error);
     res
       .status(500)
-      .json({ error: "Erreur lors de la récupération du document" });
+      .json({ error: "Erreur lors de la récupération des documents" });
   }
 };
 
