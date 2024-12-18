@@ -52,6 +52,8 @@ export default class ParticipantDAO {
   }
 
   static async deleteParticipant(participant) {
-    return await Participant.destroy();
+    return await Participant.destroy({
+      where: { id: participant.id },
+    });
   }
 }

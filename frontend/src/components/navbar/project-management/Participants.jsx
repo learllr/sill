@@ -98,7 +98,7 @@ export default function Participants() {
                     </label>
                     <Input
                       {...register("name", { required: "Nom requis" })}
-                      placeholder={`Nom du ${titleSingular.toLowerCase()}`}
+                      placeholder={`Nom ${titleSingular.toLowerCase()}`}
                     />
                     {errors.name && (
                       <p className="text-red-500 text-sm mt-1">
@@ -143,6 +143,18 @@ export default function Participants() {
                         {errors.email.message}
                       </p>
                     )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Adresse
+                    </label>
+                    <Input {...register("address")} placeholder="Adresse" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Site web
+                    </label>
+                    <Input {...register("website")} placeholder="Site web" />
                   </div>
                   <DialogFooter>
                     <Button
