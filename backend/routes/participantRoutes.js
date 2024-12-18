@@ -1,10 +1,10 @@
 import express from "express";
 import {
+  createParticipant,
+  deleteParticipantById,
   getAllParticipants,
   getParticipantById,
-  createParticipant,
   updateParticipant,
-  deleteParticipantById,
 } from "../controllers/ParticipantController.js";
 
 const router = express.Router();

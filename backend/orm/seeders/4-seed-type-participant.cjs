@@ -6,17 +6,17 @@ module.exports = {
       "TypeParticipants",
       [
         {
+          name: "Client",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
           name: "Fournisseur",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           name: "Sous-traitant",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          name: "Client",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

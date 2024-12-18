@@ -48,10 +48,10 @@ export default class ParticipantDAO {
   }
 
   static async updateParticipant(participant, updatedData) {
-    return await participant.update(updatedData);
+    return await Participant.update(updatedData);
   }
 
   static async deleteParticipant(participant) {
-    return await participant.destroy();
+    return await Participant.destroy();
   }
 }

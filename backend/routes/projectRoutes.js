@@ -5,7 +5,7 @@ import {
   deleteProject,
   getAllProjects,
   getProjectById,
-  updateParticipantsForProject,
+  removeParticipantFromProject,
 } from "../controllers/ProjectController.js";
 
 const router = express.Router();
@@ -15,6 +15,6 @@ router.get("/:id", getProjectById);
 router.post("/", createProject);
 router.delete("/:id", deleteProject);
 router.post("/:id/participants", assignParticipantToProject);
-router.put("/:id/participants", updateParticipantsForProject);
+router.delete("/:id/participants/:participantId", removeParticipantFromProject);
 
 export default router;

@@ -1,14 +1,55 @@
 import db from "../orm/models/index.js";
-const { Project, Client, ProjectParticipant, Participant } = db;
+const { Project, Participant, TypeParticipant, ProjectParticipant } = db;
 
 export default class ProjectDAO {
   static async getAllProjects() {
     return await Project.findAll({
       include: [
         {
-          model: Client,
-          as: "client",
-          attributes: ["name", "contactPerson", "email"],
+          model: Participant,
+          as: "clients",
+          include: [
+            { model: TypeParticipant, as: "type", attributes: ["name"] },
+          ],
+          attributes: ["id", "name", "contactPerson", "email"],
+        },
+        {
+          model: Participant,
+          as: "suppliers",
+          include: [
+            { model: TypeParticipant, as: "type", attributes: ["name"] },
+          ],
+          attributes: ["id", "name", "contactPerson", "email"],
+        },
+        {
+          model: Participant,
+          as: "subcontractors",
+          include: [
+            { model: TypeParticipant, as: "type", attributes: ["name"] },
+          ],
+          attributes: ["id", "name", "contactPerson", "email"],
+        },
+        {
+          model: Participant,
+          as: "architects",
+          include: [
+            { model: TypeParticipant, as: "type", attributes: ["name"] },
+          ],
+          attributes: ["id", "name", "contactPerson", "email"],
+        },
+      ],
+      attributes: ["id", "name", "createdAt"],
+    });
+  }
+
+  static async getProjectById(id) {
+    return await Project.findOne({
+      where: { id },
+      include: [
+        {
+          model: Participant,
+          as: "clients",
+          attributes: ["id", "name", "contactPerson", "email"],
         },
         {
           model: Participant,
@@ -26,21 +67,7 @@ export default class ProjectDAO {
           attributes: ["id", "name", "contactPerson", "email"],
         },
       ],
-      attributes: ["id", "name", "createdAt"],
-    });
-  }
-
-  static async getProjectById(id) {
-    return await Project.findOne({
-      where: { id },
-      include: [
-        {
-          model: Client,
-          as: "client",
-          attributes: ["name", "contactPerson"],
-        },
-      ],
-      attributes: ["id", "name", "createdAt"],
+      attributes: ["id", "name"],
     });
   }
 
@@ -48,37 +75,24 @@ export default class ProjectDAO {
     return await Project.create(projectData);
   }
 
-  static async updateProject(project, updatedData) {
-    return await project.update(updatedData);
-  }
-
   static async deleteProject(project) {
     return await project.destroy();
   }
 
-  static async addParticipantToProject(projectId, participantId, type) {
+  static async addParticipantToProject(projectId, participantId, typeId) {
     return await ProjectParticipant.create({
       projectId,
       participantId,
-      type,
+      typeId,
     });
   }
 
-  static async updateParticipantsForProject(projectId, participantIds, type) {
-    await ProjectParticipant.destroy({
-      where: { projectId, type },
+  static async removeParticipantFromProject(projectId, participantId) {
+    return await ProjectParticipant.destroy({
+      where: {
+        projectId,
+        participantId,
+      },
     });
-
-    const participants = participantIds.map((participantId) => ({
-      projectId,
-      participantId,
-      type,
-    }));
-
-    return await ProjectParticipant.bulkCreate(participants);
-  }
-
-  static async deleteProject(projectId) {
-    return await Project.destroy({ where: { id: projectId } });
   }
 }

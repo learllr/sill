@@ -22,9 +22,9 @@ const data = {
       title: "Gestion de chantiers",
       items: [
         { title: "Chantiers", url: "/projects" },
-        { title: "Fournisseurs", url: "/participant/1" },
-        { title: "Sous-traitants", url: "/participant/2" },
-        { title: "Clients", url: "/participant/3" },
+        { title: "Clients", url: "/participant/1" },
+        { title: "Fournisseurs", url: "/participant/2" },
+        { title: "Sous-traitants", url: "/participant/3" },
         { title: "Architectes", url: "/participant/4" },
       ],
     },

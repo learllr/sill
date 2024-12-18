@@ -30,16 +30,11 @@ export default (sequelize) => {
   );
 
   Project.associate = (models) => {
-    Project.belongsTo(models.Client, {
-      foreignKey: "billingClientId",
-      as: "client",
-    });
-
     Project.belongsToMany(models.Participant, {
       through: models.ProjectParticipant,
       foreignKey: "projectId",
       otherKey: "participantId",
-      as: "suppliers",
+      as: "clients",
       scope: { typeId: 1 },
     });
 
@@ -47,8 +42,16 @@ export default (sequelize) => {
       through: models.ProjectParticipant,
       foreignKey: "projectId",
       otherKey: "participantId",
-      as: "subcontractors",
+      as: "suppliers",
       scope: { typeId: 2 },
+    });
+
+    Project.belongsToMany(models.Participant, {
+      through: models.ProjectParticipant,
+      foreignKey: "projectId",
+      otherKey: "participantId",
+      as: "subcontractors",
+      scope: { typeId: 3 },
     });
 
     Project.belongsToMany(models.Participant, {

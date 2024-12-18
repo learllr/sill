@@ -128,10 +128,7 @@ export default function SelectorDialog({
         )}
 
         <DialogFooter>
-          <Button
-            onClick={onClose}
-            className="bg-red-500 text-wgte hover:bg-red-600"
-          >
+          <Button onClick={onClose} variant="destructive">
             Fermer
           </Button>
         </DialogFooter>

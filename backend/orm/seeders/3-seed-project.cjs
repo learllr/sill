@@ -7,19 +7,16 @@ module.exports = {
       [
         {
           name: "Rénovation Maison",
-          billingClientId: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           name: "Construction Villa",
-          billingClientId: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           name: "Aménagement Bureau",
-          billingClientId: null,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

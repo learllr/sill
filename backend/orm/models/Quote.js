@@ -31,7 +31,7 @@ export default (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Clients",
+          model: "Participants",
           key: "id",
         },
       },
@@ -48,9 +48,9 @@ export default (sequelize) => {
         allowNull: true,
       },
       status: {
-        type: DataTypes.ENUM("Pending", "Accepted", "Rejected"),
+        type: DataTypes.ENUM("En attente", "Accepté", "Rejeté"),
         allowNull: false,
-        defaultValue: "Pending",
+        defaultValue: "En attente",
       },
       quoteNumber: {
         type: DataTypes.STRING,
@@ -78,9 +78,10 @@ export default (sequelize) => {
   );
 
   Quote.associate = (models) => {
-    Quote.belongsTo(models.Client, {
+    Quote.belongsTo(models.Participant, {
       foreignKey: "clientId",
       as: "client",
+      scope: { typeId: 3 },
     });
 
     Quote.belongsTo(models.Project, {

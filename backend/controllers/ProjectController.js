@@ -15,7 +15,6 @@ export const getAllProjects = async (req, res) => {
 export const getProjectById = async (req, res) => {
   try {
     const { id } = req.params;
-
     const project = await ProjectDAO.getProjectById(id);
 
     if (!project) {
@@ -31,51 +30,17 @@ export const getProjectById = async (req, res) => {
 
 export const createProject = async (req, res) => {
   try {
-    const { name, billingClientId } = req.body;
+    const { name, clientId } = req.body;
 
     const project = await ProjectDAO.createProject({
       name,
-      billingClientId,
+      clientId,
     });
 
     res.status(201).json({ message: "Projet créé avec succès", project });
   } catch (error) {
     console.error("Erreur lors de la création du projet :", error);
     res.status(500).json({ error: "Erreur lors de la création du projet" });
-  }
-};
-
-export const assignParticipantToProject = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { participantId, type } = req.body;
-
-    await ProjectDAO.addParticipantToProject(id, participantId, type);
-
-    res
-      .status(201)
-      .json({ message: "Participant associé au projet avec succès" });
-  } catch (error) {
-    console.error("Erreur lors de l'association d'un participant :", error);
-    res.status(500).json({
-      error: "Erreur lors de l'association du participant au projet",
-    });
-  }
-};
-
-export const updateParticipantsForProject = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { participantIds, type } = req.body;
-
-    await ProjectDAO.updateParticipantsForProject(id, participantIds, type);
-
-    res.status(200).json({ message: "Participants mis à jour avec succès" });
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour des participants :", error);
-    res.status(500).json({
-      error: "Erreur lors de la mise à jour des participants",
-    });
   }
 };
 
@@ -95,5 +60,38 @@ export const deleteProject = async (req, res) => {
   } catch (error) {
     console.error("Erreur lors de la suppression du projet :", error);
     res.status(500).json({ error: "Erreur lors de la suppression du projet" });
+  }
+};
+
+export const assignParticipantToProject = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { participantId, type } = req.body;
+
+    await ProjectDAO.addParticipantToProject(id, participantId, type);
+
+    res
+      .status(201)
+      .json({ message: "Participant ajouté au projet avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du participant :", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de l'ajout du participant au projet" });
+  }
+};
+
+export const removeParticipantFromProject = async (req, res) => {
+  try {
+    const { id, participantId } = req.params;
+
+    await ProjectDAO.removeParticipantFromProject(id, participantId);
+
+    res.status(200).json({ message: "Participant supprimé avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la suppression du participant :", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la suppression du participant" });
   }
 };

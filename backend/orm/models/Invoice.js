@@ -27,11 +27,11 @@ export default (sequelize) => {
           isUrl: true,
         },
       },
-      clientId: {
+      participantId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Clients",
+          model: "Participants",
           key: "id",
         },
       },
@@ -73,9 +73,9 @@ export default (sequelize) => {
   );
 
   Invoice.associate = (models) => {
-    Invoice.belongsTo(models.Client, {
-      foreignKey: "clientId",
-      as: "client",
+    Invoice.belongsTo(models.Participant, {
+      foreignKey: "participantId",
+      as: "participant",
     });
 
     Invoice.belongsTo(models.Project, {
