@@ -7,47 +7,47 @@ import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
 
-export default function QuoteDetails() {
+export default function InvoiceDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
 
-  const fetchQuoteById = async () => {
-    const response = await axios.get(`/quote/${id}`);
+  const fetchInvoiceById = async () => {
+    const response = await axios.get(`/invoice/${id}`);
     return response.data;
   };
 
-  const updateQuote = useMutation(
-    async (updatedQuote) => {
-      const response = await axios.put(`/quote/${id}`, updatedQuote);
+  const updateInvoice = useMutation(
+    async (updatedInvoice) => {
+      const response = await axios.put(`/invoice/${id}`, updatedInvoice);
       return response.data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["quote", id]);
+        queryClient.invalidateQueries(["invoice", id]);
         setIsEditing(false);
       },
     }
   );
 
-  const deleteQuote = useMutation(
+  const deleteInvoice = useMutation(
     async () => {
-      await axios.delete(`/quote/${id}`);
+      await axios.delete(`/invoice/${id}`);
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("quotes");
-        navigate("/quotes");
+        queryClient.invalidateQueries("invoices");
+        navigate("/invoices");
       },
     }
   );
 
   const {
-    data: quote,
+    data: invoice,
     isLoading,
     error,
-  } = useQuery(["quote", id], fetchQuoteById);
+  } = useQuery(["invoice", id], fetchInvoiceById);
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -58,17 +58,17 @@ export default function QuoteDetails() {
     );
 
   const onSubmit = (data) => {
-    updateQuote.mutate(data);
+    updateInvoice.mutate(data);
   };
 
   const handleEdit = () => {
-    reset(quote);
+    reset(invoice);
     setIsEditing(true);
   };
 
   const handleDelete = () => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce devis ?")) {
-      deleteQuote.mutate();
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette facture ?")) {
+      deleteInvoice.mutate();
     }
   };
 
@@ -76,16 +76,16 @@ export default function QuoteDetails() {
     <Body>
       <div className="px-4 w-full">
         <DetailsHeaderActions
-          title={quote.title}
+          title={invoice.title}
           navigateBack={navigate}
-          backUrl="/quotes"
+          backUrl="/invoices"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
 
         <div className="p-4 border border-gray-300 bg-white">
           <h1 className="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b">
-            Détails du devis
+            Détails de la facture
           </h1>
 
           {isEditing ? (
@@ -96,35 +96,21 @@ export default function QuoteDetails() {
                 </label>
                 <input
                   {...register("title", { required: true })}
-                  defaultValue={quote.title}
+                  defaultValue={invoice.title}
                   type="text"
                   className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
                 />
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700">
-                  Numéro du devis :
+                  Numéro de la facture :
                 </label>
                 <input
-                  {...register("quoteNumber", { required: true })}
-                  defaultValue={quote.quoteNumber}
+                  {...register("invoiceNumber", { required: true })}
+                  defaultValue={invoice.invoiceNumber}
                   type="text"
                   className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
                 />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Statut :
-                </label>
-                <select
-                  {...register("status")}
-                  defaultValue={quote.status}
-                  className="py-2 px-2 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                >
-                  <option value="En attente">En attente</option>
-                  <option value="Accepté">Accepté</option>
-                  <option value="Rejeté">Rejeté</option>
-                </select>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700">
@@ -132,7 +118,7 @@ export default function QuoteDetails() {
                 </label>
                 <input
                   {...register("participantId")}
-                  defaultValue={quote.participantId}
+                  defaultValue={invoice.participantId}
                   type="number"
                   className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
                 />
@@ -143,7 +129,7 @@ export default function QuoteDetails() {
                 </label>
                 <input
                   {...register("projectId")}
-                  defaultValue={quote.projectId}
+                  defaultValue={invoice.projectId}
                   type="number"
                   className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
                 />
@@ -154,18 +140,18 @@ export default function QuoteDetails() {
                 </label>
                 <input
                   {...register("lot")}
-                  defaultValue={quote.lot}
+                  defaultValue={invoice.lot}
                   type="text"
                   className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
                 />
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700">
-                  Date d'envoi :
+                  Date de paiement :
                 </label>
                 <input
-                  {...register("sentOn")}
-                  defaultValue={quote.sentOn}
+                  {...register("paidOn")}
+                  defaultValue={invoice.paidOn}
                   type="date"
                   className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
                 />
@@ -176,7 +162,7 @@ export default function QuoteDetails() {
                 </label>
                 <textarea
                   {...register("remarks")}
-                  defaultValue={quote.remarks}
+                  defaultValue={invoice.remarks}
                   rows={4}
                   className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
                 />
@@ -195,28 +181,25 @@ export default function QuoteDetails() {
           ) : (
             <ul className="space-y-4 text-sm">
               <li>
-                <strong>Numéro du devis :</strong> {quote.quoteNumber}
+                <strong>Numéro de la facture :</strong> {invoice.invoiceNumber}
               </li>
               <li>
-                <strong>Statut :</strong> {quote.status}
+                <strong>Participant ID :</strong> {invoice.participantId}
               </li>
               <li>
-                <strong>Participant ID :</strong> {quote.participantId}
+                <strong>Project ID :</strong> {invoice.projectId}
               </li>
               <li>
-                <strong>Project ID :</strong> {quote.projectId}
+                <strong>Lot :</strong> {invoice.lot || "Non spécifié"}
               </li>
               <li>
-                <strong>Lot :</strong> {quote.lot || "Non spécifié"}
-              </li>
-              <li>
-                <strong>Date d'envoi :</strong>{" "}
-                {quote.sentOn
-                  ? new Date(quote.sentOn).toLocaleDateString("fr-FR")
+                <strong>Date de paiement :</strong>{" "}
+                {invoice.paidOn
+                  ? new Date(invoice.paidOn).toLocaleDateString("fr-FR")
                   : "Non spécifiée"}
               </li>
               <li>
-                <strong>Remarques :</strong> {quote.remarks || "Aucune"}
+                <strong>Remarques :</strong> {invoice.remarks || "Aucune"}
               </li>
             </ul>
           )}

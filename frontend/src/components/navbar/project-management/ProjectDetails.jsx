@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Edit, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
+import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions.jsx";
 import ParticipantSelectorDialog from "../../dialogs/SelectorDialog.jsx";
 
 export default function ProjectDetails() {
@@ -94,32 +94,17 @@ export default function ProjectDetails() {
   return (
     <Body>
       <div className="px-4 w-full">
-        <div className="flex justify-between items-center mb-4 border-gray-300">
-          <div className="flex flex-row space-x-3 items-center">
-            <ArrowLeft
-              className="text-xl cursor-pointer text-gray-600 hover:text-gray-800"
-              onClick={() => navigate("/projects")}
-            />
-            <h1 className="text-2xl font-semibold">{project.name}</h1>
-          </div>
+        <DetailsHeaderActions
+          title={project.name}
+          navigateBack={navigate}
+          backUrl="/projects"
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
 
-          {error && (
-            <div className="bg-red-100 text-red-700 p-3 rounded m-4">
-              {error}
-            </div>
-          )}
-
-          <div className="flex space-x-4">
-            <Button onClick={handleEdit}>
-              <Edit className="h-4 w-4 mr-1" />
-              Modifier
-            </Button>
-            <Button onClick={handleDelete} variant="destructive">
-              <Trash className="h-4 w-4 mr-1" />
-              Supprimer
-            </Button>
-          </div>
-        </div>
+        {error && (
+          <div className="bg-red-100 text-red-700 p-3 rounded m-4">{error}</div>
+        )}
 
         {["clients", "suppliers", "subcontractors", "architects"].map(
           (section) => {

@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Edit, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body";
+import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
 
 export default function EmployeeDetails() {
   const { id } = useParams();
@@ -76,27 +76,13 @@ export default function EmployeeDetails() {
     <Body
       children={
         <div className="px-4 w-full">
-          <div className="flex justify-between items-center mb-4 border-gray-300 ">
-            <div className="flex flex-row space-x-3 items-center">
-              <ArrowLeft
-                className="text-xl cursor-pointer text-gray-600 hover:text-gray-800"
-                onClick={() => navigate("/employees")}
-              />
-              <h1 className="text-2xl font-semibold">
-                {employee.firstName} {employee.lastName}
-              </h1>
-            </div>
-            <div className="flex space-x-4">
-              <Button onClick={handleEdit}>
-                <Edit className="h-4 w-4 mr-1" />
-                Modifier
-              </Button>
-              <Button onClick={handleDelete} variant="destructive">
-                <Trash className="h-4 w-4 mr-1" />
-                Supprimer
-              </Button>
-            </div>
-          </div>
+          <DetailsHeaderActions
+            title={`${employee.firstName} ${employee.lastName}`}
+            navigateBack={navigate}
+            backUrl="/employees"
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
 
           <div className="p-4 border border-gray-300 bg-white">
             <h1 className="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b">
