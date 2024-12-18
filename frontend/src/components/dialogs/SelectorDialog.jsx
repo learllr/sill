@@ -16,30 +16,55 @@ import { highlightText } from "../../../utils/textUtils.js";
 import { getTypeName } from "../../../utils/typeUtils.js";
 import axios from "../../axiosConfig.js";
 
-export default function ParticipantSelectorDialog({
-  typeId,
+export default function SelectorDialog({
+  type, // "participants" ou "employees"
+  typeId, // Optionnel pour les participants
   onSelect,
   onClose,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchParticipants = async () => {
-    const response = await axios.get(`/participant/${typeId}`);
+  const fetchUrl =
+    type === "participants" ? `/participant/${typeId}` : "/employee";
+
+  const fetchData = async () => {
+    const response = await axios.get(fetchUrl);
     return response.data;
   };
 
   const {
-    data: participants = [],
+    data: items = [],
     isLoading,
     error,
-  } = useQuery(["participants", typeId], fetchParticipants);
+  } = useQuery([type, typeId], fetchData);
 
-  const filteredParticipants = participants.filter((participant) =>
-    participant.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = searchTerm
+    ? items.filter((item) => {
+        if (type === "employees") {
+          return (
+            item.firstName &&
+            item.lastName &&
+            `${item.firstName} ${item.lastName}`
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          );
+        }
 
-  const title = getTypeName(typeId, false).toLowerCase();
-  const titlePlural = getTypeName(typeId, true).toLowerCase();
+        return (
+          item.name &&
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      })
+    : items;
+
+  const title = getTypeName(
+    type === "participants" ? typeId : "employees",
+    false
+  ).toLowerCase();
+  const titlePlural = getTypeName(
+    type === "participants" ? typeId : "employees",
+    true
+  ).toLowerCase();
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -75,16 +100,21 @@ export default function ParticipantSelectorDialog({
             </div>
             <ScrollArea className="h-60">
               <ul className="border rounded p-2">
-                {filteredParticipants.length > 0 ? (
-                  filteredParticipants.map((participant) => (
+                {filteredItems.length > 0 ? (
+                  filteredItems.map((item) => (
                     <li
-                      key={participant.id}
+                      key={item.id}
                       className="flex items-center p-2 cursor-pointer hover:bg-gray-200"
-                      onClick={() => onSelect(participant)}
+                      onClick={() => onSelect(item)}
                     >
                       <span
                         dangerouslySetInnerHTML={{
-                          __html: highlightText(participant.name, searchTerm),
+                          __html: highlightText(
+                            type === "employees"
+                              ? `${item.firstName} ${item.lastName}`
+                              : item.name,
+                            searchTerm
+                          ),
                         }}
                       />
                     </li>
@@ -100,7 +130,7 @@ export default function ParticipantSelectorDialog({
         <DialogFooter>
           <Button
             onClick={onClose}
-            className="bg-red-500 text-white hover:bg-red-600"
+            className="bg-red-500 text-wgte hover:bg-red-600"
           >
             Fermer
           </Button>

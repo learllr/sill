@@ -30,23 +30,27 @@ export default function Projects() {
         <div className="flex justify-center items-center">
           <div className="px-4 w-full">
             <h1 className="text-2xl font-semibold mb-6">Liste des chantiers</h1>
-            <ul>
-              {projects.map((project) => (
-                <li key={project.id} className="mb-4">
-                  <button
-                    onClick={() => navigate(`/project/${project.id}`)}
-                    className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
-                  >
-                    <div className="flex flex-col items-start">
-                      <p className="leading-tight">{project.name}</p>
-                    </div>
-                    <p className="text-sm text-gray-400 whitespace-nowrap">
-                      {new Date(project.createdAt).toLocaleDateString()}
-                    </p>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {projects.length > 0 ? (
+              <ul>
+                {projects.map((project) => (
+                  <li key={project.id} className="mb-2">
+                    <button
+                      onClick={() => navigate(`/project/${project.id}`)}
+                      className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
+                    >
+                      <div className="text-sm flex flex-col items-start">
+                        <p className="leading-tight">{project.name}</p>
+                      </div>
+                      <p className="text-xs text-gray-400 whitespace-nowrap">
+                        {new Date(project.createdAt).toLocaleDateString()}
+                      </p>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-center text-gray-500">Aucun chantier.</p>
+            )}
           </div>
         </div>
       }

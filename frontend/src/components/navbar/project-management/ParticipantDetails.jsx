@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
+  ArrowLeft,
   Calendar,
   Edit,
   Globe,
@@ -91,7 +92,13 @@ export default function ParticipantDetails() {
       children={
         <div className="px-4 w-full">
           <div className="flex justify-between items-center mb-4 border-gray-300 pb-2">
-            <h1 className="text-2xl font-semibold">{participant.name}</h1>
+            <div className="flex flex-row space-x-3 items-center">
+              <ArrowLeft
+                className="text-xl cursor-pointer text-gray-600 hover:text-gray-800"
+                onClick={() => navigate(`/participant/${typeId}`)}
+              />
+              <h1 className="text-2xl font-semibold">{participant.name}</h1>
+            </div>
             <div className="flex space-x-4">
               <Button onClick={handleEdit}>
                 <Edit className="h-4 w-4 mr-1" />
@@ -193,7 +200,7 @@ export default function ParticipantDetails() {
                 </div>
               </form>
             ) : (
-              <ul className="space-y-4">
+              <ul className="space-y-4 text-sm">
                 {participant.contactPerson && (
                   <li className="flex items-center text-gray-700">
                     <UserCheck className="h-5 w-5 text-blue-500 mr-3" />

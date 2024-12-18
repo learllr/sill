@@ -14,40 +14,26 @@ export default (sequelize) => {
       },
       firstName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-          len: [2, 50],
-        },
+        allowNull: true,
       },
       lastName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-          len: [2, 50],
-        },
+        allowNull: true,
       },
       birthDate: {
         type: DataTypes.DATEONLY,
-        allowNull: false,
+        allowNull: true,
       },
       birthCity: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          len: [0, 100],
-        },
       },
       nationality: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          len: [0, 50],
-        },
       },
       familyStatus: {
-        type: DataTypes.ENUM("Single", "Married", "Domestic Partnership"),
+        type: DataTypes.ENUM("Célibataire", "Marié", "Vie maritale"),
         allowNull: true,
       },
       dependentChildren: {
@@ -58,9 +44,6 @@ export default (sequelize) => {
       socialSecurityNumber: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          len: [15, 15],
-        },
       },
       address: {
         type: DataTypes.STRING,
@@ -69,30 +52,18 @@ export default (sequelize) => {
       postalCode: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          len: [5, 10],
-        },
       },
       city: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          len: [0, 100],
-        },
       },
       phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          is: /^[0-9]{10}$/,
-        },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: {
-          isEmail: true,
-        },
       },
       jobTitle: {
         type: DataTypes.STRING,
@@ -106,31 +77,30 @@ export default (sequelize) => {
         type: DataTypes.ENUM(
           "CDD",
           "CDI",
-          "Apprenticeship",
-          "Professionalization"
+          "Contrat d'apprentissage",
+          "Contrat de professionnalisation"
         ),
-        allowNull: false,
+        allowNull: true,
       },
       contractDurationMonths: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
       workTime: {
-        type: DataTypes.ENUM("Full-time", "Part-time", "Half-time"),
-        allowNull: false,
+        type: DataTypes.ENUM("Temps plein", "Temps partiel", "Mi-temps"),
+        allowNull: true,
       },
       monthlyNetSalary: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
+        allowNull: true,
       },
       weeklyHours: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        defaultValue: 35,
       },
       startDate: {
         type: DataTypes.DATEONLY,
-        allowNull: false,
+        allowNull: true,
       },
       endDate: {
         type: DataTypes.DATEONLY,
@@ -139,7 +109,6 @@ export default (sequelize) => {
       btpCard: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
-        defaultValue: false,
       },
       medicalCheckupDate: {
         type: DataTypes.DATEONLY,
@@ -147,8 +116,7 @@ export default (sequelize) => {
       },
       active: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
+        allowNull: true,
       },
     },
     {

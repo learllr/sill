@@ -6,6 +6,7 @@ import { authenticateToken } from "./middlewares/authMiddleware.js";
 import db from "./orm/models/index.js";
 import authentificationRoutes from "./routes/authentificationRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
+import employeeRoutes from "./routes/employeeRoutes.js";
 import participantRoutes from "./routes/participantRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -43,6 +44,7 @@ app.use("/api/user", authenticateToken, userRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/participant", participantRoutes);
 app.use("/api/document", documentRoutes);
+app.use("/api/employee", employeeRoutes);
 
 db.sequelize
   .sync()

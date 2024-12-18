@@ -76,8 +76,8 @@ export default function Participants() {
             </h1>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={() => reset()}>
-                  <Plus className="mr-1 h-4 w-4" /> Ajouter
+                <Button onClick={() => reset()} size="sm">
+                  <Plus /> Ajouter
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -144,18 +144,6 @@ export default function Participants() {
                       </p>
                     )}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Adresse
-                    </label>
-                    <Input {...register("address")} placeholder="Adresse" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Site Web
-                    </label>
-                    <Input {...register("website")} placeholder="Site Web" />
-                  </div>
                   <DialogFooter>
                     <Button
                       type="button"
@@ -176,26 +164,30 @@ export default function Participants() {
             <p className="text-red-500">
               Erreur lors de la récupération des {titlePlural.toLowerCase()}.
             </p>
-          ) : (
+          ) : participants.length > 0 ? (
             <ul>
               {participants.map((participant) => (
-                <li key={participant.id} className="mb-4">
+                <li key={participant.id} className="mb-2">
                   <button
                     onClick={() =>
                       navigate(`/participant/${typeId}/${participant.id}`)
                     }
                     className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
                   >
-                    <div className="flex flex-col items-start">
+                    <div className="text-sm flex flex-col items-start">
                       <p className="leading-tight">{participant.name}</p>
                     </div>
-                    <p className="text-sm text-gray-400 whitespace-nowrap">
+                    <p className="text-xs text-gray-400 whitespace-nowrap">
                       {new Date(participant.createdAt).toLocaleDateString()}
                     </p>
                   </button>
                 </li>
               ))}
             </ul>
+          ) : (
+            <p className="text-center text-gray-500">
+              Aucun {titleSingular.toLowerCase()}.
+            </p>
           )}
         </div>
       }

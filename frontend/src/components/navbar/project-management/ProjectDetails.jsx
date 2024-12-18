@@ -1,15 +1,17 @@
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
-import ParticipantSelectorDialog from "../../dialogs/ParticipantSelectorDialog.jsx";
+import ParticipantSelectorDialog from "../../dialogs/SelectorDialog.jsx";
 
 export default function ProjectDetails() {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const [currentSelector, setCurrentSelector] = useState(null);
+  const navigate = useNavigate();
 
   const fetchProjectDetails = async () => {
     const response = await axios.get(`/project/${id}`);
@@ -72,7 +74,13 @@ export default function ProjectDetails() {
     <Body
       children={
         <div className="px-4 w-full">
-          <h1 className="text-2xl font-semibold mb-6">{project.name}</h1>
+          <div className="flex flex-row space-x-3 items-center">
+            <ArrowLeft
+              className="text-xl cursor-pointer text-gray-600 hover:text-gray-800"
+              onClick={() => navigate("/projects")}
+            />
+            <h1 className="text-2xl font-semibold">{project.name}</h1>
+          </div>
           <div>
             <div className="mb-6">
               <h3 className="text-lg font-semibold">Client</h3>
@@ -169,6 +177,7 @@ export default function ProjectDetails() {
 
           {currentSelector && (
             <ParticipantSelectorDialog
+              type="participants"
               typeId={
                 currentSelector === "client"
                   ? 3
