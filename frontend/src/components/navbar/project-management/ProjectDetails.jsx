@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Edit, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
@@ -76,21 +76,51 @@ export default function ProjectDetails() {
     setCurrentSelector(null);
   };
 
+  const handleEdit = () => {
+    navigate(`/project/edit/${id}`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/project/${id}`);
+      navigate("/projects");
+    } catch (error) {
+      console.error("Erreur lors de la suppression du projet :", error);
+    }
+  };
+
   if (!project) return <Body children={<p>Chargement du chantier...</p>} />;
 
   return (
     <Body>
       <div className="px-4 w-full">
-        <div className="flex flex-row space-x-3 items-center">
-          <ArrowLeft
-            className="text-xl cursor-pointer text-gray-600 hover:text-gray-800"
-            onClick={() => navigate("/projects")}
-          />
-          <h1 className="text-2xl font-semibold">{project.name}</h1>
+        <div className="flex justify-between items-center mb-4 border-gray-300 pb-2">
+          <div className="flex flex-row space-x-3 items-center">
+            <ArrowLeft
+              className="text-xl cursor-pointer text-gray-600 hover:text-gray-800"
+              onClick={() => navigate("/projects")}
+            />
+            <h1 className="text-2xl font-semibold">{project.name}</h1>
+          </div>
+
+          {error && (
+            <div className="bg-red-100 text-red-700 p-3 rounded m-4">
+              {error}
+            </div>
+          )}
+
+          <div className="flex space-x-4 mt-4">
+            <Button onClick={handleEdit}>
+              <Edit className="h-4 w-4 mr-1" />
+              Modifier
+            </Button>
+            <Button onClick={handleDelete} variant="destructive">
+              <Trash className="h-4 w-4 mr-1" />
+              Supprimer
+            </Button>
+          </div>
         </div>
-        {error && (
-          <div className="bg-red-100 text-red-700 p-3 rounded m-4">{error}</div>
-        )}
+
         {["clients", "suppliers", "subcontractors", "architects"].map(
           (section) => {
             const sectionName =
