@@ -69,6 +69,11 @@ export default (sequelize) => {
       otherKey: "projectId",
       as: "projects",
     });
+
+    Participant.hasMany(models.Quote, {
+      foreignKey: "participantId",
+      as: "quotes",
+    });
   };
 
   return Participant;

@@ -94,7 +94,7 @@ export default function ProjectDetails() {
   return (
     <Body>
       <div className="px-4 w-full">
-        <div className="flex justify-between items-center mb-4 border-gray-300 pb-2">
+        <div className="flex justify-between items-center mb-4 border-gray-300">
           <div className="flex flex-row space-x-3 items-center">
             <ArrowLeft
               className="text-xl cursor-pointer text-gray-600 hover:text-gray-800"
@@ -109,7 +109,7 @@ export default function ProjectDetails() {
             </div>
           )}
 
-          <div className="flex space-x-4 mt-4">
+          <div className="flex space-x-4">
             <Button onClick={handleEdit}>
               <Edit className="h-4 w-4 mr-1" />
               Modifier

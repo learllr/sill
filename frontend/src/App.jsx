@@ -3,6 +3,8 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./components/Home.jsx";
 import Bank from "./components/navbar/aministrative-services/Bank.jsx";
 import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
+import QuoteDetails from "./components/navbar/document-tracking/QuoteDetails.jsx";
+import Quotes from "./components/navbar/document-tracking/Quotes.jsx";
 import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails.jsx";
 import Employees from "./components/navbar/hr-services/Employees.jsx";
 import Memos from "./components/navbar/hr-services/Memos.jsx";
@@ -23,7 +25,8 @@ export default function App() {
           path="/participant/:typeId/:id"
           element={<ParticipantDetails />}
         />
-        <Route path="/quotes" element={<h1>Quotes</h1>} />
+        <Route path="/quotes" element={<Quotes />} />
+        <Route path="/quote/:id" element={<QuoteDetails />} />
         <Route path="/invoices" element={<h1>Invoices</h1>} />
         <Route path="/employees" element={<Employees />} />
         <Route path="/employee/:id" element={<EmployeeDetails />} />

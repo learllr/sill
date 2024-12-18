@@ -27,7 +27,7 @@ export default (sequelize) => {
           isUrl: true,
         },
       },
-      clientId: {
+      participantId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -79,9 +79,8 @@ export default (sequelize) => {
 
   Quote.associate = (models) => {
     Quote.belongsTo(models.Participant, {
-      foreignKey: "clientId",
-      as: "client",
-      scope: { typeId: 3 },
+      foreignKey: "participantId",
+      as: "participant",
     });
 
     Quote.belongsTo(models.Project, {

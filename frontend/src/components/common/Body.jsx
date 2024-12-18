@@ -29,7 +29,7 @@ const data = {
       ],
     },
     {
-      title: "Suivi de devis et factures",
+      title: "Suivi de documents",
       items: [
         { title: "Devis", url: "/quotes" },
         { title: "Factures", url: "/invoices" },
