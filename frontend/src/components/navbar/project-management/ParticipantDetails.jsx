@@ -1,21 +1,12 @@
-import { Button } from "@/components/ui/button";
-import {
-  Calendar,
-  Globe,
-  Mail,
-  MapPin,
-  Phone,
-  User,
-  UserCheck,
-} from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../../src/axiosConfig.js";
-import { formatPhone } from "../../../../utils/textUtils.js";
 import Body from "../../common/Body";
+import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
+import DynamicForm from "../../common/Pages/DynamicForm";
 
 export default function ParticipantDetails() {
   const { id, typeId } = useParams();
@@ -62,7 +53,12 @@ export default function ParticipantDetails() {
     error,
   } = useQuery(["participant", id, typeId], fetchParticipantDetails);
 
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   if (isLoading) return <Body children={<p>Chargement des détails...</p>} />;
   if (error)
@@ -85,181 +81,91 @@ export default function ParticipantDetails() {
     }
   };
 
+  const fields = [
+    {
+      section: "Informations générales",
+      items: [
+        {
+          label: "Nom",
+          name: "name",
+          type: "text",
+          required: true,
+          value: participant?.name,
+        },
+        {
+          label: "Interlocuteur",
+          name: "contactPerson",
+          type: "text",
+          value: participant?.contactPerson,
+        },
+        {
+          label: "Téléphone",
+          name: "phone",
+          type: "text",
+          value: participant?.phone,
+          isPhone: true,
+        },
+        {
+          label: "Email",
+          name: "email",
+          type: "email",
+          value: participant?.email,
+        },
+        {
+          label: "Adresse",
+          name: "address",
+          type: "text",
+          value: participant?.address,
+        },
+        {
+          label: "Site Web",
+          name: "website",
+          type: "text",
+          value: participant?.website,
+        },
+        {
+          label: "Créé le",
+          name: "createdAt",
+          type: "date",
+          isDate: true,
+          value: participant?.createdAt,
+        },
+        {
+          label: "Modifié le",
+          name: "updatedAt",
+          type: "date",
+          isDate: true,
+          value: participant?.updatedAt,
+        },
+      ],
+    },
+  ];
+
   return (
-    <Body
-      children={
-        <div className="px-4 w-full">
-          <DetailsHeaderActions
-            title={participant.name}
-            navigateBack={navigate}
-            backUrl={`/participant/${typeId}`}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+    <Body>
+      <div className="px-4 w-full">
+        <DetailsHeaderActions
+          title={participant?.name}
+          navigateBack={navigate}
+          backUrl={`/participant/${typeId}`}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
 
-          <div className="p-4 border border-gray-300 bg-white">
-            <h1 className="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b">
-              Informations
-            </h1>
-
-            {isEditing ? (
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    <User className="h-5 w-5 text-gray-500" />
-                    <span>Nom</span>
-                  </label>
-                  <input
-                    {...register("name", { required: true })}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    <UserCheck className="h-5 w-5 text-blue-500" />
-                    <span>Interlocuteur</span>
-                  </label>
-                  <input
-                    {...register("contactPerson")}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    <Phone className="h-5 w-5 text-amber-400" />
-                    <span>Téléphone</span>
-                  </label>
-                  <input
-                    {...register("phone")}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    <Mail className="h-5 w-5 text-red-500" />
-                    <span>Email</span>
-                  </label>
-                  <input
-                    {...register("email", {
-                      pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
-                    })}
-                    type="email"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    <MapPin className="h-5 w-5 text-purple-500" />
-                    <span>Adresse</span>
-                  </label>
-                  <input
-                    {...register("address")}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    <Globe className="h-5 w-5 text-pink-500" />
-                    <span>Site Web</span>
-                  </label>
-                  <input
-                    {...register("website", {
-                      pattern: /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/,
-                    })}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm"
-                  />
-                </div>
-                <div className="flex justify-end space-x-4">
-                  <Button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    variant="secondary"
-                  >
-                    Annuler
-                  </Button>
-                  <Button type="submit">Enregistrer</Button>
-                </div>
-              </form>
-            ) : (
-              <ul className="space-y-4 text-sm">
-                {participant.contactPerson && (
-                  <li className="flex items-center text-gray-700">
-                    <UserCheck className="h-5 w-5 text-blue-500 mr-3" />
-                    <span>
-                      <strong>Interlocuteur :</strong>{" "}
-                      {participant.contactPerson}
-                    </span>
-                  </li>
-                )}
-                {participant.phone && (
-                  <li className="flex items-center text-gray-700">
-                    <Phone className="h-5 w-5 text-amber-400 mr-3" />
-                    <span>
-                      <strong>Téléphone :</strong>{" "}
-                      {formatPhone(participant.phone)}
-                    </span>
-                  </li>
-                )}
-                {participant.email && (
-                  <li className="flex items-center text-gray-700">
-                    <Mail className="h-5 w-5 text-red-500 mr-3" />
-                    <span>
-                      <strong>Email :</strong> {participant.email}
-                    </span>
-                  </li>
-                )}
-                {participant.address && (
-                  <li className="flex items-center text-gray-700">
-                    <MapPin className="h-5 w-5 text-purple-500 mr-3" />
-                    <span>
-                      <strong>Adresse :</strong> {participant.address}
-                    </span>
-                  </li>
-                )}
-                {participant.website && (
-                  <li className="flex items-center text-gray-700">
-                    <Globe className="h-5 w-5 text-pink-500 mr-3" />
-                    <span>
-                      <strong>Site Web :</strong>{" "}
-                      <a
-                        href={participant.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline hover:text-blue-700"
-                      >
-                        {participant.website}
-                      </a>
-                    </span>
-                  </li>
-                )}
-                {participant.updatedAt && (
-                  <li className="flex items-center text-gray-700">
-                    <Calendar className="h-5 w-5 text-orange-500 mr-3" />
-                    <span>
-                      <strong>Modifié le :</strong>{" "}
-                      {new Date(participant.updatedAt).toLocaleDateString()}
-                    </span>
-                  </li>
-                )}
-                {participant.createdAt && (
-                  <li className="flex items-center text-gray-700">
-                    <Calendar className="h-5 w-5 text-green-500 mr-3" />
-                    <span>
-                      <strong>Créé le :</strong>{" "}
-                      {new Date(participant.createdAt).toLocaleDateString()}
-                    </span>
-                  </li>
-                )}
-              </ul>
-            )}
-          </div>
+        <div className="p-4 border border-gray-300 bg-white">
+          {isEditing ? (
+            <DynamicForm
+              fields={fields}
+              register={register}
+              errors={errors}
+              onSubmit={handleSubmit(onSubmit)}
+              onCancel={() => setIsEditing(false)}
+            />
+          ) : (
+            <DetailsDisplay data={fields} />
+          )}
         </div>
-      }
-    />
+      </div>
+    </Body>
   );
 }

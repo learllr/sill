@@ -18,14 +18,12 @@ export default function DetailsHeaderActions({
         />
         <h1 className="text-2xl font-semibold">{title}</h1>
       </div>
-      <div className="flex space-x-4">
+      <div className="flex space-x-2">
         <Button onClick={onEdit}>
-          <Edit className="h-4 w-4 mr-1" />
-          Modifier
+          <Edit className="h-3 w-3" />
         </Button>
         <Button onClick={onDelete} variant="destructive">
-          <Trash className="h-4 w-4 mr-1" />
-          Supprimer
+          <Trash className="h-3 w-3" />
         </Button>
       </div>
     </div>

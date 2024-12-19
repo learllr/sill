@@ -1,11 +1,12 @@
-import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body";
+import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
+import DynamicForm from "../../common/Pages/DynamicForm";
 
 export default function QuoteDetails() {
   const { id } = useParams();
@@ -49,7 +50,12 @@ export default function QuoteDetails() {
     error,
   } = useQuery(["quote", id], fetchQuoteById);
 
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   if (isLoading) return <Body children={<p>Chargement des détails...</p>} />;
   if (error)
@@ -72,11 +78,73 @@ export default function QuoteDetails() {
     }
   };
 
+  const fields = [
+    {
+      items: [
+        {
+          label: "Titre",
+          name: "title",
+          type: "text",
+          required: true,
+          value: quote?.title,
+        },
+        {
+          label: "Numéro du devis",
+          name: "quoteNumber",
+          type: "text",
+          value: quote?.quoteNumber,
+        },
+        {
+          label: "Statut",
+          name: "status",
+          type: "select",
+          options: [
+            { value: "En attente", label: "En attente" },
+            { value: "Accepté", label: "Accepté" },
+            { value: "Rejeté", label: "Rejeté" },
+          ],
+          value: quote?.status,
+        },
+        {
+          label: "Participant ID",
+          name: "participantId",
+          type: "number",
+          value: quote?.participantId,
+        },
+        {
+          label: "Project ID",
+          name: "projectId",
+          type: "number",
+          value: quote?.projectId,
+        },
+        {
+          label: "Lot",
+          name: "lot",
+          type: "text",
+          value: quote?.lot,
+        },
+        {
+          label: "Date d'envoi",
+          name: "sentOn",
+          type: "date",
+          isDate: true,
+          value: quote?.sentOn,
+        },
+        {
+          label: "Remarques",
+          name: "remarks",
+          type: "textarea",
+          value: quote?.remarks || "Aucune",
+        },
+      ],
+    },
+  ];
+
   return (
     <Body>
       <div className="px-4 w-full">
         <DetailsHeaderActions
-          title={quote.title}
+          title={quote?.title}
           navigateBack={navigate}
           backUrl="/quotes"
           onEdit={handleEdit}
@@ -84,141 +152,20 @@ export default function QuoteDetails() {
         />
 
         <div className="p-4 border border-gray-300 bg-white">
-          <h1 className="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b">
+          <h1 className="text-xl font-semibold text-gray-900 mb-3">
             Détails du devis
           </h1>
 
           {isEditing ? (
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Titre :
-                </label>
-                <input
-                  {...register("title", { required: true })}
-                  defaultValue={quote.title}
-                  type="text"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Numéro du devis :
-                </label>
-                <input
-                  {...register("quoteNumber", { required: true })}
-                  defaultValue={quote.quoteNumber}
-                  type="text"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Statut :
-                </label>
-                <select
-                  {...register("status")}
-                  defaultValue={quote.status}
-                  className="py-2 px-2 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                >
-                  <option value="En attente">En attente</option>
-                  <option value="Accepté">Accepté</option>
-                  <option value="Rejeté">Rejeté</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Participant ID :
-                </label>
-                <input
-                  {...register("participantId")}
-                  defaultValue={quote.participantId}
-                  type="number"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Project ID :
-                </label>
-                <input
-                  {...register("projectId")}
-                  defaultValue={quote.projectId}
-                  type="number"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Lot :
-                </label>
-                <input
-                  {...register("lot")}
-                  defaultValue={quote.lot}
-                  type="text"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Date d'envoi :
-                </label>
-                <input
-                  {...register("sentOn")}
-                  defaultValue={quote.sentOn}
-                  type="date"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Remarques :
-                </label>
-                <textarea
-                  {...register("remarks")}
-                  defaultValue={quote.remarks}
-                  rows={4}
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div className="flex justify-end space-x-4">
-                <Button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  variant="secondary"
-                >
-                  Annuler
-                </Button>
-                <Button type="submit">Enregistrer</Button>
-              </div>
-            </form>
+            <DynamicForm
+              fields={fields}
+              register={register}
+              errors={errors}
+              onSubmit={handleSubmit(onSubmit)}
+              onCancel={() => setIsEditing(false)}
+            />
           ) : (
-            <ul className="space-y-4 text-sm">
-              <li>
-                <strong>Numéro du devis :</strong> {quote.quoteNumber}
-              </li>
-              <li>
-                <strong>Statut :</strong> {quote.status}
-              </li>
-              <li>
-                <strong>Participant ID :</strong> {quote.participantId}
-              </li>
-              <li>
-                <strong>Project ID :</strong> {quote.projectId}
-              </li>
-              <li>
-                <strong>Lot :</strong> {quote.lot || "Non spécifié"}
-              </li>
-              <li>
-                <strong>Date d'envoi :</strong>{" "}
-                {quote.sentOn
-                  ? new Date(quote.sentOn).toLocaleDateString("fr-FR")
-                  : "Non spécifiée"}
-              </li>
-              <li>
-                <strong>Remarques :</strong> {quote.remarks || "Aucune"}
-              </li>
-            </ul>
+            <DetailsDisplay data={fields} />
           )}
         </div>
       </div>

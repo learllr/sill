@@ -1,11 +1,12 @@
-import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body";
+import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
+import DynamicForm from "../../common/Pages/DynamicForm";
 
 export default function EmployeeDetails() {
   const { id } = useParams();
@@ -49,7 +50,12 @@ export default function EmployeeDetails() {
     error,
   } = useQuery(["employee", id], fetchEmployeeById);
 
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   if (isLoading) return <Body children={<p>Chargement des détails...</p>} />;
   if (error)
@@ -72,363 +78,159 @@ export default function EmployeeDetails() {
     }
   };
 
+  const fields = [
+    {
+      section: "Informations personnelles",
+      items: [
+        {
+          label: "Prénom",
+          name: "firstName",
+          type: "text",
+          required: true,
+          value: employee?.firstName,
+        },
+        {
+          label: "Nom",
+          name: "lastName",
+          type: "text",
+          required: true,
+          value: employee?.lastName,
+        },
+        {
+          label: "Date de naissance",
+          name: "birthDate",
+          type: "date",
+          isDate: true,
+          value: employee?.birthDate,
+        },
+        {
+          label: "Ville de naissance",
+          name: "birthCity",
+          type: "text",
+          value: employee?.birthCity,
+        },
+        {
+          label: "Nationalité",
+          name: "nationality",
+          type: "text",
+          value: employee?.nationality,
+        },
+      ],
+    },
+    {
+      section: "Détails professionnels",
+      items: [
+        {
+          label: "Poste",
+          name: "jobTitle",
+          type: "text",
+          value: employee?.jobTitle,
+        },
+        {
+          label: "Qualification",
+          name: "qualification",
+          type: "text",
+          value: employee?.qualification,
+        },
+        {
+          label: "Type de contrat",
+          name: "contractType",
+          type: "select",
+          options: [
+            { value: "CDD", label: "CDD" },
+            { value: "CDI", label: "CDI" },
+            {
+              value: "Contrat d'apprentissage",
+              label: "Contrat d'apprentissage",
+            },
+            {
+              value: "Contrat de professionnalisation",
+              label: "Contrat de professionnalisation",
+            },
+          ],
+          value: employee?.contractType,
+        },
+        {
+          label: "Salaire net mensuel",
+          name: "monthlyNetSalary",
+          type: "number",
+          value: employee?.monthlyNetSalary,
+          isPrice: true,
+        },
+        {
+          label: "Date de début",
+          name: "startDate",
+          type: "date",
+          isDate: true,
+          value: employee?.startDate,
+        },
+        {
+          label: "Date de fin",
+          name: "endDate",
+          type: "date",
+          isDate: true,
+          value: employee?.endDate,
+        },
+      ],
+    },
+    {
+      section: "Contact",
+      items: [
+        {
+          label: "Téléphone",
+          name: "phone",
+          type: "text",
+          value: employee?.phone,
+          isPhone: true,
+        },
+        {
+          label: "Email",
+          name: "email",
+          type: "email",
+          value: employee?.email,
+        },
+        {
+          label: "Adresse",
+          name: "address",
+          type: "text",
+          value: employee?.address,
+        },
+        {
+          label: "Code postal",
+          name: "postalCode",
+          type: "text",
+          value: employee?.postalCode,
+        },
+        { label: "Ville", name: "city", type: "text", value: employee?.city },
+      ],
+    },
+  ];
+
   return (
-    <Body
-      children={
-        <div className="px-4 w-full">
-          <DetailsHeaderActions
-            title={`${employee.firstName} ${employee.lastName}`}
-            navigateBack={navigate}
-            backUrl="/employees"
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+    <Body>
+      <div className="px-4 w-full">
+        <DetailsHeaderActions
+          title={`${employee?.firstName} ${employee?.lastName}`}
+          navigateBack={navigate}
+          backUrl="/employees"
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
 
-          <div className="p-4 border border-gray-300 bg-white">
-            <h1 className="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b">
-              Informations
-            </h1>
-
-            {isEditing ? (
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Prénom :
-                  </label>
-                  <input
-                    {...register("firstName", { required: true })}
-                    defaultValue={employee.firstName}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Nom :
-                  </label>
-                  <input
-                    {...register("lastName", { required: true })}
-                    defaultValue={employee.lastName}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Date de naissance :
-                  </label>
-                  <input
-                    {...register("birthDate")}
-                    defaultValue={employee.birthDate}
-                    type="date"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Ville de naissance :
-                  </label>
-                  <input
-                    {...register("birthCity")}
-                    defaultValue={employee.birthCity}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Nationalité :
-                  </label>
-                  <input
-                    {...register("nationality")}
-                    defaultValue={employee.nationality}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Statut familial :
-                  </label>
-                  <select
-                    {...register("familyStatus")}
-                    defaultValue={employee.familyStatus}
-                    className="py-2 px-2 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  >
-                    <option value="Célibataire">Célibataire</option>
-                    <option value="Marié">Marié</option>
-                    <option value="Vie maritale">Vie maritale</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Nombre d'enfants :
-                  </label>
-                  <input
-                    {...register("dependentChildren")}
-                    defaultValue={employee.dependentChildren}
-                    type="number"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Numéro de sécurité sociale :
-                  </label>
-                  <input
-                    {...register("socialSecurityNumber")}
-                    defaultValue={employee.socialSecurityNumber}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Adresse :
-                  </label>
-                  <input
-                    {...register("address")}
-                    defaultValue={employee.address}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Code postal :
-                  </label>
-                  <input
-                    {...register("postalCode")}
-                    defaultValue={employee.postalCode}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Ville :
-                  </label>
-                  <input
-                    {...register("city")}
-                    defaultValue={employee.city}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Téléphone :
-                  </label>
-                  <input
-                    {...register("phone")}
-                    defaultValue={employee.phone}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Email :
-                  </label>
-                  <input
-                    {...register("email")}
-                    defaultValue={employee.email}
-                    type="email"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Poste :
-                  </label>
-                  <input
-                    {...register("jobTitle")}
-                    defaultValue={employee.jobTitle}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Qualification :
-                  </label>
-                  <input
-                    {...register("qualification")}
-                    defaultValue={employee.qualification}
-                    type="text"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Type de contrat :
-                  </label>
-                  <select
-                    {...register("contractType")}
-                    defaultValue={employee.contractType}
-                    className="py-2 px-2 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  >
-                    <option value="CDD">CDD</option>
-                    <option value="CDI">CDI</option>
-                    <option value="Contrat d'apprentissage">
-                      Contrat d'apprentissage
-                    </option>
-                    <option value="Contrat de professionnalisation">
-                      Contrat de professionnalisation
-                    </option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Salaire net mensuel :
-                  </label>
-                  <input
-                    {...register("monthlyNetSalary")}
-                    defaultValue={employee.monthlyNetSalary}
-                    type="number"
-                    step="0.01"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Date de début :
-                  </label>
-                  <input
-                    {...register("startDate")}
-                    defaultValue={employee.startDate}
-                    type="date"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Date de fin :
-                  </label>
-                  <input
-                    {...register("endDate")}
-                    defaultValue={employee.endDate}
-                    type="date"
-                    className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center space-x-2">
-                    Actif :
-                  </label>
-                  <div className="flex items-center space-x-4 mt-2">
-                    <label className="flex items-center space-x-2">
-                      <input
-                        {...register("active", {
-                          setValueAs: (v) => v === "true",
-                        })}
-                        type="radio"
-                        value="true"
-                        defaultChecked={employee.active === true}
-                        className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <span>Oui</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input
-                        {...register("active", {
-                          setValueAs: (v) => v === "false",
-                        })}
-                        type="radio"
-                        value="false"
-                        defaultChecked={employee.active === false}
-                        className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                      />
-                      <span>Non</span>
-                    </label>
-                  </div>
-                </div>
-                <div className="flex justify-end space-x-4">
-                  <Button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    variant="secondary"
-                  >
-                    Annuler
-                  </Button>
-                  <Button type="submit">Enregistrer</Button>
-                </div>
-              </form>
-            ) : (
-              <ul className="space-y-4 text-sm">
-                <li>
-                  <strong>Prénom :</strong> {employee.firstName}
-                </li>
-                <li>
-                  <strong>Nom :</strong> {employee.lastName}
-                </li>
-                <li>
-                  <strong>Date de naissance :</strong>{" "}
-                  {employee.birthDate
-                    ? new Date(employee.birthDate).toLocaleDateString("fr-FR")
-                    : "Non spécifiée"}
-                </li>
-                <li>
-                  <strong>Ville de naissance :</strong> {employee.birthCity}
-                </li>
-                <li>
-                  <strong>Nationalité :</strong> {employee.nationality}
-                </li>
-                <li>
-                  <strong>Statut familial :</strong> {employee.familyStatus}
-                </li>
-                <li>
-                  <strong>Nombre d'enfants :</strong>{" "}
-                  {employee.dependentChildren}
-                </li>
-                <li>
-                  <strong>Numéro de sécurité sociale :</strong>{" "}
-                  {employee.socialSecurityNumber}
-                </li>
-                <li>
-                  <strong>Adresse :</strong> {employee.address}
-                </li>
-                <li>
-                  <strong>Code postal :</strong> {employee.postalCode}
-                </li>
-                <li>
-                  <strong>Ville :</strong> {employee.city}
-                </li>
-                <li>
-                  <strong>Téléphone :</strong> {employee.phone}
-                </li>
-                <li>
-                  <strong>Email :</strong> {employee.email}
-                </li>
-                <li>
-                  <strong>Poste :</strong> {employee.jobTitle}
-                </li>
-                <li>
-                  <strong>Qualification :</strong> {employee.qualification}
-                </li>
-                <li>
-                  <strong>Type de contrat :</strong> {employee.contractType}
-                </li>
-                <li>
-                  <strong>Salaire net mensuel :</strong>{" "}
-                  {employee.monthlyNetSalary} €
-                </li>
-                <li>
-                  <strong>Date de début :</strong>{" "}
-                  {employee.startDate || "Non spécifiée"}
-                </li>
-                <li>
-                  <strong>Date de fin :</strong>{" "}
-                  {employee.endDate || "Non spécifiée"}
-                </li>
-                <li>
-                  <strong>Actif :</strong> {employee.active ? "Oui" : "Non"}
-                </li>
-              </ul>
-            )}
-          </div>
+        <div className="p-4 border border-gray-300 bg-white">
+          {isEditing ? (
+            <DynamicForm
+              fields={fields}
+              register={register}
+              errors={errors}
+              onSubmit={handleSubmit(onSubmit)}
+              onCancel={() => setIsEditing(false)}
+            />
+          ) : (
+            <DetailsDisplay data={fields} />
+          )}
         </div>
-      }
-    />
+      </div>
+    </Body>
   );
 }

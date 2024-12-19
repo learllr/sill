@@ -1,11 +1,12 @@
-import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body";
-import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
+import DetailsDisplay from "../../common/Pages/DetailsDisplay.jsx";
+import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions.jsx";
+import DynamicForm from "../../common/Pages/DynamicForm";
 
 export default function InvoiceDetails() {
   const { id } = useParams();
@@ -49,7 +50,12 @@ export default function InvoiceDetails() {
     error,
   } = useQuery(["invoice", id], fetchInvoiceById);
 
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   if (isLoading) return <Body children={<p>Chargement des détails...</p>} />;
   if (error)
@@ -72,11 +78,62 @@ export default function InvoiceDetails() {
     }
   };
 
+  const fields = [
+    {
+      items: [
+        {
+          label: "Titre",
+          name: "title",
+          type: "text",
+          required: true,
+          value: invoice?.title,
+        },
+        {
+          label: "Numéro de la facture",
+          name: "invoiceNumber",
+          type: "text",
+          value: invoice?.invoiceNumber,
+        },
+        {
+          label: "Participant ID",
+          name: "participantId",
+          type: "number",
+          value: invoice?.participantId,
+        },
+        {
+          label: "Project ID",
+          name: "projectId",
+          type: "number",
+          value: invoice?.projectId,
+        },
+        {
+          label: "Lot",
+          name: "lot",
+          type: "text",
+          value: invoice?.lot,
+        },
+        {
+          label: "Date de paiement",
+          name: "paidOn",
+          type: "date",
+          isDate: true,
+          value: invoice?.paidOn,
+        },
+        {
+          label: "Remarques",
+          name: "remarks",
+          type: "textarea",
+          value: invoice?.remarks || "Aucune",
+        },
+      ],
+    },
+  ];
+
   return (
     <Body>
       <div className="px-4 w-full">
         <DetailsHeaderActions
-          title={invoice.title}
+          title={invoice?.title}
           navigateBack={navigate}
           backUrl="/invoices"
           onEdit={handleEdit}
@@ -84,124 +141,20 @@ export default function InvoiceDetails() {
         />
 
         <div className="p-4 border border-gray-300 bg-white">
-          <h1 className="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b">
+          <h1 className="text-xl font-semibold text-gray-900 mb-3">
             Détails de la facture
           </h1>
 
           {isEditing ? (
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Titre :
-                </label>
-                <input
-                  {...register("title", { required: true })}
-                  defaultValue={invoice.title}
-                  type="text"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Numéro de la facture :
-                </label>
-                <input
-                  {...register("invoiceNumber", { required: true })}
-                  defaultValue={invoice.invoiceNumber}
-                  type="text"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Participant ID :
-                </label>
-                <input
-                  {...register("participantId")}
-                  defaultValue={invoice.participantId}
-                  type="number"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Project ID :
-                </label>
-                <input
-                  {...register("projectId")}
-                  defaultValue={invoice.projectId}
-                  type="number"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Lot :
-                </label>
-                <input
-                  {...register("lot")}
-                  defaultValue={invoice.lot}
-                  type="text"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Date de paiement :
-                </label>
-                <input
-                  {...register("paidOn")}
-                  defaultValue={invoice.paidOn}
-                  type="date"
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Remarques :
-                </label>
-                <textarea
-                  {...register("remarks")}
-                  defaultValue={invoice.remarks}
-                  rows={4}
-                  className="py-2 px-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-                />
-              </div>
-              <div className="flex justify-end space-x-4">
-                <Button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  variant="secondary"
-                >
-                  Annuler
-                </Button>
-                <Button type="submit">Enregistrer</Button>
-              </div>
-            </form>
+            <DynamicForm
+              fields={fields}
+              register={register}
+              errors={errors}
+              onSubmit={handleSubmit(onSubmit)}
+              onCancel={() => setIsEditing(false)}
+            />
           ) : (
-            <ul className="space-y-4 text-sm">
-              <li>
-                <strong>Numéro de la facture :</strong> {invoice.invoiceNumber}
-              </li>
-              <li>
-                <strong>Participant ID :</strong> {invoice.participantId}
-              </li>
-              <li>
-                <strong>Project ID :</strong> {invoice.projectId}
-              </li>
-              <li>
-                <strong>Lot :</strong> {invoice.lot || "Non spécifié"}
-              </li>
-              <li>
-                <strong>Date de paiement :</strong>{" "}
-                {invoice.paidOn
-                  ? new Date(invoice.paidOn).toLocaleDateString("fr-FR")
-                  : "Non spécifiée"}
-              </li>
-              <li>
-                <strong>Remarques :</strong> {invoice.remarks || "Aucune"}
-              </li>
-            </ul>
+            <DetailsDisplay data={fields} />
           )}
         </div>
       </div>

@@ -6,7 +6,7 @@ import SearchBar from "./SearchBar";
 
 export default function Header() {
   return (
-    <header className="flex h-16 items-center justify-between border-b px-4">
+    <header className="flex h-16 items-center justify-between px-4">
       <div className="flex items-center gap-2 shrink-0">
         <SidebarTrigger />
         <Separator orientation="vertical" className="h-4" />
@@ -27,8 +27,8 @@ export default function Header() {
         </Button>
 
         <Button
-          variant="destructive"
-          className="px-4 py-2 text-white"
+          variant="outline"
+          className="px-4 py-2 text-red-500 border-red-500 hover:text-red-600 hover:border-red-600 hover:bg-white"
           onClick={() => {
             console.log("Déconnexion");
           }}
