@@ -16,17 +16,32 @@ import ProjectDetails from "./components/navbar/project-management/ProjectDetail
 import Projects from "./components/navbar/project-management/Projects.jsx";
 
 export default function App() {
+  const participantTypes = [
+    { id: 1, name: "client" },
+    { id: 2, name: "fournisseur" },
+    { id: 3, name: "sous-traitant" },
+    { id: 4, name: "architecte" },
+  ];
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/chantiers" element={<Projects />} />
         <Route path="/chantier/:id" element={<ProjectDetails />} />
-        <Route path="/participant/:typeId" element={<Participants />} />
-        <Route
-          path="/participant/:typeId/:id"
-          element={<ParticipantDetails />}
-        />
+        {participantTypes.map(({ id, name }) => (
+          <Route
+            key={name}
+            path={`/${name}s`}
+            element={<Participants typeId={id} />}
+          />
+        ))}
+        {participantTypes.map(({ id, name }) => (
+          <Route
+            key={`${name}-details`}
+            path={`/${name}/:id`}
+            element={<ParticipantDetails typeId={id} />}
+          />
+        ))}
         <Route path="/devis" element={<Quotes />} />
         <Route path="/devis/:id" element={<QuoteDetails />} />
         <Route path="/factures" element={<Invoices />} />
@@ -42,7 +57,7 @@ export default function App() {
         <Route path="/statut-sill" element={<SillStatus />} />
         <Route path="/accounting" element={<h1>Accounting</h1>} />
         <Route path="/zied-accounting" element={<h1>ZIED Accounting</h1>} />
-        <Route path="*" element={<h1>404 Not Found</h1>} />
+        <Route path="*" element={<h1>URL non trouvée</h1>} />
       </Routes>
     </Router>
   );

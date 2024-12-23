@@ -2,16 +2,15 @@ import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getTypeName } from "../../../../utils/typeUtils.js";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
 import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
 
-export default function Participants() {
+export default function Participants({ typeId }) {
   const navigate = useNavigate();
-  const { typeId } = useParams();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -144,7 +143,11 @@ export default function Participants() {
               <li key={participant.id} className="mb-2">
                 <button
                   onClick={() =>
-                    navigate(`/participant/${typeId}/${participant.id}`)
+                    navigate(
+                      `/${getTypeName(typeId, false).toLowerCase()}/${
+                        participant.id
+                      }`
+                    )
                   }
                   className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
                 >

@@ -87,25 +87,31 @@ export default function SearchBar() {
           <Search className="h-5 w-5" />
         </div>
       </div>
-      {isFocused && results.length > 0 && (
+      {isFocused && (
         <ul className="absolute z-10 mt-11 w-full bg-white border-l border-b border-r border-gray-200 rounded-bl-lg rounded-br-lg shadow-lg max-h-64 overflow-y-auto">
-          {results.map((result) => (
-            <li
-              key={`${result.type}-${result.id}`}
-              className="flex justify-between items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleResultClick(result.id, result.type)}
-            >
-              <span
-                className="text-sm"
-                dangerouslySetInnerHTML={{
-                  __html: highlightText(result.name, searchTerm),
-                }}
-              />
-              <span className="text-xs text-gray-500">
-                {result.type.toUpperCase()}
-              </span>
+          {results.length > 0 ? (
+            results.map((result) => (
+              <li
+                key={`${result.type}-${result.id}`}
+                className="flex justify-between items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleResultClick(result.id, result.type)}
+              >
+                <span
+                  className="text-sm"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightText(result.name, searchTerm),
+                  }}
+                />
+                <span className="text-xs text-gray-500">
+                  {result.type.toUpperCase()}
+                </span>
+              </li>
+            ))
+          ) : (
+            <li className="p-4 text-center text-gray-500 text-sm">
+              Aucun résultat trouvé pour cette recherche.
             </li>
-          ))}
+          )}
         </ul>
       )}
     </div>

@@ -22,10 +22,10 @@ const data = {
       title: "Gestion de chantiers",
       items: [
         { title: "Chantiers", url: "/chantiers" },
-        { title: "Clients", url: "/participant/1" },
-        { title: "Fournisseurs", url: "/participant/2" },
-        { title: "Sous-traitants", url: "/participant/3" },
-        { title: "Architectes", url: "/participant/4" },
+        { title: "Clients", url: "/clients" },
+        { title: "Fournisseurs", url: "/fournisseurs" },
+        { title: "Sous-traitants", url: "/sous-traitants" },
+        { title: "Architectes", url: "/architectes" },
       ],
     },
     {
