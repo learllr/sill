@@ -6,18 +6,18 @@ export const getAllData = async (req, res) => {
   try {
     const [
       projects,
-      employees,
       clients,
       fournisseurs,
       sousTraitants,
       architectes,
+      employees,
     ] = await Promise.all([
       ProjectDAO.getAllProjects({}, false),
-      EmployeeDAO.getAllEmployees({}, false),
       ParticipantDAO.getAllParticipantsByType(1),
       ParticipantDAO.getAllParticipantsByType(2),
       ParticipantDAO.getAllParticipantsByType(3),
       ParticipantDAO.getAllParticipantsByType(4),
+      EmployeeDAO.getAllEmployees({}, false),
     ]);
 
     const results = [
@@ -25,11 +25,6 @@ export const getAllData = async (req, res) => {
         id: project.id,
         name: project.name,
         type: "chantier",
-      })),
-      ...employees.map((employee) => ({
-        id: employee.id,
-        name: employee.firstName + " " + employee.lastName,
-        type: "salarié",
       })),
       ...clients.map((client) => ({
         id: client.id,
@@ -50,6 +45,11 @@ export const getAllData = async (req, res) => {
         id: architecte.id,
         name: architecte.name,
         type: "architecte",
+      })),
+      ...employees.map((employee) => ({
+        id: employee.id,
+        name: employee.firstName + " " + employee.lastName,
+        type: "salarié",
       })),
     ];
 

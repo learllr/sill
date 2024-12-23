@@ -48,7 +48,24 @@ export default function SearchBar() {
   };
 
   const handleResultClick = (id, type) => {
-    navigate(`/${type}/${id}`);
+    if (
+      type === "client" ||
+      type === "fournisseur" ||
+      type === "sous-traitant" ||
+      type === "architecte"
+    ) {
+      const typeIdMap = {
+        client: 1,
+        fournisseur: 2,
+        "sous-traitant": 3,
+        architecte: 4,
+      };
+
+      const typeId = typeIdMap[type];
+      navigate(`/participant/${typeId}/${id}`);
+    } else {
+      navigate(`/${type}/${id}`);
+    }
   };
 
   return (
