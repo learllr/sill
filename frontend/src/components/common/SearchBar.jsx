@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { highlightText } from "../../../utils/textUtils.js";
 import axios from "../../axiosConfig.js";
 
 export default function SearchBar() {
@@ -23,7 +24,7 @@ export default function SearchBar() {
     const query = event.target.value;
     setSearchTerm(query);
 
-    if (query.length >= 2) {
+    if (query.length >= 1) {
       const filteredResults = results.filter((result) =>
         result.name.toLowerCase().includes(query.toLowerCase())
       );
@@ -40,12 +41,22 @@ export default function SearchBar() {
     }
   };
 
+  const handleBlur = (event) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setIsFocused(false);
+    }
+  };
+
   const handleResultClick = (id, type) => {
     navigate(`/${type}/${id}`);
   };
 
   return (
-    <div className="relative flex flex-col w-full">
+    <div
+      className="relative flex flex-col w-full"
+      onBlur={handleBlur}
+      tabIndex={-1}
+    >
       <div className="relative flex w-full items-center">
         <Input
           type="text"
@@ -60,14 +71,19 @@ export default function SearchBar() {
         </div>
       </div>
       {isFocused && results.length > 0 && (
-        <ul className="absolute z-10 mt-11 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+        <ul className="absolute z-10 mt-11 w-full bg-white border-l border-b border-r border-gray-200 rounded-bl-lg rounded-br-lg shadow-lg max-h-64 overflow-y-auto">
           {results.map((result) => (
             <li
               key={`${result.type}-${result.id}`}
               className="flex justify-between items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => handleResultClick(result.id, result.type)}
             >
-              <span className="text-sm">{result.name}</span>
+              <span
+                className="text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: highlightText(result.name, searchTerm),
+                }}
+              />
               <span className="text-xs text-gray-500">
                 {result.type.toUpperCase()}
               </span>
