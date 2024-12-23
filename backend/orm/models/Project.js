@@ -20,6 +20,14 @@ export default (sequelize) => {
           len: [3, 100],
         },
       },
+      status: {
+        type: DataTypes.ENUM("Non commencé", "En cours", "Terminé"),
+        allowNull: false,
+        defaultValue: "Non commencé",
+        validate: {
+          isIn: [["Non commencé", "En cours", "Terminé"]],
+        },
+      },
     },
     {
       sequelize,

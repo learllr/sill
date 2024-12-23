@@ -1,14 +1,4 @@
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -17,6 +7,7 @@ import { getTypeName } from "../../../../utils/typeUtils.js";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
+import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
 
 export default function Participants() {
   const navigate = useNavigate();
@@ -69,101 +60,77 @@ export default function Participants() {
     <Body>
       <div className="px-4 w-full">
         <GeneralHeaderActions
-          titlePlural={titlePlural}
-          titleSingular={titleSingular}
+          title={titlePlural}
           onAdd={() => setIsDialogOpen(true)}
           onReset={reset}
         />
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                Ajouter un {titleSingular.toLowerCase()}
-              </DialogTitle>
-              <DialogDescription>
-                Remplissez le formulaire ci-dessous pour ajouter un{" "}
-                {titleSingular.toLowerCase()} à la liste.
-              </DialogDescription>
-              <Separator />
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nom
-                </label>
-                <Input
-                  {...register("name", { required: "Nom requis" })}
-                  placeholder={`Nom ${titleSingular.toLowerCase()}`}
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Interlocuteur
-                </label>
-                <Input
-                  {...register("contactPerson")}
-                  placeholder="Interlocuteur principal"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Téléphone
-                </label>
-                <Input
-                  {...register("phone")}
-                  placeholder="Numéro de téléphone"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <Input
-                  {...register("email", {
-                    pattern: {
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      message: "Email invalide",
-                    },
-                  })}
-                  placeholder="Adresse email"
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Adresse
-                </label>
-                <Input {...register("address")} placeholder="Adresse" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Site web
-                </label>
-                <Input {...register("website")} placeholder="Site web" />
-              </div>
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Annuler
-                </Button>
-                <Button type="submit">Ajouter</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <ScrollableDialog
+          isOpen={isDialogOpen}
+          onClose={setIsDialogOpen}
+          title={`Ajouter un ${titleSingular.toLowerCase()}`}
+          description={`Remplissez le formulaire ci-dessous pour ajouter un ${titleSingular.toLowerCase()} à la liste.`}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nom
+            </label>
+            <Input
+              {...register("name", { required: "Nom requis" })}
+              placeholder={`Nom ${titleSingular.toLowerCase()}`}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Interlocuteur
+            </label>
+            <Input
+              {...register("contactPerson")}
+              placeholder="Interlocuteur principal"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Téléphone
+            </label>
+            <Input {...register("phone")} placeholder="Numéro de téléphone" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <Input
+              {...register("email", {
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Email invalide",
+                },
+              })}
+              placeholder="Adresse email"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Adresse
+            </label>
+            <Input {...register("address")} placeholder="Adresse" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Site web
+            </label>
+            <Input {...register("website")} placeholder="Site web" />
+          </div>
+        </ScrollableDialog>
 
         {isLoading ? (
           <p>Chargement des {titlePlural.toLowerCase()}...</p>

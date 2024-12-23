@@ -83,7 +83,7 @@ export default function ProjectDetails() {
   const handleDelete = async () => {
     try {
       await axios.delete(`/project/${id}`);
-      navigate("/projects");
+      navigate("/chantiers");
     } catch (error) {
       console.error("Erreur lors de la suppression du projet :", error);
     }
@@ -97,7 +97,7 @@ export default function ProjectDetails() {
         <DetailsHeaderActions
           title={project.name}
           navigateBack={navigate}
-          backUrl="/projects"
+          backUrl="/chantiers"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
@@ -120,8 +120,8 @@ export default function ProjectDetails() {
             const participants = project[section] || [];
 
             return (
-              <div key={section} className="m-4">
-                <h3 className="text-lg font-semibold">
+              <div key={section} className="m-4 border p-3">
+                <h3 className="font-semibold">
                   {section === "clients" ? sectionName : `${sectionName}(s)`}
                 </h3>
                 <ul>
@@ -129,7 +129,7 @@ export default function ProjectDetails() {
                     participants.map((participant) => (
                       <li
                         key={participant.id}
-                        className="flex justify-between items-center"
+                        className="flex justify-between items-center text-sm"
                       >
                         <div>
                           <p>Nom: {participant.name}</p>
@@ -148,7 +148,9 @@ export default function ProjectDetails() {
                       </li>
                     ))
                   ) : (
-                    <p>Aucun {sectionName.toLowerCase()} ajouté.</p>
+                    <p className="text-sm">
+                      Aucun {sectionName.toLowerCase()} ajouté.
+                    </p>
                   )}
                 </ul>
                 {section !== "clients" || participants.length === 0 ? (

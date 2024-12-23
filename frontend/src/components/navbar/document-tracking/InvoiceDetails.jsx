@@ -39,7 +39,7 @@ export default function InvoiceDetails() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("invoices");
-        navigate("/invoices");
+        navigate("/factures");
       },
     }
   );
@@ -115,7 +115,7 @@ export default function InvoiceDetails() {
         {
           label: "Date de paiement",
           name: "paidOn",
-          type: "date",
+          type: "text",
           isDate: true,
           value: invoice?.paidOn,
         },
@@ -135,7 +135,7 @@ export default function InvoiceDetails() {
         <DetailsHeaderActions
           title={invoice?.title}
           navigateBack={navigate}
-          backUrl="/invoices"
+          backUrl="/factures"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />

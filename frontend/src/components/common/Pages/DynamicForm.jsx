@@ -1,34 +1,51 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
-import FormField from "../../common/Pages/FormField";
+import { Controller, useForm } from "react-hook-form";
+import FormField from "./FormField";
 
-export default function DynamicForm({
-  fields,
-  register,
-  errors,
-  onSubmit,
-  onCancel,
-}) {
+export default function DynamicForm({ fields, onSubmit, onCancel }) {
+  const {
+    handleSubmit,
+    control,
+    register,
+    formState: { errors },
+  } = useForm();
+
+  const submitHandler = (data) => {
+    onSubmit(data);
+  };
+
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(submitHandler)} className="space-y-6">
       {fields.map((section, sectionIndex) => (
-        <div key={sectionIndex}>
-          <h2 className="text-base font-semibold text-gray-800 mb-4 border-b">
+        <div key={sectionIndex} className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-800">
             {section.section}
           </h2>
-          {section.items.map((field, fieldIndex) => (
-            <FormField
-              key={fieldIndex}
-              label={field.label}
-              name={field.name}
-              type={field.type}
-              required={field.required}
-              register={register}
-              defaultValue={field.value}
-              options={field.options || []}
-              errors={errors}
-            />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {section.items.map((field, fieldIndex) => (
+              <Controller
+                key={fieldIndex}
+                name={field.name}
+                control={control}
+                defaultValue={field.value || ""}
+                rules={{ required: field.required }}
+                render={({ field: { value, onChange, ...restField } }) => (
+                  <FormField
+                    label={field.label}
+                    name={field.name}
+                    type={field.type}
+                    placeholder={field.placeholder || ""}
+                    options={field.options || []}
+                    required={field.required || false}
+                    errors={errors}
+                    value={value}
+                    onChange={onChange}
+                    {...restField}
+                  />
+                )}
+              />
+            ))}
+          </div>
         </div>
       ))}
       <div className="flex justify-end space-x-4">

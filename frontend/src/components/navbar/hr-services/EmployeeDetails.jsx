@@ -22,6 +22,7 @@ export default function EmployeeDetails() {
   const updateEmployee = useMutation(
     async (updatedEmployee) => {
       const response = await axios.put(`/employee/${id}`, updatedEmployee);
+      console.log(updateEmployee);
       return response.data;
     },
     {
@@ -39,7 +40,7 @@ export default function EmployeeDetails() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("employees");
-        navigate("/employees");
+        navigate("/salariés");
       },
     }
   );
@@ -50,12 +51,7 @@ export default function EmployeeDetails() {
     error,
   } = useQuery(["employee", id], fetchEmployeeById);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const { reset } = useForm();
 
   if (isLoading) return <Body children={<p>Chargement des détails...</p>} />;
   if (error)
@@ -63,17 +59,13 @@ export default function EmployeeDetails() {
       <Body children={<p>Erreur lors de la récupération des détails.</p>} />
     );
 
-  const onSubmit = (data) => {
-    updateEmployee.mutate(data);
-  };
-
   const handleEdit = () => {
     reset(employee);
     setIsEditing(true);
   };
 
   const handleDelete = () => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet employé ?")) {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce salarié ?")) {
       deleteEmployee.mutate();
     }
   };
@@ -85,6 +77,7 @@ export default function EmployeeDetails() {
         {
           label: "Prénom",
           name: "firstName",
+          placeholder: "John",
           type: "text",
           required: true,
           value: employee?.firstName,
@@ -92,6 +85,7 @@ export default function EmployeeDetails() {
         {
           label: "Nom",
           name: "lastName",
+          placeholder: "Doe",
           type: "text",
           required: true,
           value: employee?.lastName,
@@ -99,19 +93,22 @@ export default function EmployeeDetails() {
         {
           label: "Date de naissance",
           name: "birthDate",
-          type: "date",
-          isDate: true,
+          placeholder: "JJ/MM/AAAA",
+          type: "text",
           value: employee?.birthDate,
+          isDate: true,
         },
         {
           label: "Ville de naissance",
           name: "birthCity",
+          placeholder: "Paris",
           type: "text",
           value: employee?.birthCity,
         },
         {
           label: "Nationalité",
           name: "nationality",
+          placeholder: "Française",
           type: "text",
           value: employee?.nationality,
         },
@@ -123,12 +120,14 @@ export default function EmployeeDetails() {
         {
           label: "Poste",
           name: "jobTitle",
+          placeholder: "Assistant RH",
           type: "text",
           value: employee?.jobTitle,
         },
         {
           label: "Qualification",
           name: "qualification",
+          placeholder: "Bac +3",
           type: "text",
           value: employee?.qualification,
         },
@@ -153,6 +152,7 @@ export default function EmployeeDetails() {
         {
           label: "Salaire net mensuel",
           name: "monthlyNetSalary",
+          placeholder: "1500",
           type: "number",
           value: employee?.monthlyNetSalary,
           isPrice: true,
@@ -160,16 +160,18 @@ export default function EmployeeDetails() {
         {
           label: "Date de début",
           name: "startDate",
-          type: "date",
-          isDate: true,
+          placeholder: "JJ/MM/AAAA",
+          type: "text",
           value: employee?.startDate,
+          isDate: true,
         },
         {
           label: "Date de fin",
           name: "endDate",
-          type: "date",
-          isDate: true,
+          placeholder: "JJ/MM/AAAA",
+          type: "text",
           value: employee?.endDate,
+          isDate: true,
         },
       ],
     },
@@ -179,6 +181,7 @@ export default function EmployeeDetails() {
         {
           label: "Téléphone",
           name: "phone",
+          placeholder: "0601020304",
           type: "text",
           value: employee?.phone,
           isPhone: true,
@@ -186,20 +189,24 @@ export default function EmployeeDetails() {
         {
           label: "Email",
           name: "email",
+          placeholder: "example@example.com",
           type: "email",
           value: employee?.email,
         },
         {
           label: "Adresse",
           name: "address",
+          placeholder: "12 Rue de Paris",
           type: "text",
           value: employee?.address,
         },
         {
           label: "Code postal",
           name: "postalCode",
+          placeholder: "75000",
           type: "text",
           value: employee?.postalCode,
+          isPostalCode: true,
         },
         { label: "Ville", name: "city", type: "text", value: employee?.city },
       ],
@@ -212,18 +219,17 @@ export default function EmployeeDetails() {
         <DetailsHeaderActions
           title={`${employee?.firstName} ${employee?.lastName}`}
           navigateBack={navigate}
-          backUrl="/employees"
+          backUrl="/salariés"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
-
         <div className="p-4 border border-gray-300 bg-white">
           {isEditing ? (
             <DynamicForm
               fields={fields}
-              register={register}
-              errors={errors}
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={(data) => {
+                updateEmployee.mutate(data);
+              }}
               onCancel={() => setIsEditing(false)}
             />
           ) : (

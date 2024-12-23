@@ -2,10 +2,11 @@ import ProjectDAO from "../dao/ProjectDAO.js";
 
 export const getAllProjects = async (req, res) => {
   try {
-    const projects = await ProjectDAO.getAllProjects();
+    const { status } = req.query;
+    const whereClause = status ? { status } : {};
+    const projects = await ProjectDAO.getAllProjects(whereClause);
     res.status(200).json(projects);
   } catch (error) {
-    console.error("Erreur lors de la récupération des projets :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération des projets" });

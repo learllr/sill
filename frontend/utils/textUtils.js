@@ -23,8 +23,3 @@ export const highlightText = (text, query) => {
     )
     .join("");
 };
-
-export const formatPhone = (phone) => {
-  if (!phone) return "";
-  return phone.replace(/(\d{2})(?=\d)/g, "$1 ");
-};

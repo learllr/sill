@@ -1,21 +1,33 @@
 import React from "react";
 
 const DetailsDisplay = ({ data = [] }) => {
-  const formatDate = (value) => {
-    const date = new Date(value);
-    if (isNaN(date)) return "Non spécifié";
-    const formatted = date.toLocaleDateString("fr-FR").split("/").join(" / ");
-    return formatted;
-  };
+  const formatValue = (item) => {
+    const { value, isDate, isPhone, isPrice, isPostalCode } = item;
 
-  const formatPhoneNumber = (value) => {
-    if (!value || typeof value !== "string") return "Non spécifié";
-    return value.replace(/(\d{2})(?=\d)/g, "$1 ");
-  };
+    if (!value) return "Non spécifié";
 
-  const formatPrice = (value) => {
-    if (isNaN(value)) return "Non spécifié";
-    return `${Number(value).toFixed(2)} €`;
+    switch (true) {
+      case isDate: {
+        const date = new Date(value);
+        if (isNaN(date)) return value;
+        return date.toLocaleDateString("fr-FR").split("/").join("/");
+      }
+      case isPhone:
+        return typeof value === "string"
+          ? value.replace(/(\d{2})(?=\d)/g, "$1 ")
+          : "Non spécifié";
+
+      case isPrice:
+        return !isNaN(value) ? `${Number(value).toFixed(2)} €` : "Non spécifié";
+
+      case isPostalCode:
+        return typeof value === "string" && value.length >= 5
+          ? `${value.slice(0, 2)} ${value.slice(2)}`
+          : "Non spécifié";
+
+      default:
+        return value;
+    }
   };
 
   const isSection = (item) => Array.isArray(item.items);
@@ -27,15 +39,7 @@ const DetailsDisplay = ({ data = [] }) => {
           <span className="font-medium text-gray-700 w-2/5">
             {item.label} :
           </span>
-          <span className="text-gray-900">
-            {item.isDate
-              ? formatDate(item.value)
-              : item.isPhone
-              ? formatPhoneNumber(item.value)
-              : item.isPrice
-              ? formatPrice(item.value)
-              : item.value || "Non spécifié"}
-          </span>
+          <span className="text-gray-900">{formatValue(item)}</span>
         </div>
       ))}
     </div>

@@ -39,7 +39,7 @@ export default function QuoteDetails() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("quotes");
-        navigate("/quotes");
+        navigate("/devis");
       },
     }
   );
@@ -126,7 +126,7 @@ export default function QuoteDetails() {
         {
           label: "Date d'envoi",
           name: "sentOn",
-          type: "date",
+          type: "text",
           isDate: true,
           value: quote?.sentOn,
         },
@@ -146,7 +146,7 @@ export default function QuoteDetails() {
         <DetailsHeaderActions
           title={quote?.title}
           navigateBack={navigate}
-          backUrl="/quotes"
+          backUrl="/devis"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />

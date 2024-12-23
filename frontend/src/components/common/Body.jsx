@@ -21,7 +21,7 @@ const data = {
     {
       title: "Gestion de chantiers",
       items: [
-        { title: "Chantiers", url: "/projects" },
+        { title: "Chantiers", url: "/chantiers" },
         { title: "Clients", url: "/participant/1" },
         { title: "Fournisseurs", url: "/participant/2" },
         { title: "Sous-traitants", url: "/participant/3" },
@@ -31,22 +31,22 @@ const data = {
     {
       title: "Suivi de documents",
       items: [
-        { title: "Devis", url: "/quotes" },
-        { title: "Factures", url: "/invoices" },
+        { title: "Devis", url: "/devis" },
+        { title: "Factures", url: "/factures" },
       ],
     },
     {
       title: "Services RH",
       items: [
-        { title: "Salariés", url: "/employees" },
-        { title: "Notes de services", url: "/memos" },
+        { title: "Salariés", url: "/salariés" },
+        { title: "Notes de services", url: "/notes-de-service" },
       ],
     },
     {
       title: "Services administratifs",
       items: [
-        { title: "Banque", url: "/bank" },
-        { title: "Statut SILL", url: "/sill-status" },
+        { title: "Banque", url: "/banque" },
+        { title: "Statut SILL", url: "/statut-sill" },
       ],
     },
     {

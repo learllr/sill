@@ -7,16 +7,19 @@ module.exports = {
       [
         {
           name: "Rénovation Maison",
+          status: "En cours",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           name: "Construction Villa",
+          status: "Terminé",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           name: "Aménagement Bureau",
+          status: "Non commencé",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

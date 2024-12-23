@@ -21,7 +21,7 @@ export default (sequelize) => {
         allowNull: true,
       },
       birthDate: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       birthCity: {
@@ -99,11 +99,11 @@ export default (sequelize) => {
         allowNull: true,
       },
       startDate: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       endDate: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       btpCard: {
@@ -111,7 +111,7 @@ export default (sequelize) => {
         allowNull: true,
       },
       medicalCheckupDate: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       active: {

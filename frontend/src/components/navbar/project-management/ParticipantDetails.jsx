@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../../src/axiosConfig.js";
+import { getTypeName } from "../../../../utils/typeUtils.js";
 import Body from "../../common/Body";
 import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
@@ -75,8 +76,21 @@ export default function ParticipantDetails() {
     setIsEditing(true);
   };
 
+  const article = ["a", "e", "i", "o", "u", "é"].includes(
+    getTypeName(typeId, false)[0].toLowerCase()
+  )
+    ? "cet"
+    : "ce";
+
   const handleDelete = () => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce participant ?")) {
+    if (
+      window.confirm(
+        `Êtes-vous sûr de vouloir supprimer ${article} ${getTypeName(
+          typeId,
+          false
+        ).toLowerCase()} ?`
+      )
+    ) {
       deleteParticipant.mutate();
     }
   };
@@ -122,20 +136,6 @@ export default function ParticipantDetails() {
           name: "website",
           type: "text",
           value: participant?.website,
-        },
-        {
-          label: "Créé le",
-          name: "createdAt",
-          type: "date",
-          isDate: true,
-          value: participant?.createdAt,
-        },
-        {
-          label: "Modifié le",
-          name: "updatedAt",
-          type: "date",
-          isDate: true,
-          value: participant?.updatedAt,
         },
       ],
     },

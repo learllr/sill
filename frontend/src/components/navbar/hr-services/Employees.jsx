@@ -35,7 +35,7 @@ export default function Employees() {
                 {employees.map((employee) => (
                   <li key={employee.id} className="mb-2">
                     <button
-                      onClick={() => navigate(`/employee/${employee.id}`)}
+                      onClick={() => navigate(`/salarié/${employee.id}`)}
                       className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
                     >
                       <div className="text-sm flex flex-col items-start">

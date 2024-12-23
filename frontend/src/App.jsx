@@ -20,26 +20,26 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/project/:id" element={<ProjectDetails />} />
+        <Route path="/chantiers" element={<Projects />} />
+        <Route path="/chantier/:id" element={<ProjectDetails />} />
         <Route path="/participant/:typeId" element={<Participants />} />
         <Route
           path="/participant/:typeId/:id"
           element={<ParticipantDetails />}
         />
-        <Route path="/quotes" element={<Quotes />} />
-        <Route path="/quote/:id" element={<QuoteDetails />} />
-        <Route path="/invoices" element={<Invoices />} />
-        <Route path="/invoice/:id" element={<InvoiceDetails />} />
-        <Route path="/employees" element={<Employees />} />
-        <Route path="/employee/:id" element={<EmployeeDetails />} />
-        <Route path="/memos" element={<Memos />} />
+        <Route path="/devis" element={<Quotes />} />
+        <Route path="/devis/:id" element={<QuoteDetails />} />
+        <Route path="/factures" element={<Invoices />} />
+        <Route path="/facture/:id" element={<InvoiceDetails />} />
+        <Route path="/salariés" element={<Employees />} />
+        <Route path="/salarié/:id" element={<EmployeeDetails />} />
+        <Route path="/notes-de-service" element={<Memos />} />
         <Route
           path="/administrative-services"
           element={<h1>Administrative Services</h1>}
         />
-        <Route path="/bank" element={<Bank />} />
-        <Route path="/sill-status" element={<SillStatus />} />
+        <Route path="/banque" element={<Bank />} />
+        <Route path="/statut-sill" element={<SillStatus />} />
         <Route path="/accounting" element={<h1>Accounting</h1>} />
         <Route path="/zied-accounting" element={<h1>ZIED Accounting</h1>} />
         <Route path="*" element={<h1>404 Not Found</h1>} />

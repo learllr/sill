@@ -2,43 +2,48 @@ import db from "../orm/models/index.js";
 const { Project, Participant, TypeParticipant, ProjectParticipant } = db;
 
 export default class ProjectDAO {
-  static async getAllProjects() {
+  static async getAllProjects(whereClause = {}, includeData = true) {
+    const include = includeData
+      ? [
+          {
+            model: Participant,
+            as: "clients",
+            include: [
+              { model: TypeParticipant, as: "type", attributes: ["name"] },
+            ],
+            attributes: ["id", "name", "contactPerson", "email"],
+          },
+          {
+            model: Participant,
+            as: "suppliers",
+            include: [
+              { model: TypeParticipant, as: "type", attributes: ["name"] },
+            ],
+            attributes: ["id", "name", "contactPerson", "email"],
+          },
+          {
+            model: Participant,
+            as: "subcontractors",
+            include: [
+              { model: TypeParticipant, as: "type", attributes: ["name"] },
+            ],
+            attributes: ["id", "name", "contactPerson", "email"],
+          },
+          {
+            model: Participant,
+            as: "architects",
+            include: [
+              { model: TypeParticipant, as: "type", attributes: ["name"] },
+            ],
+            attributes: ["id", "name", "contactPerson", "email"],
+          },
+        ]
+      : [];
+
     return await Project.findAll({
-      include: [
-        {
-          model: Participant,
-          as: "clients",
-          include: [
-            { model: TypeParticipant, as: "type", attributes: ["name"] },
-          ],
-          attributes: ["id", "name", "contactPerson", "email"],
-        },
-        {
-          model: Participant,
-          as: "suppliers",
-          include: [
-            { model: TypeParticipant, as: "type", attributes: ["name"] },
-          ],
-          attributes: ["id", "name", "contactPerson", "email"],
-        },
-        {
-          model: Participant,
-          as: "subcontractors",
-          include: [
-            { model: TypeParticipant, as: "type", attributes: ["name"] },
-          ],
-          attributes: ["id", "name", "contactPerson", "email"],
-        },
-        {
-          model: Participant,
-          as: "architects",
-          include: [
-            { model: TypeParticipant, as: "type", attributes: ["name"] },
-          ],
-          attributes: ["id", "name", "contactPerson", "email"],
-        },
-      ],
-      attributes: ["id", "name", "createdAt"],
+      where: whereClause,
+      include,
+      attributes: ["id", "name", "status", "createdAt"],
     });
   }
 

@@ -36,24 +36,17 @@ export default class ParticipantDAO {
     });
   }
 
-  static async getTypeNameById(typeId) {
-    return await TypeParticipant.findOne({
-      where: { id: typeId },
-      attributes: ["name"],
-    });
-  }
-
   static async createParticipant(data) {
     return await Participant.create(data);
   }
 
-  static async updateParticipant(participant, updatedData) {
-    return await Participant.update(updatedData);
+  static async updateParticipant(id, typeId, updatedData) {
+    return await Participant.update(updatedData, {
+      where: { id, typeId },
+    });
   }
 
   static async deleteParticipant(participant) {
-    return await Participant.destroy({
-      where: { id: participant.id },
-    });
+    return await participant.destroy();
   }
 }

@@ -9,77 +9,87 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 
-const FormField = ({
-  label,
-  name,
-  type = "text",
-  placeholder = "",
-  register,
-  options = [],
-  required = false,
-  errors = {},
-  onChange,
-  ...rest
-}) => {
-  const errorMessage = errors[name]?.message;
-
-  const formatValue = (value) => {
-    if (type === "date") {
-      return value.replace(/(\d{2})(\d{2})(\d{2,4})/, "$1 / $2 / $3");
-    }
-    if (name === "phone") {
-      return value.replace(/(\d{2})(?=\d)/g, "$1 ");
-    }
-    return value;
-  };
-
-  const handleChange = (e) => {
-    const formattedValue = formatValue(e.target.value);
-    e.target.value = formattedValue;
-    if (onChange) onChange(e);
-  };
-
-  return (
-    <div className="space-y-1 mt-3">
-      <label className="block text-sm font-medium text-gray-700">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-
-      {type === "select" ? (
-        <Select {...rest}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder={placeholder || "Sélectionner"} />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      ) : type === "textarea" ? (
-        <Textarea
-          {...register(name, { required })}
-          placeholder={placeholder}
-          className="block w-full border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-          {...rest}
-          onChange={handleChange}
-        />
-      ) : (
-        <Input
-          {...register(name, { required })}
-          type={type}
-          placeholder={placeholder}
-          className="block w-full border-gray-300 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm"
-          {...rest}
-          onChange={handleChange}
-        />
-      )}
-      {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
-    </div>
-  );
+const formatDate = (value) => {
+  console.log(value);
+  const date = new Date(value);
+  if (isNaN(date)) return "Non spécifié";
+  return date.toLocaleDateString("fr-FR").split("/").join("/");
 };
+
+const FormField = React.forwardRef(
+  (
+    {
+      label,
+      name,
+      type = "text",
+      placeholder = "",
+      options = [],
+      required = false,
+      errors = {},
+      value = "",
+      onChange,
+      isDate = false,
+      ...rest
+    },
+    ref
+  ) => {
+    const errorMessage = errors?.[name]?.message || "";
+
+    const formattedValue = isDate && value ? formatDate(value) : value;
+
+    return (
+      <div className="space-y-2">
+        <label
+          htmlFor={name}
+          className="block text-sm font-medium text-gray-800"
+        >
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        <div>
+          {type === "select" ? (
+            <Select value={value} onValueChange={onChange}>
+              <SelectTrigger ref={ref} className="w-full">
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+              <SelectContent>
+                {options.map((option, index) => (
+                  <SelectItem key={index} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : type === "textarea" ? (
+            <Textarea
+              ref={ref}
+              id={name}
+              name={name}
+              placeholder={placeholder}
+              value={value}
+              onChange={onChange}
+              className="w-full"
+              {...rest}
+            />
+          ) : (
+            <Input
+              ref={ref}
+              id={name}
+              name={name}
+              type={type}
+              placeholder={placeholder}
+              value={formattedValue}
+              onChange={onChange}
+              className="w-full"
+              {...rest}
+            />
+          )}
+        </div>
+        {errorMessage && (
+          <p className="mt-2 text-sm text-red-600">{errorMessage}</p>
+        )}
+      </div>
+    );
+  }
+);
 
 export default FormField;
