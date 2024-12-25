@@ -56,7 +56,6 @@ export default function ParticipantDetails({ typeId, typeName }) {
 
   const {
     register,
-    handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
@@ -69,10 +68,6 @@ export default function ParticipantDetails({ typeId, typeName }) {
     return (
       <Body children={<p>Erreur lors de la récupération des détails.</p>} />
     );
-
-  const onSubmit = (data) => {
-    updateParticipant.mutate(data);
-  };
 
   const handleEdit = () => {
     reset(participant);
@@ -161,7 +156,9 @@ export default function ParticipantDetails({ typeId, typeName }) {
               fields={fields}
               register={register}
               errors={errors}
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={(data) => {
+                updateParticipant.mutate(data);
+              }}
               onCancel={() => setIsEditing(false)}
             />
           ) : (
