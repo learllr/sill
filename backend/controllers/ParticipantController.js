@@ -67,16 +67,19 @@ export const updateParticipant = async (req, res) => {
 export const deleteParticipantById = async (req, res) => {
   try {
     const { id, typeId } = req.params;
+
     const participant = await ParticipantDAO.getParticipantByIdAndType(
       id,
       typeId
     );
-    if (!participant)
+    if (!participant) {
       return res.status(404).json({ error: "Participant non trouvé" });
+    }
 
     await ParticipantDAO.deleteParticipant(participant);
     res.status(200).json({ message: "Participant supprimé avec succès" });
   } catch (error) {
+    console.error("Erreur serveur :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la suppression du participant" });

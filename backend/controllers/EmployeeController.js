@@ -59,7 +59,7 @@ export const deleteEmployeeById = async (req, res) => {
       return res.status(404).json({ error: "Employé non trouvé" });
     }
 
-    await EmployeeDAO.deleteEmployee(id);
+    await EmployeeDAO.deleteEmployee(employee);
     res.status(200).json({ message: "Employé supprimé avec succès" });
   } catch (error) {
     console.error("Erreur lors de la suppression de l'employé :", error);

@@ -43,7 +43,7 @@ export default function ParticipantDetails({ typeId, typeName }) {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["participants", typeId]);
-        navigate(`/${typeId}`);
+        navigate(`/${typeName}s`);
       },
     }
   );

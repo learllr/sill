@@ -23,7 +23,7 @@ export default class EmployeeDAO {
     return null;
   }
 
-  static async deleteEmployee(id) {
-    return await Employee.destroy({ where: { id } });
+  static async deleteEmployee(employee) {
+    return await employee.destroy();
   }
 }

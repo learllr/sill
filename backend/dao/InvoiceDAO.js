@@ -59,8 +59,6 @@ export default class InvoiceDAO {
   }
 
   static async deleteInvoice(invoice) {
-    return await Invoice.destroy({
-      where: { id: invoice.id },
-    });
+    return await invoice.destroy();
   }
 }

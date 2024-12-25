@@ -14,7 +14,7 @@ export default (sequelize) => {
       },
       projectId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Projects",
           key: "id",
@@ -23,7 +23,7 @@ export default (sequelize) => {
       },
       participantId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Participants",
           key: "id",

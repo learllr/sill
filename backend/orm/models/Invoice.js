@@ -29,7 +29,7 @@ export default (sequelize) => {
       },
       participantId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Participants",
           key: "id",
@@ -37,7 +37,7 @@ export default (sequelize) => {
       },
       projectId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Projects",
           key: "id",
@@ -76,11 +76,13 @@ export default (sequelize) => {
     Invoice.belongsTo(models.Participant, {
       foreignKey: "participantId",
       as: "participant",
+      onDelete: "SET NULL",
     });
 
     Invoice.belongsTo(models.Project, {
       foreignKey: "projectId",
       as: "project",
+      onDelete: "SET NULL",
     });
   };
 

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
+import { useMutation } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
@@ -80,12 +81,20 @@ export default function ProjectDetails() {
     navigate(`/project/edit/${id}`);
   };
 
-  const handleDelete = async () => {
-    try {
+  const deleteProject = useMutation(
+    async () => {
       await axios.delete(`/project/${id}`);
-      navigate("/chantiers");
-    } catch (error) {
-      console.error("Erreur lors de la suppression du projet :", error);
+    },
+    {
+      onSuccess: () => {
+        navigate("/chantiers");
+      },
+    }
+  );
+
+  const handleDelete = async () => {
+    if (window.confirm("Voulez-vous vraiment supprimer ce chantier ?")) {
+      deleteProject.mutate();
     }
   };
 

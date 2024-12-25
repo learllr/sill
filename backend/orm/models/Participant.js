@@ -68,11 +68,19 @@ export default (sequelize) => {
       foreignKey: "participantId",
       otherKey: "projectId",
       as: "projects",
+      onDelete: "SET NULL",
     });
 
     Participant.hasMany(models.Quote, {
       foreignKey: "participantId",
       as: "quotes",
+      onDelete: "SET NULL",
+    });
+
+    Participant.hasMany(models.Invoice, {
+      foreignKey: "participantId",
+      as: "invoices",
+      onDelete: "SET NULL",
     });
   };
 
