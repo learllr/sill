@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../../src/axiosConfig.js";
+import { highlightText } from "../../../../utils/textUtils.js";
 import Body from "../../common/Body.jsx";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
 import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
@@ -11,6 +12,7 @@ import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
 export default function Projects() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -55,6 +57,16 @@ export default function Projects() {
     createProject.mutate(data);
   };
 
+  const filteredProjects = projects?.filter((project) => {
+    const createdDate = new Date(project.createdAt)
+      .toLocaleDateString()
+      .toLowerCase();
+    return (
+      project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      createdDate.includes(searchTerm.toLowerCase())
+    );
+  });
+
   if (isLoading) return <Body children={<p>Chargement des chantiers...</p>} />;
   if (error)
     return (
@@ -66,8 +78,13 @@ export default function Projects() {
       <div className="px-4 w-full">
         <GeneralHeaderActions
           title="Chantiers"
+          searchValue={searchTerm}
+          onSearchChange={(value) => setSearchTerm(value)}
           onAdd={() => setIsDialogOpen(true)}
-          onReset={reset}
+          onReset={() => {
+            reset();
+            setSearchTerm("");
+          }}
         />
 
         <ScrollableDialog
@@ -125,20 +142,31 @@ export default function Projects() {
           </select>
         </div>
 
-        {projects.length > 0 ? (
+        {filteredProjects?.length > 0 ? (
           <ul>
-            {projects.map((project) => (
+            {filteredProjects.map((project) => (
               <li key={project.id} className="mb-2">
                 <button
                   onClick={() => navigate(`/chantier/${project.id}`)}
                   className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
                 >
                   <div className="text-sm flex flex-col items-start">
-                    <p className="leading-tight">{project.name}</p>
+                    <p
+                      className="leading-tight"
+                      dangerouslySetInnerHTML={{
+                        __html: highlightText(project.name, searchTerm),
+                      }}
+                    />
                   </div>
-                  <p className="text-xs text-gray-400 whitespace-nowrap">
-                    {new Date(project.createdAt).toLocaleDateString()}
-                  </p>
+                  <p
+                    className="text-xs text-gray-400 whitespace-nowrap"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(
+                        new Date(project.createdAt).toLocaleDateString(),
+                        searchTerm
+                      ),
+                    }}
+                  />
                 </button>
               </li>
             ))}

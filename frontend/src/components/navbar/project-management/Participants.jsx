@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { highlightText } from "../../../../utils/textUtils.js";
 import { getTypeName } from "../../../../utils/typeUtils.js";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
@@ -13,6 +14,7 @@ export default function Participants({ typeId }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const titlePlural = getTypeName(typeId, true);
   const titleSingular = getTypeName(typeId, false);
@@ -55,13 +57,29 @@ export default function Participants({ typeId }) {
     createParticipant.mutate(data);
   };
 
+  const filteredParticipants = participants?.filter((participant) => {
+    const createdDate = new Date(participant.createdAt)
+      .toLocaleDateString()
+      .toLowerCase();
+
+    return (
+      participant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      participant.contactPerson
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      createdDate.includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
     <Body>
       <div className="px-4 w-full">
         <GeneralHeaderActions
           title={titlePlural}
+          searchValue={searchTerm}
+          onSearchChange={(value) => setSearchTerm(value)}
           onAdd={() => setIsDialogOpen(true)}
-          onReset={reset}
+          onReset={() => setSearchTerm("")}
         />
 
         <ScrollableDialog
@@ -137,9 +155,9 @@ export default function Participants({ typeId }) {
           <p className="text-red-500">
             Erreur lors de la récupération des {titlePlural.toLowerCase()}.
           </p>
-        ) : participants.length > 0 ? (
+        ) : filteredParticipants?.length > 0 ? (
           <ul>
-            {participants.map((participant) => (
+            {filteredParticipants.map((participant) => (
               <li key={participant.id} className="mb-2">
                 <button
                   onClick={() =>
@@ -152,11 +170,31 @@ export default function Participants({ typeId }) {
                   className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
                 >
                   <div className="text-sm flex flex-col items-start">
-                    <p className="leading-tight">{participant.name}</p>
+                    <p
+                      className="leading-tight"
+                      dangerouslySetInnerHTML={{
+                        __html: highlightText(participant.name, searchTerm),
+                      }}
+                    />
+                    <p
+                      className="text-xs text-gray-400"
+                      dangerouslySetInnerHTML={{
+                        __html: highlightText(
+                          participant.contactPerson || "",
+                          searchTerm
+                        ),
+                      }}
+                    />
                   </div>
-                  <p className="text-xs text-gray-400 whitespace-nowrap">
-                    {new Date(participant.createdAt).toLocaleDateString()}
-                  </p>
+                  <p
+                    className="text-xs text-gray-400 whitespace-nowrap"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(
+                        new Date(participant.createdAt).toLocaleDateString(),
+                        searchTerm
+                      ),
+                    }}
+                  />
                 </button>
               </li>
             ))}

@@ -48,24 +48,8 @@ export default function SearchBar() {
   };
 
   const handleResultClick = (id, type) => {
-    if (
-      type === "client" ||
-      type === "fournisseur" ||
-      type === "sous-traitant" ||
-      type === "architecte"
-    ) {
-      const typeIdMap = {
-        client: 1,
-        fournisseur: 2,
-        "sous-traitant": 3,
-        architecte: 4,
-      };
-
-      const typeId = typeIdMap[type];
-      navigate(`/participant/${typeId}/${id}`);
-    } else {
-      navigate(`/${type}/${id}`);
-    }
+    navigate(`/${type}/${id}`);
+    setIsFocused(false);
   };
 
   return (
@@ -78,7 +62,7 @@ export default function SearchBar() {
         <Input
           type="text"
           placeholder="Rechercher un chantier, client, fournisseur, sous-traitant, architecte ou salarié..."
-          className="pr-10 text-sm"
+          className="pr-10 text-sm truncate"
           value={searchTerm}
           onChange={handleSearch}
           onFocus={handleFocus}
@@ -93,7 +77,7 @@ export default function SearchBar() {
             results.map((result) => (
               <li
                 key={`${result.type}-${result.id}`}
-                className="flex justify-between items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => handleResultClick(result.id, result.type)}
               >
                 <span
@@ -102,7 +86,7 @@ export default function SearchBar() {
                     __html: highlightText(result.name, searchTerm),
                   }}
                 />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-500 sm:ml-4 mt-1 sm:mt-0">
                   {result.type.toUpperCase()}
                 </span>
               </li>

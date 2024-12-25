@@ -51,7 +51,7 @@ const data = {
     },
     {
       title: "Comptabilité",
-      items: [{ title: "Comptabilité ZIED", url: "/zied-accounting" }],
+      items: [{ title: "Comptabilité ZIED", url: "/compatibilité-zied" }],
     },
   ],
 };

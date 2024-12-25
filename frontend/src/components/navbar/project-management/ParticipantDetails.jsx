@@ -9,7 +9,7 @@ import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
 import DynamicForm from "../../common/Pages/DynamicForm";
 
-export default function ParticipantDetails({ typeId }) {
+export default function ParticipantDetails({ typeId, typeName }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -147,7 +147,7 @@ export default function ParticipantDetails({ typeId }) {
         <DetailsHeaderActions
           title={participant?.name}
           navigateBack={navigate}
-          backUrl={`/${typeId}`}
+          backUrl={`/${typeName}s`}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />

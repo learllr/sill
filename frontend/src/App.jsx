@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./components/Home.jsx";
+import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting.jsx";
 import Bank from "./components/navbar/aministrative-services/Bank.jsx";
 import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
 import InvoiceDetails from "./components/navbar/document-tracking/InvoiceDetails.jsx";
@@ -39,7 +40,7 @@ export default function App() {
           <Route
             key={`${name}-details`}
             path={`/${name}/:id`}
-            element={<ParticipantDetails typeId={id} />}
+            element={<ParticipantDetails typeId={id} typeName={name} />}
           />
         ))}
         <Route path="/devis" element={<Quotes />} />
@@ -55,8 +56,7 @@ export default function App() {
         />
         <Route path="/banque" element={<Bank />} />
         <Route path="/statut-sill" element={<SillStatus />} />
-        <Route path="/accounting" element={<h1>Accounting</h1>} />
-        <Route path="/zied-accounting" element={<h1>ZIED Accounting</h1>} />
+        <Route path="/compatibilité-zied" element={<ZiedAccounting />} />
         <Route path="*" element={<h1>URL non trouvée</h1>} />
       </Routes>
     </Router>
