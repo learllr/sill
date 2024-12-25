@@ -11,7 +11,6 @@ export default function Memos() {
   const handleSelectEmployee = (employee) => {
     setSelectedEmployee(employee);
     setIsDialogOpen(false);
-    console.log("Employé sélectionné :", employee);
   };
 
   return (

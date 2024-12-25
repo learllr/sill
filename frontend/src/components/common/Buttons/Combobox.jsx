@@ -43,7 +43,7 @@ export default function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between font-normal"
         >
           {value
             ? subjects.find((subject) => subject.value === value)?.label

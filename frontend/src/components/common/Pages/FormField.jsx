@@ -10,12 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import Combobox from "../../common/Buttons/Combobox.jsx";
 
-const formatDate = (value) => {
-  const date = new Date(value);
-  if (isNaN(date)) return "Non spécifié";
-  return date.toLocaleDateString("fr-FR").split("/").join("/");
-};
-
 const FormField = React.forwardRef(
   (
     {
@@ -30,13 +24,12 @@ const FormField = React.forwardRef(
       value = "",
       onChange,
       isDate = false,
+      register,
       ...rest
     },
     ref
   ) => {
     const errorMessage = errors?.[name]?.message || "";
-
-    const formattedValue = isDate && value ? formatDate(value) : value;
 
     return (
       <div className="space-y-2">
@@ -69,6 +62,7 @@ const FormField = React.forwardRef(
             </Select>
           ) : type === "textarea" ? (
             <Textarea
+              {...(register && register(name))}
               ref={ref}
               id={name}
               name={name}
@@ -80,12 +74,13 @@ const FormField = React.forwardRef(
             />
           ) : (
             <Input
+              {...(register && register(name))}
               ref={ref}
               id={name}
               name={name}
               type={type}
               placeholder={placeholder}
-              value={formattedValue}
+              value={value}
               onChange={onChange}
               className="w-full"
               {...rest}

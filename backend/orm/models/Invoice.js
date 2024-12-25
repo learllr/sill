@@ -56,7 +56,7 @@ export default (sequelize) => {
         },
       },
       paidOn: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       remarks: {

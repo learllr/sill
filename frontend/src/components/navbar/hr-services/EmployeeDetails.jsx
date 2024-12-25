@@ -22,7 +22,6 @@ export default function EmployeeDetails() {
   const updateEmployee = useMutation(
     async (updatedEmployee) => {
       const response = await axios.put(`/employee/${id}`, updatedEmployee);
-      console.log(updateEmployee);
       return response.data;
     },
     {

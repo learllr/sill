@@ -61,7 +61,7 @@ export default (sequelize) => {
         },
       },
       sentOn: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       remarks: {

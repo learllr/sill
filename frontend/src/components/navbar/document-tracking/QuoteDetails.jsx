@@ -75,14 +75,9 @@ export default function QuoteDetails() {
 
   const {
     register,
-    handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-
-  const onSubmit = (data) => {
-    updateQuote.mutate(data);
-  };
 
   const handleEdit = () => {
     reset(quote);
@@ -196,7 +191,9 @@ export default function QuoteDetails() {
               fields={fields}
               register={register}
               errors={errors}
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={(data) => {
+                updateQuote.mutate(data);
+              }}
               onCancel={() => setIsEditing(false)}
             />
           ) : (

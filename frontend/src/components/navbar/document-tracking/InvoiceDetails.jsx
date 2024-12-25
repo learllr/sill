@@ -75,14 +75,9 @@ export default function InvoiceDetails() {
 
   const {
     register,
-    handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-
-  const onSubmit = (data) => {
-    updateInvoice.mutate(data);
-  };
 
   const handleEdit = () => {
     reset(invoice);
@@ -185,7 +180,9 @@ export default function InvoiceDetails() {
               fields={fields}
               register={register}
               errors={errors}
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={(data) => {
+                updateInvoice.mutate(data);
+              }}
               onCancel={() => setIsEditing(false)}
             />
           ) : (
