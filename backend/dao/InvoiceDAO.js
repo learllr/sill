@@ -37,12 +37,12 @@ export default class InvoiceDAO {
         {
           model: Participant,
           as: "participant",
-          attributes: ["id", "name"],
+          attributes: ["name"],
         },
         {
           model: Project,
           as: "project",
-          attributes: ["id", "name"],
+          attributes: ["name"],
         },
       ],
     });

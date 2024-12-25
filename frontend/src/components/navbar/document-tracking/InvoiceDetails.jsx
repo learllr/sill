@@ -19,6 +19,19 @@ export default function InvoiceDetails() {
     return response.data;
   };
 
+  const fetchParticipants = async () => {
+    const typeIds = [1, 2, 3, 4];
+    const responses = await Promise.all(
+      typeIds.map((typeId) => axios.get(`/participant/${typeId}`))
+    );
+    return responses.flatMap((response) => response.data);
+  };
+
+  const fetchProjects = async () => {
+    const response = await axios.get("/project");
+    return response.data;
+  };
+
   const updateInvoice = useMutation(
     async (updatedInvoice) => {
       const response = await axios.put(`/invoice/${id}`, updatedInvoice);
@@ -50,18 +63,22 @@ export default function InvoiceDetails() {
     error,
   } = useQuery(["invoice", id], fetchInvoiceById);
 
+  const { data: participants, isLoading: isLoadingParticipants } = useQuery(
+    "participants",
+    fetchParticipants
+  );
+
+  const { data: projects, isLoading: isLoadingProjects } = useQuery(
+    "projects",
+    fetchProjects
+  );
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-
-  if (isLoading) return <Body children={<p>Chargement des détails...</p>} />;
-  if (error)
-    return (
-      <Body children={<p>Erreur lors de la récupération des détails.</p>} />
-    );
 
   const onSubmit = (data) => {
     updateInvoice.mutate(data);
@@ -86,38 +103,46 @@ export default function InvoiceDetails() {
           name: "title",
           type: "text",
           required: true,
-          value: invoice?.title,
+          value: invoice?.title || "",
         },
         {
           label: "Numéro de la facture",
           name: "invoiceNumber",
           type: "text",
-          value: invoice?.invoiceNumber,
+          value: invoice?.invoiceNumber || "",
         },
         {
-          label: "Participant ID",
+          label: "Participant",
           name: "participantId",
-          type: "number",
-          value: invoice?.participantId,
+          type: "combobox",
+          value: invoice?.participantId || "",
+          comboboxOptions: participants?.map((p) => ({
+            value: p.id,
+            label: p.name,
+          })),
         },
         {
-          label: "Project ID",
+          label: "Projet",
           name: "projectId",
-          type: "number",
-          value: invoice?.projectId,
+          type: "combobox",
+          value: invoice?.projectId || "",
+          comboboxOptions: projects?.map((p) => ({
+            value: p.id,
+            label: p.name,
+          })),
         },
         {
           label: "Lot",
           name: "lot",
           type: "text",
-          value: invoice?.lot,
+          value: invoice?.lot || "",
         },
         {
           label: "Date de paiement",
           name: "paidOn",
           type: "text",
           isDate: true,
-          value: invoice?.paidOn,
+          value: invoice?.paidOn || "",
         },
         {
           label: "Remarques",
@@ -128,6 +153,16 @@ export default function InvoiceDetails() {
       ],
     },
   ];
+
+  if (isLoading || isLoadingParticipants || isLoadingProjects)
+    return (
+      <Body children={<p className="text-sm">Chargement des données...</p>} />
+    );
+
+  if (error)
+    return (
+      <Body children={<p>Erreur lors de la récupération des détails.</p>} />
+    );
 
   return (
     <Body>

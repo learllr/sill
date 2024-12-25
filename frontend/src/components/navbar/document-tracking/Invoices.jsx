@@ -62,7 +62,10 @@ export default function Invoices() {
     );
   });
 
-  if (isLoading) return <Body children={<p>Chargement des factures...</p>} />;
+  if (isLoading)
+    return (
+      <Body children={<p className="text-sm">Chargement des factures...</p>} />
+    );
   if (error)
     return (
       <Body children={<p>Erreur lors de la récupération des factures.</p>} />

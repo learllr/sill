@@ -58,7 +58,10 @@ export default function Quotes() {
     );
   });
 
-  if (isLoading) return <Body children={<p>Chargement des devis...</p>} />;
+  if (isLoading)
+    return (
+      <Body children={<p className="text-sm">Chargement des devis...</p>} />
+    );
   if (error)
     return <Body children={<p>Erreur lors de la récupération des devis.</p>} />;
 

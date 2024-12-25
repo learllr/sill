@@ -40,7 +40,7 @@ export default function ZiedAccounting() {
         />
 
         {isLoading ? (
-          <p className="text-center">Chargement des factures...</p>
+          <p className="text-center text-sm">Chargement des factures...</p>
         ) : error ? (
           <p className="text-center text-red-500">
             Erreur lors de la récupération des factures.

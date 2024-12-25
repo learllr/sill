@@ -1,16 +1,9 @@
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
+import Combobox from "../../common/Buttons/Combobox.jsx";
 
 const formatDate = (value) => {
-  console.log(value);
   const date = new Date(value);
   if (isNaN(date)) return "Non spécifié";
   return date.toLocaleDateString("fr-FR").split("/").join("/");
@@ -24,6 +17,7 @@ const FormField = React.forwardRef(
       type = "text",
       placeholder = "",
       options = [],
+      comboboxOptions = [],
       required = false,
       errors = {},
       value = "",
@@ -46,7 +40,14 @@ const FormField = React.forwardRef(
           {label} {required && <span className="text-red-500">*</span>}
         </label>
         <div>
-          {type === "select" ? (
+          {type === "combobox" ? (
+            <Combobox
+              subjects={comboboxOptions}
+              placeholder={placeholder}
+              defaultValue={value}
+              onSelect={onChange}
+            />
+          ) : type === "select" ? (
             <Select value={value} onValueChange={onChange}>
               <SelectTrigger ref={ref} className="w-full">
                 <SelectValue placeholder={placeholder} />

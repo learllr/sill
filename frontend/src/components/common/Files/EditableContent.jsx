@@ -120,7 +120,7 @@ export default function EditableContent({
   };
 
   if (loading) {
-    return <p className="text-center">Chargement...</p>;
+    return <p className="text-sm">Chargement...</p>;
   }
 
   return (

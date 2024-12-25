@@ -150,7 +150,9 @@ export default function Participants({ typeId }) {
         </ScrollableDialog>
 
         {isLoading ? (
-          <p>Chargement des {titlePlural.toLowerCase()}...</p>
+          <p className="text-sm">
+            Chargement des {titlePlural.toLowerCase()}...
+          </p>
         ) : error ? (
           <p className="text-red-500">
             Erreur lors de la récupération des {titlePlural.toLowerCase()}.

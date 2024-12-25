@@ -1,5 +1,5 @@
 import db from "../orm/models/index.js";
-const { Quote, Project } = db;
+const { Quote, Project, Participant } = db;
 
 export default class QuoteDAO {
   static async getAllQuotes() {
@@ -30,6 +30,11 @@ export default class QuoteDAO {
         {
           model: Project,
           as: "project",
+          attributes: ["name"],
+        },
+        {
+          model: Participant,
+          as: "participant",
           attributes: ["name"],
         },
       ],

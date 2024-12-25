@@ -57,7 +57,10 @@ export default function QuoteDetails() {
     formState: { errors },
   } = useForm();
 
-  if (isLoading) return <Body children={<p>Chargement des détails...</p>} />;
+  if (isLoading)
+    return (
+      <Body children={<p className="text-sm">Chargement des détails...</p>} />
+    );
   if (error)
     return (
       <Body children={<p>Erreur lors de la récupération des détails.</p>} />
@@ -106,16 +109,18 @@ export default function QuoteDetails() {
           value: quote?.status,
         },
         {
-          label: "Participant ID",
-          name: "participantId",
-          type: "number",
-          value: quote?.participantId,
+          label: "Participant",
+          name: "participant",
+          type: "text",
+          value: quote?.participant?.name || "Inconnu",
+          readOnly: true,
         },
         {
-          label: "Project ID",
-          name: "projectId",
-          type: "number",
-          value: quote?.projectId,
+          label: "Projet",
+          name: "project",
+          type: "text",
+          value: quote?.project?.name || "Inconnu",
+          readOnly: true,
         },
         {
           label: "Lot",

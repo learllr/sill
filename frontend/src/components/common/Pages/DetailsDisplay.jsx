@@ -2,16 +2,32 @@ import React from "react";
 
 const DetailsDisplay = ({ data = [] }) => {
   const formatValue = (item) => {
-    const { value, isDate, isPhone, isPrice, isPostalCode } = item;
+    const {
+      value,
+      isDate,
+      isPhone,
+      isPrice,
+      isPostalCode,
+      type,
+      comboboxOptions,
+    } = item;
 
-    if (!value) return "Non spécifié";
+    if (!value && type !== "combobox") return "Non spécifié";
 
     switch (true) {
+      case type === "combobox": {
+        const selectedOption = comboboxOptions?.find(
+          (option) => option.value === value
+        );
+        return selectedOption?.label || "Non spécifié";
+      }
+
       case isDate: {
         const date = new Date(value);
         if (isNaN(date)) return value;
         return date.toLocaleDateString("fr-FR").split("/").join("/");
       }
+
       case isPhone:
         return typeof value === "string"
           ? value.replace(/(\d{2})(?=\d)/g, "$1 ")
@@ -26,7 +42,7 @@ const DetailsDisplay = ({ data = [] }) => {
           : "Non spécifié";
 
       default:
-        return value;
+        return value || "Non spécifié";
     }
   };
 

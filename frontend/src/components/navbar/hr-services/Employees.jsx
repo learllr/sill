@@ -28,7 +28,10 @@ export default function Employees() {
       employee.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (isLoading) return <Body children={<p>Chargement des salariés...</p>} />;
+  if (isLoading)
+    return (
+      <Body children={<p className="text-sm">Chargement des salariés...</p>} />
+    );
   if (error)
     return (
       <Body children={<p>Erreur lors de la récupération des salariés.</p>} />

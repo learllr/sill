@@ -67,7 +67,10 @@ export default function Projects() {
     );
   });
 
-  if (isLoading) return <Body children={<p>Chargement des chantiers...</p>} />;
+  if (isLoading)
+    return (
+      <Body children={<p className="text-sm">Chargement des chantiers...</p>} />
+    );
   if (error)
     return (
       <Body children={<p>Erreur lors de la récupération des chantiers.</p>} />

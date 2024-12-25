@@ -40,6 +40,7 @@ export default function DynamicForm({ fields, onSubmit, onCancel }) {
                     errors={errors}
                     value={value}
                     onChange={onChange}
+                    comboboxOptions={field.comboboxOptions || []}
                     {...restField}
                   />
                 )}

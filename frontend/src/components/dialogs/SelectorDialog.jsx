@@ -80,7 +80,7 @@ export default function SelectorDialog({
         </DialogHeader>
 
         {isLoading ? (
-          <p className="text-center py-4 text-gray-600">
+          <p className="text-center py-4 text-gray-600 text-sm">
             Chargement des {titlePlural}...
           </p>
         ) : error ? (

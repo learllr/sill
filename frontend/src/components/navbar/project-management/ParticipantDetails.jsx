@@ -61,7 +61,10 @@ export default function ParticipantDetails({ typeId, typeName }) {
     formState: { errors },
   } = useForm();
 
-  if (isLoading) return <Body children={<p>Chargement des détails...</p>} />;
+  if (isLoading)
+    return (
+      <Body children={<p className="text-sm">Chargement des détails...</p>} />
+    );
   if (error)
     return (
       <Body children={<p>Erreur lors de la récupération des détails.</p>} />

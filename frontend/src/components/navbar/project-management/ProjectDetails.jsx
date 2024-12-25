@@ -89,7 +89,10 @@ export default function ProjectDetails() {
     }
   };
 
-  if (!project) return <Body children={<p>Chargement du chantier...</p>} />;
+  if (!project)
+    return (
+      <Body children={<p className="text-sm">Chargement du chantier...</p>} />
+    );
 
   return (
     <Body>
