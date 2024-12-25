@@ -19,6 +19,19 @@ export default function QuoteDetails() {
     return response.data;
   };
 
+  const fetchParticipants = async () => {
+    const typeIds = [1, 2, 3, 4];
+    const responses = await Promise.all(
+      typeIds.map((typeId) => axios.get(`/participant/${typeId}`))
+    );
+    return responses.flatMap((response) => response.data);
+  };
+
+  const fetchProjects = async () => {
+    const response = await axios.get("/project");
+    return response.data;
+  };
+
   const updateQuote = useMutation(
     async (updatedQuote) => {
       const response = await axios.put(`/quote/${id}`, updatedQuote);
@@ -50,21 +63,22 @@ export default function QuoteDetails() {
     error,
   } = useQuery(["quote", id], fetchQuoteById);
 
+  const { data: participants, isLoading: isLoadingParticipants } = useQuery(
+    "participants",
+    fetchParticipants
+  );
+
+  const { data: projects, isLoading: isLoadingProjects } = useQuery(
+    "projects",
+    fetchProjects
+  );
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-
-  if (isLoading)
-    return (
-      <Body children={<p className="text-sm">Chargement des détails...</p>} />
-    );
-  if (error)
-    return (
-      <Body children={<p>Erreur lors de la récupération des détails.</p>} />
-    );
 
   const onSubmit = (data) => {
     updateQuote.mutate(data);
@@ -89,13 +103,13 @@ export default function QuoteDetails() {
           name: "title",
           type: "text",
           required: true,
-          value: quote?.title,
+          value: quote?.title || "",
         },
         {
           label: "Numéro du devis",
           name: "quoteNumber",
           type: "text",
-          value: quote?.quoteNumber,
+          value: quote?.quoteNumber || "",
         },
         {
           label: "Statut",
@@ -106,34 +120,40 @@ export default function QuoteDetails() {
             { value: "Accepté", label: "Accepté" },
             { value: "Rejeté", label: "Rejeté" },
           ],
-          value: quote?.status,
+          value: quote?.status || "",
         },
         {
           label: "Participant",
-          name: "participant",
-          type: "text",
-          value: quote?.participant?.name || "Inconnu",
-          readOnly: true,
+          name: "participantId",
+          type: "combobox",
+          value: quote?.participantId || "",
+          comboboxOptions: participants?.map((p) => ({
+            value: p.id,
+            label: p.name,
+          })),
         },
         {
           label: "Projet",
-          name: "project",
-          type: "text",
-          value: quote?.project?.name || "Inconnu",
-          readOnly: true,
+          name: "projectId",
+          type: "combobox",
+          value: quote?.projectId || "",
+          comboboxOptions: projects?.map((p) => ({
+            value: p.id,
+            label: p.name,
+          })),
         },
         {
           label: "Lot",
           name: "lot",
           type: "text",
-          value: quote?.lot,
+          value: quote?.lot || "",
         },
         {
           label: "Date d'envoi",
           name: "sentOn",
           type: "text",
           isDate: true,
-          value: quote?.sentOn,
+          value: quote?.sentOn || "",
         },
         {
           label: "Remarques",
@@ -144,6 +164,16 @@ export default function QuoteDetails() {
       ],
     },
   ];
+
+  if (isLoading || isLoadingParticipants || isLoadingProjects)
+    return (
+      <Body children={<p className="text-sm">Chargement des données...</p>} />
+    );
+
+  if (error)
+    return (
+      <Body children={<p>Erreur lors de la récupération des détails.</p>} />
+    );
 
   return (
     <Body>
