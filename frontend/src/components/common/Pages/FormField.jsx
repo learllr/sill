@@ -24,7 +24,6 @@ const FormField = React.forwardRef(
       value = "",
       onChange,
       isDate = false,
-      register,
       ...rest
     },
     ref
@@ -62,7 +61,6 @@ const FormField = React.forwardRef(
             </Select>
           ) : type === "textarea" ? (
             <Textarea
-              {...(register && register(name))}
               ref={ref}
               id={name}
               name={name}
@@ -74,7 +72,6 @@ const FormField = React.forwardRef(
             />
           ) : (
             <Input
-              {...(register && register(name))}
               ref={ref}
               id={name}
               name={name}

@@ -90,9 +90,12 @@ export default function Participants({ typeId }) {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nom
-            </label>
+            <div className="flex flex-row space-x-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nom
+              </label>
+              <span className="text-red-500">*</span>
+            </div>
             <Input
               {...register("name", { required: "Nom requis" })}
               placeholder={`Nom ${titleSingular.toLowerCase()}`}

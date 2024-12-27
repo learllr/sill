@@ -98,9 +98,12 @@ export default function Projects() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nom
-            </label>
+            <div className="flex flex-row space-x-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nom
+              </label>
+              <span className="text-red-500">*</span>
+            </div>
             <Input
               {...register("name", { required: "Nom requis" })}
               placeholder="Nom du chantier"
@@ -110,9 +113,12 @@ export default function Projects() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Statut
-            </label>
+            <div className="flex flex-row space-x-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Statut
+              </label>
+              <span className="text-red-500">*</span>
+            </div>
             <select
               {...register("status", { required: "Statut requis" })}
               className="border rounded-md px-3 py-2 text-sm w-full"

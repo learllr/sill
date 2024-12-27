@@ -84,9 +84,12 @@ export default function Quotes() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Titre
-            </label>
+            <div className="flex flex-row space-x-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Titre
+              </label>
+              <span className="text-red-500">*</span>
+            </div>
             <Input
               {...register("title", { required: "Titre requis" })}
               placeholder="Titre du devis"
@@ -98,9 +101,12 @@ export default function Quotes() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Numéro de devis
-            </label>
+            <div className="flex flex-row space-x-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Numéro de devis
+              </label>
+              <span className="text-red-500">*</span>
+            </div>
             <Input
               {...register("quoteNumber", { required: "Numéro requis" })}
               placeholder="Numéro du devis"

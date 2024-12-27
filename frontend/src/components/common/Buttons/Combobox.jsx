@@ -36,6 +36,8 @@ export default function Combobox({
     if (onSelect) onSelect(currentValue);
   };
 
+  const options = [{ label: "Aucun", value: 0 }, ...subjects];
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -46,7 +48,7 @@ export default function Combobox({
           className="w-full justify-between font-normal"
         >
           {value
-            ? subjects.find((subject) => subject.value === value)?.label
+            ? options.find((option) => option.value === value)?.label
             : placeholder || "Sélectionnez une option..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -61,27 +63,28 @@ export default function Combobox({
             <CommandList>
               <CommandEmpty>Aucune option trouvée.</CommandEmpty>
               <CommandGroup>
-                {subjects
-                  .filter((subject) =>
-                    subject.label
+                {options
+                  .filter((option) =>
+                    option.label
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
                   )
-                  .map((subject) => (
+                  .map((option) => (
                     <CommandItem
-                      key={subject.value}
-                      value={subject.value}
-                      onSelect={() => handleSelect(subject.value)}
+                      key={option.value}
+                      value={option.value}
+                      onSelect={() => handleSelect(option.value)}
+                      className="cursor-pointer"
                     >
                       <span
                         dangerouslySetInnerHTML={{
-                          __html: highlightText(subject.label, searchTerm),
+                          __html: highlightText(option.label, searchTerm),
                         }}
                       />
                       <Check
                         className={cn(
                           "ml-auto",
-                          value === subject.value ? "opacity-100" : "opacity-0"
+                          value === option.value ? "opacity-100" : "opacity-0"
                         )}
                       />
                     </CommandItem>

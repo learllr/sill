@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -6,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { highlightText } from "../../../../utils/textUtils.js";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body";
+import DynamicForm from "../../common/Pages/DynamicForm.jsx";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
 import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
 
@@ -20,6 +20,19 @@ export default function Invoices() {
     return response.data;
   };
 
+  const fetchParticipants = async () => {
+    const typeIds = [1, 2, 3, 4];
+    const responses = await Promise.all(
+      typeIds.map((typeId) => axios.get(`/participant/${typeId}`))
+    );
+    return responses.flatMap((response) => response.data);
+  };
+
+  const fetchProjects = async () => {
+    const response = await axios.get("/project");
+    return response.data;
+  };
+
   const createInvoice = useMutation(
     async (newInvoice) => {
       const response = await axios.post("/invoice", newInvoice);
@@ -30,6 +43,9 @@ export default function Invoices() {
         queryClient.invalidateQueries("invoices");
         setIsDialogOpen(false);
       },
+      onError: (error) => {
+        alert("Erreur : Impossible de créer la facture. Vérifiez les données.");
+      },
     }
   );
 
@@ -38,6 +54,16 @@ export default function Invoices() {
     isLoading,
     error,
   } = useQuery("invoices", fetchInvoices);
+
+  const { data: participants, isLoading: isLoadingParticipants } = useQuery(
+    "participants",
+    fetchParticipants
+  );
+
+  const { data: projects, isLoading: isLoadingProjects } = useQuery(
+    "projects",
+    fetchProjects
+  );
 
   const {
     register,
@@ -62,7 +88,7 @@ export default function Invoices() {
     );
   });
 
-  if (isLoading)
+  if (isLoading || isLoadingParticipants || isLoadingProjects)
     return (
       <Body children={<p className="text-sm">Chargement des factures...</p>} />
     );
@@ -70,6 +96,56 @@ export default function Invoices() {
     return (
       <Body children={<p>Erreur lors de la récupération des factures.</p>} />
     );
+
+  const fields = [
+    {
+      items: [
+        {
+          label: "Titre",
+          name: "title",
+          type: "text",
+          required: true,
+        },
+        {
+          label: "Numéro de facture",
+          name: "invoiceNumber",
+          type: "text",
+          required: true,
+        },
+        {
+          label: "Payé le",
+          name: "paidOn",
+          type: "text",
+          isDate: true,
+        },
+        {
+          label: "Projet",
+          name: "projectId",
+          type: "combobox",
+          value: 0,
+          comboboxOptions: projects?.map((p) => ({
+            value: p.id,
+            label: p.name,
+          })),
+        },
+        {
+          label: "Participant",
+          name: "participantId",
+          type: "combobox",
+          value: 0,
+          comboboxOptions: participants?.map((p) => ({
+            value: p.id,
+            label: p.name,
+          })),
+        },
+        {
+          label: "Description",
+          name: "description",
+          type: "textarea",
+        },
+      ],
+    },
+  ];
 
   return (
     <Body>
@@ -89,34 +165,16 @@ export default function Invoices() {
           description="Remplissez le formulaire ci-dessous pour ajouter une facture à la liste."
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Titre
-            </label>
-            <Input
-              {...register("title", { required: "Titre requis" })}
-              placeholder="Titre de la facture"
-            />
-            {errors.title && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.title.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Numéro de facture
-            </label>
-            <Input
-              {...register("invoiceNumber", { required: "Numéro requis" })}
-              placeholder="Numéro de la facture"
-            />
-            {errors.invoiceNumber && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.invoiceNumber.message}
-              </p>
-            )}
-          </div>
+          <DynamicForm
+            fields={fields}
+            register={register}
+            errors={errors}
+            isDialog={true}
+            onSubmit={(data) => {
+              updateInvoice.mutate(data);
+            }}
+            onCancel={() => setIsEditing(false)}
+          />
         </ScrollableDialog>
 
         {filteredInvoices?.length > 0 ? (
