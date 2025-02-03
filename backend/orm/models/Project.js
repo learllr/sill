@@ -24,9 +24,6 @@ export default (sequelize) => {
         type: DataTypes.ENUM("Non commencé", "En cours", "Terminé"),
         allowNull: false,
         defaultValue: "Non commencé",
-        validate: {
-          isIn: [["Non commencé", "En cours", "Terminé"]],
-        },
       },
     },
     {

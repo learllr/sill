@@ -134,6 +134,8 @@ export default function ParticipantDetails({ typeId, typeName }) {
           name: "website",
           type: "text",
           value: participant?.website,
+          link: participant?.website,
+          isExternal: true,
         },
       ],
     },

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const DetailsDisplay = ({ data = [] }) => {
   const formatValue = (item) => {
@@ -10,40 +11,73 @@ const DetailsDisplay = ({ data = [] }) => {
       isPostalCode,
       type,
       comboboxOptions,
+      link,
+      isExternal = false,
     } = item;
 
     if (!value && type !== "combobox") return "Non spécifié";
+
+    let formattedValue;
 
     switch (true) {
       case type === "combobox": {
         const selectedOption = comboboxOptions?.find(
           (option) => option.value === value
         );
-        return selectedOption?.label || "Non spécifié";
+        formattedValue = selectedOption?.label || "Non spécifié";
+        break;
       }
 
       case isDate: {
         const date = new Date(value);
-        if (isNaN(date)) return value;
-        return date.toLocaleDateString("fr-FR").split("/").join("/");
+        formattedValue = isNaN(date)
+          ? value
+          : date.toLocaleDateString("fr-FR").split("/").join("/");
+        break;
       }
 
       case isPhone:
-        return typeof value === "string"
-          ? value.replace(/(\d{2})(?=\d)/g, "$1 ")
-          : "Non spécifié";
+        formattedValue =
+          typeof value === "string"
+            ? value.replace(/(\d{2})(?=\d)/g, "$1 ")
+            : "Non spécifié";
+        break;
 
       case isPrice:
-        return !isNaN(value) ? `${Number(value).toFixed(2)} €` : "Non spécifié";
+        formattedValue = !isNaN(value)
+          ? `${Number(value).toFixed(2)} €`
+          : "Non spécifié";
+        break;
 
       case isPostalCode:
-        return typeof value === "string" && value.length >= 5
-          ? `${value.slice(0, 2)} ${value.slice(2)}`
-          : "Non spécifié";
+        formattedValue =
+          typeof value === "string" && value.length >= 5
+            ? `${value.slice(0, 2)} ${value.slice(2)}`
+            : "Non spécifié";
+        break;
 
       default:
-        return value || "Non spécifié";
+        formattedValue = value || "Non spécifié";
     }
+
+    if (link) {
+      return isExternal ? (
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline"
+        >
+          {formattedValue}
+        </a>
+      ) : (
+        <Link to={link} className="text-blue-600 hover:underline">
+          {formattedValue}
+        </Link>
+      );
+    }
+
+    return formattedValue;
   };
 
   const isSection = (item) => Array.isArray(item.items);

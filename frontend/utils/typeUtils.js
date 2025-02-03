@@ -1,9 +1,9 @@
 export const typeMapping = {
-  1: { singular: "Client", plural: "Clients" },
-  2: { singular: "Fournisseur", plural: "Fournisseurs" },
-  3: { singular: "Sous-traitant", plural: "Sous-traitants" },
-  4: { singular: "Architecte", plural: "Architectes" },
-  employees: { singular: "Salarié", plural: "Salariés" },
+  1: { singular: "client", plural: "clients" },
+  2: { singular: "fournisseur", plural: "fournisseurs" },
+  3: { singular: "sous-traitant", plural: "sous-traitants" },
+  4: { singular: "architecte", plural: "architectes" },
+  employees: { singular: "salarié", plural: "salariés" },
 };
 
 export const getTypeName = (typeId, isPlural = true) => {

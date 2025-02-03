@@ -7,6 +7,7 @@ import Body from "../../common/Body";
 import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
 import DynamicForm from "../../common/Pages/DynamicForm";
+import { getTypeName } from "../../../../utils/typeUtils.js";
 
 export default function QuoteDetails() {
   const { id } = useParams();
@@ -126,6 +127,12 @@ export default function QuoteDetails() {
             value: p.id,
             label: p.name,
           })),
+          link: quote?.participantId
+            ? `/${getTypeName(
+                participants?.find((p) => p.id === quote.participantId)?.typeId,
+                false
+              )}/${quote.participantId}`
+            : null,
         },
         {
           label: "Projet",
@@ -136,6 +143,7 @@ export default function QuoteDetails() {
             value: p.id,
             label: p.name,
           })),
+          link: quote?.projectId ? `/chantier/${quote.projectId}` : null,
         },
         {
           label: "Lot",

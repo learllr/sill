@@ -8,6 +8,7 @@ export default class ParticipantDAO {
       attributes: [
         "id",
         "name",
+        "typeId",
         "contactPerson",
         "phone",
         "email",
@@ -25,6 +26,7 @@ export default class ParticipantDAO {
       attributes: [
         "id",
         "name",
+        "typeId",
         "contactPerson",
         "phone",
         "email",

@@ -7,6 +7,7 @@ import Body from "../../common/Body";
 import DetailsDisplay from "../../common/Pages/DetailsDisplay.jsx";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions.jsx";
 import DynamicForm from "../../common/Pages/DynamicForm";
+import { getTypeName } from "../../../../utils/typeUtils.js";
 
 export default function InvoiceDetails() {
   const { id } = useParams();
@@ -115,6 +116,13 @@ export default function InvoiceDetails() {
             value: p.id,
             label: p.name,
           })),
+          link: invoice?.participantId
+            ? `/${getTypeName(
+                participants?.find((p) => p.id === invoice.participantId)
+                  ?.typeId,
+                false
+              )}/${invoice.participantId}`
+            : null,
         },
         {
           label: "Projet",
@@ -125,6 +133,7 @@ export default function InvoiceDetails() {
             value: p.id,
             label: p.name,
           })),
+          link: invoice?.projectId ? `/chantier/${invoice.projectId}` : null,
         },
         {
           label: "Lot",
