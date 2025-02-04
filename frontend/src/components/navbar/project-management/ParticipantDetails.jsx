@@ -146,8 +146,6 @@ export default function ParticipantDetails({ typeId, typeName }) {
       <div className="px-4 w-full">
         <DetailsHeaderActions
           title={participant?.name}
-          navigateBack={navigate}
-          backUrl={`/${typeName}s`}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />

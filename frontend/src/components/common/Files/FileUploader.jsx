@@ -7,7 +7,7 @@ export default function FileUploader({
   onFileUpload,
   file = null,
   onRemoveFile,
-  onCancel, // Nouveau prop pour annuler et revenir à FileDisplay
+  onCancel,
 }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileTitle, setFileTitle] = useState(file?.title || "");
@@ -49,66 +49,81 @@ export default function FileUploader({
       setError("Le titre doit contenir au moins 3 caractères.");
       return;
     }
+    console.log(selectedFile);
     onFileUpload?.({ file: selectedFile.file, title: fileTitle });
     handleClearPreview();
   };
 
   return (
-    <div className="relative w-full max-w-md mx-auto flex flex-col items-center">
-      <label
-        htmlFor="file-upload"
-        className="cursor-pointer w-full h-52 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 relative"
-      >
-        {isPreviewVisible ? (
-          <FilePreview
-            file={selectedFile?.file}
-            fileName={selectedFile?.fileName || file?.fileName}
-            title={fileTitle}
-            onRemove={handleClearPreview}
+    <div className="w-full max-w-3xl mx-auto flex items-center justify-center space-x-6">
+      {/* Colonne 1 : Aperçu du fichier */}
+      <div className="w-full flex justify-center">
+        <label
+          htmlFor="file-upload"
+          className="cursor-pointer w-full h-40 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 relative"
+        >
+          {isPreviewVisible ? (
+            <FilePreview
+              file={selectedFile?.file}
+              fileName={selectedFile?.fileName || file?.fileName}
+              title={fileTitle}
+              onRemove={handleClearPreview}
+            />
+          ) : (
+            <div className="text-gray-500 text-center">
+              <p className="text-4xl font-bold">+</p>
+              <p className="text-sm">Ajouter un document</p>
+            </div>
+          )}
+          <input
+            id="file-upload"
+            type="file"
+            accept=".jpg,.jpeg,.png,.pdf,.docx"
+            onChange={handleFileChange}
+            className="hidden"
           />
-        ) : (
-          <div className="text-gray-500 text-center">
-            <p className="text-4xl font-bold">+</p>
-            <p className="text-sm">Cliquez pour ajouter un document</p>
-          </div>
-        )}
-        <input
-          id="file-upload"
-          type="file"
-          accept=".jpg,.jpeg,.png,.pdf,.docx"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-      </label>
+        </label>
+      </div>
 
-      <div className="flex items-center space-x-4 w-full mt-4">
-        <input
-          type="text"
-          value={fileTitle}
-          onChange={(e) => setFileTitle(e.target.value)}
-          className="border rounded p-2 w-full"
-        />
-        <Button onClick={handleUpload}>Enregistrer</Button>
-        {file && onRemoveFile && (
+      {/* Colonne 2 : Titre et boutons */}
+      <div className="w-full flex flex-col items-center justify-center space-y-5">
+        <div className="w-full space-y-1">
+          <label className="text-sm font-medium text-gray-700">
+            Titre du document
+          </label>
+          <input
+            type="text"
+            value={fileTitle}
+            onChange={(e) => setFileTitle(e.target.value)}
+            className="border rounded p-2 w-full text-sm"
+          />
+        </div>
+
+        <div className="flex space-x-2 w-full justify-center">
+          <Button onClick={handleUpload} className="w-1/2">
+            Enregistrer
+          </Button>
+          <Button variant="secondary" onClick={onCancel} className="w-1/2">
+            Annuler
+          </Button>
+        </div>
+      </div>
+
+      {/* Colonne 3 : Trash */}
+      {file && onRemoveFile && (
+        <div className="flex items-center justify-center">
           <button
             onClick={onRemoveFile}
-            className="bg-red-600 text-white rounded-full p-2 hover:bg-red-700"
+            className="text-red-600 hover:text-red-800"
           >
-            <FaTrashAlt />
+            <FaTrashAlt size={20} />
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
-      <div className="flex justify-between w-full mt-4">
-        <button
-          onClick={onCancel}
-          className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-        >
-          Annuler
-        </button>
-      </div>
-
-      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+      {error && (
+        <p className="text-red-500 text-sm text-center mt-2 w-full">{error}</p>
+      )}
     </div>
   );
 }

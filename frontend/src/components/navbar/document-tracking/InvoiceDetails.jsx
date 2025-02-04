@@ -173,8 +173,6 @@ export default function InvoiceDetails() {
       <div className="px-4 w-full">
         <DetailsHeaderActions
           title={invoice?.title}
-          navigateBack={navigate}
-          backUrl="/factures"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />

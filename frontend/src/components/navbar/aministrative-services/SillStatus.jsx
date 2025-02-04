@@ -11,10 +11,8 @@ export default function StatutSILL() {
       <div className="px-4 w-full">
         <DetailsHeaderActions
           title="Statut SILL"
-          navigateBack={() => window.history.back()}
           onEdit={() => setIsEditing(!isEditing)}
           onDelete={() => {}}
-          backUrl="/"
           showRemoveButton={false}
         />
         <EditableContentManager

@@ -71,7 +71,7 @@ export default function DynamicForm({
         </div>
       ))}
       {!isDialog && (
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-center space-x-4">
           <Button type="button" onClick={onCancel} variant="secondary">
             Annuler
           </Button>

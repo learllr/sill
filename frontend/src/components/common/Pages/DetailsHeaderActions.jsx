@@ -4,10 +4,8 @@ import React from "react";
 
 export default function DetailsHeaderActions({
   title,
-  navigateBack,
   onEdit,
   onDelete,
-  backUrl,
   showRemoveButton = true,
 }) {
   return (
@@ -15,7 +13,7 @@ export default function DetailsHeaderActions({
       <div className="flex flex-row space-x-3 items-center">
         <ArrowLeft
           className="text-xl cursor-pointer text-gray-600 hover:text-gray-800"
-          onClick={() => navigateBack(backUrl)}
+          onClick={() => window.history.back()}
         />
         <h1 className="text-2xl font-semibold">{title}</h1>
       </div>

@@ -220,8 +220,6 @@ export default function EmployeeDetails() {
       <div className="px-4 w-full">
         <DetailsHeaderActions
           title={`${employee?.firstName} ${employee?.lastName}`}
-          navigateBack={navigate}
-          backUrl="/salariés"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />

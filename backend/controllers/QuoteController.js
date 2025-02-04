@@ -23,6 +23,28 @@ export const getQuoteById = async (req, res) => {
   }
 };
 
+export const getQuotesByProjectAndParticipant = async (req, res) => {
+  try {
+    const { participantId, projectId } = req.params;
+
+    const quotes = await QuoteDAO.getQuotesByProjectAndParticipant(
+      projectId,
+      participantId
+    );
+
+    if (!quotes || quotes.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "Aucun devis trouvé pour ce participant et ce projet" });
+    }
+
+    res.status(200).json(quotes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la récupération des devis" });
+  }
+};
+
 export const createQuote = async (req, res) => {
   try {
     const { title, typeId, projectId, status, quoteNumber, sentOn, remarks } =

@@ -11,10 +11,8 @@ export default function Bank() {
       <div className="px-4 w-full">
         <DetailsHeaderActions
           title="Banque"
-          navigateBack={() => window.history.back()}
           onEdit={() => setIsEditing(!isEditing)}
           onDelete={() => {}}
-          backUrl="/"
           showRemoveButton={false}
         />
         <EditableContentManager

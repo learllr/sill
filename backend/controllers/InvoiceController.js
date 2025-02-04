@@ -26,6 +26,31 @@ export const getInvoiceById = async (req, res) => {
   }
 };
 
+export const getInvoicesByProjectAndParticipant = async (req, res) => {
+  try {
+    const { projectId, participantId } = req.params;
+    const invoices = await InvoiceDAO.getInvoicesByProjectAndParticipant(
+      participantId,
+      projectId
+    );
+
+    if (!invoices || invoices.length === 0) {
+      return res
+        .status(404)
+        .json({
+          error: "Aucune facture trouvée pour ce participant et ce projet",
+        });
+    }
+
+    res.status(200).json(invoices);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des factures :", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des factures" });
+  }
+};
+
 export const createInvoice = async (req, res) => {
   try {
     const invoiceData = req.body;

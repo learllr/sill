@@ -7,11 +7,6 @@ export const typeMapping = {
 };
 
 export const getTypeName = (typeId, isPlural = true) => {
-  if (typeId === "employees") {
-    const type = typeMapping.employees;
-    return isPlural ? type.plural : type.singular;
-  }
-
   const type = typeMapping[typeId];
 
   return type

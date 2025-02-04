@@ -48,6 +48,25 @@ export default class InvoiceDAO {
     });
   }
 
+  static async getInvoicesByProjectAndParticipant(participantId, projectId) {
+    return await Invoice.findAll({
+      where: {
+        participantId,
+        projectId,
+      },
+      attributes: [
+        "id",
+        "title",
+        "invoiceNumber",
+        "lot",
+        "paidOn",
+        "remarks",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
+  }
+
   static async createInvoice(invoiceData) {
     return await Invoice.create(invoiceData);
   }

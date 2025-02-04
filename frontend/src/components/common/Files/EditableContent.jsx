@@ -87,7 +87,7 @@ export default function EditableContent({
   }
 
   return (
-    <div className="w-full text-center">
+    <>
       {isEditing ? (
         <FileUploader
           onFileUpload={handleFileUpload}
@@ -98,6 +98,6 @@ export default function EditableContent({
       ) : (
         <FileDisplay file={existingFileData[0] || null} />
       )}
-    </div>
+    </>
   );
 }

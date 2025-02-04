@@ -7,6 +7,7 @@ import Body from "../../common/Body";
 import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
 import DynamicForm from "../../common/Pages/DynamicForm";
+import EditableContentManager from "../../common/Files/EditableContentManager";
 import { getTypeName } from "../../../../utils/typeUtils.js";
 
 export default function QuoteDetails() {
@@ -170,12 +171,16 @@ export default function QuoteDetails() {
 
   if (isLoading || isLoadingParticipants || isLoadingProjects)
     return (
-      <Body children={<p className="text-sm">Chargement des données...</p>} />
+      <Body>
+        <p className="text-sm">Chargement des données...</p>
+      </Body>
     );
 
   if (error)
     return (
-      <Body children={<p>Erreur lors de la récupération des détails.</p>} />
+      <Body>
+        <p>Erreur lors de la récupération des détails.</p>
+      </Body>
     );
 
   return (
@@ -183,30 +188,40 @@ export default function QuoteDetails() {
       <div className="px-4 w-full">
         <DetailsHeaderActions
           title={quote?.title}
-          navigateBack={navigate}
-          backUrl="/devis"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
 
-        <div className="p-4 border border-gray-300 bg-white">
-          <h1 className="text-xl font-semibold text-gray-900 mb-3">
-            Détails du devis
-          </h1>
+        <div className="flex space-x-6 p-4 border border-gray-300 bg-white">
+          <div className="w-1/2 ">
+            <h1 className="text-xl font-semibold text-gray-900 mb-3">
+              Détails du devis
+            </h1>
 
-          {isEditing ? (
-            <DynamicForm
-              fields={fields}
-              register={register}
-              errors={errors}
-              onSubmit={(data) => {
-                updateQuote.mutate(data);
-              }}
-              onCancel={() => setIsEditing(false)}
+            {isEditing ? (
+              <DynamicForm
+                fields={fields}
+                register={register}
+                errors={errors}
+                onSubmit={(data) => {
+                  updateQuote.mutate(data);
+                }}
+                onCancel={() => setIsEditing(false)}
+              />
+            ) : (
+              <DetailsDisplay data={fields} />
+            )}
+          </div>
+
+          <div className="w-1/2 flex items-center">
+            <EditableContentManager
+              documentTypeId={16}
+              allowMultiple={false}
+              showRemoveButton={false}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
             />
-          ) : (
-            <DetailsDisplay data={fields} />
-          )}
+          </div>
         </div>
       </div>
     </Body>

@@ -41,6 +41,28 @@ export default class QuoteDAO {
     });
   }
 
+  static async getQuotesByProjectAndParticipant(projectId, participantId) {
+    console.log(projectId, participantId);
+    return await Quote.findAll({
+      where: {
+        participantId,
+        projectId,
+      },
+      attributes: [
+        "id",
+        "title",
+        "imagePath",
+        "lot",
+        "status",
+        "quoteNumber",
+        "sentOn",
+        "remarks",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
+  }
+
   static async createQuote(quoteData) {
     return await Quote.create(quoteData);
   }
