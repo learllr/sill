@@ -1,58 +1,25 @@
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
-import { FaFilePdf, FaFileWord } from "react-icons/fa";
+import { FaTrashAlt } from "react-icons/fa";
+import FilePreview from "./FilePreview";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-export default function FileUploader({ onFileUpload, defaultData = null }) {
+export default function FileUploader({
+  onFileUpload,
+  file = null,
+  onRemoveFile,
+  onCancel, // Nouveau prop pour annuler et revenir à FileDisplay
+}) {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewContent, setPreviewContent] = useState(null);
-  const [fileTitle, setFileTitle] = useState("");
+  const [fileTitle, setFileTitle] = useState(file?.title || "");
   const [error, setError] = useState("");
+  const [isPreviewVisible, setIsPreviewVisible] = useState(!!file);
 
   useEffect(() => {
-    if (defaultData) {
-      setFileTitle(defaultData.title || "");
-      setSelectedFile({
-        file: null,
-        size: null,
-        displayType: getDisplayType(defaultData.fileName),
-      });
-
-      if (defaultData.fileName) {
-        const fileType = defaultData.fileName.split(".").pop();
-        if (["jpg", "jpeg", "png"].includes(fileType)) {
-          setPreviewContent(
-            <img
-              src={`${BASE_URL}/uploads/${defaultData.fileName}`}
-              alt="Aperçu"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          );
-        } else if (fileType === "pdf") {
-          setPreviewContent(
-            <div className="flex justify-center items-center w-full h-full">
-              <FaFilePdf size={100} className="text-red-600" />
-            </div>
-          );
-        } else if (fileType === "docx") {
-          setPreviewContent(
-            <div className="flex justify-center items-center w-full h-full">
-              <FaFileWord size={100} className="text-blue-600" />
-            </div>
-          );
-        }
-      }
+    if (file) {
+      setSelectedFile({ file: null, fileName: file.fileName });
+      setIsPreviewVisible(true);
     }
-  }, [defaultData]);
-
-  const getDisplayType = (fileName) => {
-    const fileType = fileName.split(".").pop();
-    if (["jpg", "jpeg", "png"].includes(fileType)) return "Image";
-    if (fileType === "pdf") return "PDF";
-    if (fileType === "docx") return "Word";
-    return "Fichier";
-  };
+  }, [file]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -61,60 +28,15 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
         setError("La taille du document ne doit pas dépasser 5 Mo.");
         return;
       }
-
-      let fileTypeDisplay = "";
-      if (file.type.startsWith("image/")) {
-        const url = URL.createObjectURL(file);
-        setPreviewContent(
-          <img
-            src={url}
-            alt="Aperçu"
-            className="w-full h-full object-cover rounded-lg"
-          />
-        );
-        fileTypeDisplay = "Image";
-      } else if (file.type === "application/pdf") {
-        setPreviewContent(
-          <div className="flex justify-center items-center w-full h-full">
-            <FaFilePdf size={100} className="text-red-600" />
-          </div>
-        );
-        fileTypeDisplay = "PDF";
-      } else if (
-        file.type === "application/msword" ||
-        file.type ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      ) {
-        setPreviewContent(
-          <div className="flex justify-center items-center w-full h-full">
-            <FaFileWord size={100} className="text-blue-600" />
-          </div>
-        );
-        fileTypeDisplay = "Word";
-      } else {
-        setError("Type de fichier non supporté.");
-        return;
-      }
-
-      setSelectedFile({ file, size: file.size, displayType: fileTypeDisplay });
+      setSelectedFile({ file, fileName: file.name });
       setError("");
+      setIsPreviewVisible(true);
     }
   };
 
-  const handleTitleChange = (event) => {
-    const value = event.target.value;
-
-    if (value.length > 75) {
-      setError("Le titre ne peut pas dépasser 75 caractères.");
-    } else {
-      setFileTitle(value);
-      setError("");
-    }
-  };
-
-  const handleRemoveFile = () => {
+  const handleClearPreview = () => {
     setSelectedFile(null);
-    setPreviewContent(null);
+    setIsPreviewVisible(false);
     setError("");
   };
 
@@ -123,107 +45,70 @@ export default function FileUploader({ onFileUpload, defaultData = null }) {
       setError("Veuillez ajouter un document.");
       return;
     }
-
     if (!fileTitle || fileTitle.length < 3) {
       setError("Le titre doit contenir au moins 3 caractères.");
       return;
     }
-
-    if (fileTitle.length > 75) {
-      setError("Le titre ne peut pas dépasser 75 caractères.");
-      return;
-    }
-
-    onFileUpload?.({
-      file: selectedFile?.file || null,
-      title: fileTitle,
-    });
-
-    handleRemoveFile();
+    onFileUpload?.({ file: selectedFile.file, title: fileTitle });
+    handleClearPreview();
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col items-center space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:space-x-6 w-full">
-        <div
-          className={`hover:bg-slate-50 relative w-full ${
-            previewContent
-              ? ""
-              : "max-w-md mx-auto flex items-center justify-center"
-          }`}
-        >
-          <label
-            htmlFor="file-upload"
-            className={`relative flex justify-center items-center w-full h-52 border-2 border-dashed border-gray-300 rounded-lg transition ${
-              previewContent ? "cursor-default" : "cursor-pointer"
-            }`}
-          >
-            {previewContent ? (
-              <div className="relative w-full h-full">
-                {previewContent}
-                {fileTitle && (
-                  <div className="absolute top-2 left-2 max-w-72 bg-black bg-opacity-70 text-white text-sm px-2 py-1 rounded">
-                    {fileTitle}
-                  </div>
-                )}
-                {selectedFile && (
-                  <>
-                    {selectedFile.size && (
-                      <div className="absolute bottom-2 left-2 bg-white bg-opacity-70 text-black text-sm px-2 py-1 rounded">
-                        {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                      </div>
-                    )}
-                    <div className="absolute bottom-2 right-2 bg-white bg-opacity-70 text-black text-sm px-2 py-1 rounded">
-                      {selectedFile?.displayType}
-                    </div>
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="text-gray-500 text-center">
-                <p className="text-4xl font-bold">+</p>
-                <p className="text-sm">Cliquez pour ajouter un document</p>
-              </div>
-            )}
-            {!selectedFile && (
-              <input
-                id="file-upload"
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf,.docx"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            )}
-          </label>
-
-          {(selectedFile || previewContent) && (
-            <button
-              onClick={handleRemoveFile}
-              className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex justify-center items-center text-sm hover:bg-red-700"
-              aria-label="Supprimer le fichier"
-            >
-              ✕
-            </button>
-          )}
-        </div>
-
-        <div className="flex flex-col w-full mt-4 md:mt-0">
-          <input
-            type="text"
-            value={fileTitle}
-            onChange={handleTitleChange}
-            placeholder="Entrez le titre du document (75 caractères max)"
-            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md p-2"
+    <div className="relative w-full max-w-md mx-auto flex flex-col items-center">
+      <label
+        htmlFor="file-upload"
+        className="cursor-pointer w-full h-52 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 relative"
+      >
+        {isPreviewVisible ? (
+          <FilePreview
+            file={selectedFile?.file}
+            fileName={selectedFile?.fileName || file?.fileName}
+            title={fileTitle}
+            onRemove={handleClearPreview}
           />
-          <Button className="mt-4 w-full md:w-auto" onClick={handleUpload}>
-            Enregistrer
-          </Button>
-        </div>
+        ) : (
+          <div className="text-gray-500 text-center">
+            <p className="text-4xl font-bold">+</p>
+            <p className="text-sm">Cliquez pour ajouter un document</p>
+          </div>
+        )}
+        <input
+          id="file-upload"
+          type="file"
+          accept=".jpg,.jpeg,.png,.pdf,.docx"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </label>
+
+      <div className="flex items-center space-x-4 w-full mt-4">
+        <input
+          type="text"
+          value={fileTitle}
+          onChange={(e) => setFileTitle(e.target.value)}
+          className="border rounded p-2 w-full"
+        />
+        <Button onClick={handleUpload}>Enregistrer</Button>
+        {file && onRemoveFile && (
+          <button
+            onClick={onRemoveFile}
+            className="bg-red-600 text-white rounded-full p-2 hover:bg-red-700"
+          >
+            <FaTrashAlt />
+          </button>
+        )}
       </div>
 
-      {error && (
-        <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
-      )}
+      <div className="flex justify-between w-full mt-4">
+        <button
+          onClick={onCancel}
+          className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+        >
+          Annuler
+        </button>
+      </div>
+
+      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
     </div>
   );
 }

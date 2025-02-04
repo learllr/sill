@@ -1,17 +1,28 @@
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions.jsx";
 import ParticipantSelectorDialog from "../../dialogs/SelectorDialog.jsx";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getTypeName } from "../../../../utils/typeUtils.js";
+import { Trash } from "lucide-react";
 
 export default function ProjectDetails() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [currentSelector, setCurrentSelector] = useState(null);
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
   const fetchProjectDetails = async () => {
@@ -78,7 +89,7 @@ export default function ProjectDetails() {
   };
 
   const handleEdit = () => {
-    navigate(`/project/edit/${id}`);
+    setIsEditing(!isEditing);
   };
 
   const deleteProject = useMutation(
@@ -133,46 +144,95 @@ export default function ProjectDetails() {
 
             return (
               <div key={section} className="m-4 border p-3">
-                <h3 className="font-semibold">
-                  {section === "clients" ? sectionName : `${sectionName}(s)`}
+                <h3 className="font-semibold mb-3">
+                  {participants.length > 1 ? `${sectionName}s` : sectionName}
                 </h3>
-                <ul>
-                  {participants.length > 0 ? (
-                    participants.map((participant) => (
-                      <li
-                        key={participant.id}
-                        className="flex justify-between items-center text-sm"
-                      >
-                        <div>
-                          <p>Nom: {participant.name}</p>
-                          <p>Contact: {participant.contactPerson}</p>
-                          <p>Email: {participant.email}</p>
-                        </div>
-                        <Button
-                          variant="secondary"
-                          onClick={() =>
-                            removeParticipantFromProject(participant)
-                          }
-                          className="ml-4"
+                <Table className="w-full">
+                  <TableHeader>
+                    <TableRow className="flex w-full">
+                      <TableHead className="flex-1 text-center text-gray-800">
+                        Nom
+                      </TableHead>
+                      <TableHead className="flex-1 text-center text-gray-800">
+                        Interlocuteur
+                      </TableHead>
+                      {isEditing && (
+                        <TableHead className="w-1/6 text-center text-gray-800">
+                          Actions
+                        </TableHead>
+                      )}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {participants.length > 0 ? (
+                      participants.map((participant) => (
+                        <TableRow
+                          key={participant.id}
+                          className="flex w-full border-b"
                         >
-                          Supprimer
-                        </Button>
-                      </li>
-                    ))
-                  ) : (
-                    <p className="text-sm">
-                      Aucun {sectionName.toLowerCase()} ajouté.
-                    </p>
-                  )}
-                </ul>
-                {section !== "clients" || participants.length === 0 ? (
+                          <TableCell className="flex-1 text-center text-gray-500 truncate">
+                            <Link
+                              to={`/${getTypeName(
+                                section === "subcontractors"
+                                  ? 3
+                                  : section === "suppliers"
+                                  ? 2
+                                  : section === "clients"
+                                  ? 1
+                                  : 4,
+                                false
+                              )}/${participant.id}`}
+                              className="block w-full h-full"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {participant.name}
+                            </Link>
+                          </TableCell>
+                          <TableCell className="flex-1 text-center text-gray-500 truncate">
+                            <Link
+                              to={`/${section}/${participant.id}`}
+                              className="block w-full h-full"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {participant.contactPerson}
+                            </Link>
+                          </TableCell>
+
+                          {isEditing && (
+                            <TableCell className="w-1/6 text-center">
+                              <button
+                                onClick={() =>
+                                  removeParticipantFromProject(participant)
+                                }
+                                className="text-red-600 bg-red-100 p-1 rounded-full"
+                              >
+                                <Trash className="h-3 w-3 " />
+                              </button>
+                            </TableCell>
+                          )}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow className="flex w-full">
+                        <TableCell
+                          colSpan={isEditing ? 4 : 3}
+                          className="text-center text-gray-500 flex-1"
+                        >
+                          Aucun {sectionName.toLowerCase()} ajouté.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+
+                {isEditing && (
                   <Button
                     onClick={() => setCurrentSelector(section)}
                     className="mt-2"
                   >
                     Ajouter un {sectionName.toLowerCase()}
                   </Button>
-                ) : null}
+                )}
               </div>
             );
           }

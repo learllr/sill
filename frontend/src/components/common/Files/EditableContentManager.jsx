@@ -6,6 +6,9 @@ import EditableContent from "../Files/EditableContent.jsx";
 export default function EditableContentManager({
   documentTypeId,
   allowMultiple = true,
+  showRemoveButton = true,
+  isEditing,
+  setIsEditing,
 }) {
   const [editableContents, setEditableContents] = useState([
     { id: Date.now(), documentTypeId },
@@ -32,15 +35,19 @@ export default function EditableContentManager({
           <EditableContent
             documentTypeId={content.documentTypeId}
             isNew={content.isNew}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
           />
-          <Button
-            onClick={() => removeEditableContent(content.id)}
-            variant="destructive"
-            aria-label="Supprimer ce contenu"
-            className="text-white [&_svg]:!size-3 h-8 w-8 ml-4"
-          >
-            <FaTimes />
-          </Button>
+          {showRemoveButton && (
+            <Button
+              onClick={() => removeEditableContent(content.id)}
+              variant="destructive"
+              aria-label="Supprimer ce contenu"
+              className="text-white [&_svg]:!size-3 h-8 w-8 ml-4"
+            >
+              <FaTimes />
+            </Button>
+          )}
         </div>
       ))}
 

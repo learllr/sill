@@ -1,13 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import Body from "../../common/Body.jsx";
 import EditableContentManager from "../../common/Files/EditableContentManager.jsx";
+import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions.jsx";
 
 export default function StatutSILL() {
+  const [isEditing, setIsEditing] = useState(false);
+
   return (
     <Body>
       <div className="px-4 w-full">
-        <h1 className="text-2xl font-semibold mb-6">Statut SILL</h1>
-        <EditableContentManager documentTypeId={17} allowMultiple={false} />
+        <DetailsHeaderActions
+          title="Statut SILL"
+          navigateBack={() => window.history.back()}
+          onEdit={() => setIsEditing(!isEditing)}
+          onDelete={() => {}}
+          backUrl="/"
+          showRemoveButton={false}
+        />
+        <EditableContentManager
+          documentTypeId={17}
+          allowMultiple={false}
+          showRemoveButton={false}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+        />
       </div>
     </Body>
   );

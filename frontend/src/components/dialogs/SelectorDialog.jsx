@@ -16,12 +16,7 @@ import { highlightText } from "../../../utils/textUtils.js";
 import { getTypeName } from "../../../utils/typeUtils.js";
 import axios from "../../axiosConfig.js";
 
-export default function SelectorDialog({
-  type, // "participants" ou "employees"
-  typeId, // Optionnel pour les participants
-  onSelect,
-  onClose,
-}) {
+export default function SelectorDialog({ type, typeId, onSelect, onClose }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchUrl =

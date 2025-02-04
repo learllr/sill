@@ -8,6 +8,7 @@ export default function DetailsHeaderActions({
   onEdit,
   onDelete,
   backUrl,
+  showRemoveButton = true,
 }) {
   return (
     <div className="flex justify-between items-center mb-4 border-gray-300">
@@ -22,9 +23,11 @@ export default function DetailsHeaderActions({
         <Button onClick={onEdit}>
           <Edit className="h-3 w-3" />
         </Button>
-        <Button onClick={onDelete} variant="destructive">
-          <Trash className="h-3 w-3" />
-        </Button>
+        {showRemoveButton && (
+          <Button onClick={onDelete} variant="destructive">
+            <Trash className="h-3 w-3" />
+          </Button>
+        )}
       </div>
     </div>
   );
