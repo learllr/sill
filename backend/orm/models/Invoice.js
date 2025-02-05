@@ -50,10 +50,6 @@ export default (sequelize) => {
       invoiceNumber: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          notEmpty: true,
-        },
       },
       paidOn: {
         type: DataTypes.STRING,

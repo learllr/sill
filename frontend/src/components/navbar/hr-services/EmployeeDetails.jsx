@@ -98,7 +98,6 @@ export default function EmployeeDetails() {
           placeholder: "JJ/MM/AAAA",
           type: "text",
           value: employee?.birthDate,
-          isDate: true,
         },
         {
           label: "Ville de naissance",
@@ -165,7 +164,6 @@ export default function EmployeeDetails() {
           placeholder: "JJ/MM/AAAA",
           type: "text",
           value: employee?.startDate,
-          isDate: true,
         },
         {
           label: "Date de fin",
@@ -173,7 +171,6 @@ export default function EmployeeDetails() {
           placeholder: "JJ/MM/AAAA",
           type: "text",
           value: employee?.endDate,
-          isDate: true,
         },
       ],
     },

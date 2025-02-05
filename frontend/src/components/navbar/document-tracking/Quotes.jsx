@@ -1,13 +1,13 @@
-import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { highlightText } from "../../../../utils/textUtils.js";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useForm } from "react-hook-form";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
 import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
+import QuoteFormFields from "./QuoteFormFields.jsx";
+import { highlightText } from "../../../../utils/textUtils.js";
 
 export default function Quotes() {
   const navigate = useNavigate();
@@ -20,10 +20,19 @@ export default function Quotes() {
     return response.data;
   };
 
+  const fetchParticipants = async () => {
+    const response = await axios.get("/participant");
+    return response.data;
+  };
+
+  const fetchProjects = async () => {
+    const response = await axios.get("/project");
+    return response.data;
+  };
+
   const createQuote = useMutation(
     async (newQuote) => {
-      const response = await axios.post("/quote", newQuote);
-      return response.data;
+      await axios.post("/quote", newQuote);
     },
     {
       onSuccess: () => {
@@ -34,36 +43,37 @@ export default function Quotes() {
   );
 
   const { data: quotes, isLoading, error } = useQuery("quotes", fetchQuotes);
+  const { data: participants } = useQuery("participants", fetchParticipants);
+  const { data: projects } = useQuery("projects", fetchProjects);
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
-    createQuote.mutate(data);
+    const sanitizedData = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [
+        key,
+        value === "" ? null : value,
+      ])
+    );
+
+    createQuote.mutate(sanitizedData);
     reset();
   };
 
   const filteredQuotes = quotes?.filter((quote) => {
-    const sentOnDate = new Date(quote.sentOn)
-      .toLocaleDateString()
-      .toLowerCase();
     return (
       quote.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       quote.quoteNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sentOnDate.includes(searchTerm.toLowerCase())
+      (quote.sentOn &&
+        quote.sentOn.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
-
-  if (isLoading)
-    return (
-      <Body children={<p className="text-sm">Chargement des devis...</p>} />
-    );
-  if (error)
-    return <Body children={<p>Erreur lors de la récupération des devis.</p>} />;
 
   return (
     <Body>
@@ -78,56 +88,35 @@ export default function Quotes() {
 
         <ScrollableDialog
           isOpen={isDialogOpen}
-          onClose={setIsDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
           title="Ajouter un devis"
-          description="Remplissez le formulaire ci-dessous pour ajouter un devis à la liste."
+          description="Remplissez le formulaire ci-dessous pour ajouter un devis."
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div>
-            <div className="flex flex-row space-x-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Titre
-              </label>
-              <span className="text-red-500">*</span>
-            </div>
-            <Input
-              {...register("title", { required: "Titre requis" })}
-              placeholder="Titre du devis"
-            />
-            {errors.title && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.title.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <div className="flex flex-row space-x-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Numéro de devis
-              </label>
-              <span className="text-red-500">*</span>
-            </div>
-            <Input
-              {...register("quoteNumber", { required: "Numéro requis" })}
-              placeholder="Numéro du devis"
-            />
-            {errors.quoteNumber && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.quoteNumber.message}
-              </p>
-            )}
-          </div>
+          <QuoteFormFields
+            register={register}
+            errors={errors}
+            projects={projects}
+            participants={participants}
+            watch={watch}
+          />
         </ScrollableDialog>
 
-        {filteredQuotes?.length > 0 ? (
-          <ul>
+        {isLoading ? (
+          <p className="text-sm">Chargement des devis...</p>
+        ) : error ? (
+          <p className="text-red-500">
+            Erreur lors de la récupération des devis.
+          </p>
+        ) : filteredQuotes?.length > 0 ? (
+          <ul className="mt-4 space-y-2">
             {filteredQuotes.map((quote) => (
-              <li key={quote.id} className="mb-2">
+              <li key={quote.id}>
                 <button
                   onClick={() => navigate(`/devis/${quote.id}`)}
-                  className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
+                  className="w-full text-sm flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
                 >
-                  <div className="text-sm flex flex-col items-start">
+                  <div className="flex flex-col text-left">
                     <p
                       className="leading-tight"
                       dangerouslySetInnerHTML={{
@@ -135,19 +124,20 @@ export default function Quotes() {
                       }}
                     />
                     <p
-                      className="text-xs text-gray-400 whitespace-nowrap"
+                      className="text-xs text-gray-500"
                       dangerouslySetInnerHTML={{
-                        __html: highlightText(
-                          new Date(quote.sentOn).toLocaleDateString(),
-                          searchTerm
-                        ),
+                        __html: highlightText(quote.quoteNumber, searchTerm),
                       }}
                     />
                   </div>
+
                   <p
                     className="text-xs text-gray-400 whitespace-nowrap"
                     dangerouslySetInnerHTML={{
-                      __html: highlightText(quote.quoteNumber, searchTerm),
+                      __html: highlightText(
+                        quote.sentOn ? quote.sentOn : "Non envoyé",
+                        searchTerm
+                      ),
                     }}
                   />
                 </button>
@@ -155,7 +145,7 @@ export default function Quotes() {
             ))}
           </ul>
         ) : (
-          <p className="text-center text-gray-500">Aucun devis.</p>
+          <p className="text-center text-gray-500">Aucun devis trouvé.</p>
         )}
       </div>
     </Body>

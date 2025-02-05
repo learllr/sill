@@ -30,6 +30,19 @@ export const getEmployeeById = async (req, res) => {
   }
 };
 
+export const createEmployee = async (req, res) => {
+  try {
+    const employeeData = req.body;
+    const newEmployee = await EmployeeDAO.createEmployee(employeeData);
+    res
+      .status(201)
+      .json({ message: "Salarié créé avec succès", employee: newEmployee });
+  } catch (error) {
+    console.error("Erreur lors de la création du salarié :", error);
+    res.status(500).json({ error: "Erreur lors de la création du salarié" });
+  }
+};
+
 export const updateEmployeeById = async (req, res) => {
   try {
     const { id } = req.params;

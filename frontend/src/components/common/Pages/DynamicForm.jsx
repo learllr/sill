@@ -60,7 +60,6 @@ export default function DynamicForm({
                     errors={errors}
                     value={value}
                     onChange={onChange}
-                    isDate={field.isDate || false}
                     comboboxOptions={field.comboboxOptions || []}
                     {...restField}
                   />

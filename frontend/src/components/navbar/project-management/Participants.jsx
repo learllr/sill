@@ -194,10 +194,7 @@ export default function Participants({ typeId }) {
                   <p
                     className="text-xs text-gray-400 whitespace-nowrap"
                     dangerouslySetInnerHTML={{
-                      __html: highlightText(
-                        new Date(participant.createdAt).toLocaleDateString(),
-                        searchTerm
-                      ),
+                      __html: highlightText(participant.email, searchTerm),
                     }}
                   />
                 </button>

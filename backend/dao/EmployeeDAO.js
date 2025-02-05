@@ -3,9 +3,7 @@ const { Employee } = db;
 
 export default class EmployeeDAO {
   static async getAllEmployees() {
-    return await Employee.findAll({
-      attributes: ["id", "firstName", "lastName", "jobTitle", "createdAt"],
-    });
+    return await Employee.findAll();
   }
 
   static async getEmployeeById(id) {
@@ -13,6 +11,10 @@ export default class EmployeeDAO {
       where: { id },
       attributes: { exclude: ["updatedAt"] },
     });
+  }
+
+  static async createEmployee(employeeData) {
+    return await Employee.create(employeeData);
   }
 
   static async updateEmployee(id, updatedData) {

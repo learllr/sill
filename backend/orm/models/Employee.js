@@ -35,6 +35,7 @@ export default (sequelize) => {
       familyStatus: {
         type: DataTypes.ENUM("Célibataire", "Marié", "Vie maritale"),
         allowNull: true,
+        defaultValue: null,
       },
       dependentChildren: {
         type: DataTypes.INTEGER,
@@ -81,6 +82,7 @@ export default (sequelize) => {
           "Contrat de professionnalisation"
         ),
         allowNull: true,
+        defaultValue: null,
       },
       contractDurationMonths: {
         type: DataTypes.INTEGER,
@@ -89,6 +91,7 @@ export default (sequelize) => {
       workTime: {
         type: DataTypes.ENUM("Temps plein", "Temps partiel", "Mi-temps"),
         allowNull: true,
+        defaultValue: null,
       },
       monthlyNetSalary: {
         type: DataTypes.DECIMAL(10, 2),

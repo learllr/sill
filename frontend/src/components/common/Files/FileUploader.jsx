@@ -49,7 +49,6 @@ export default function FileUploader({
       setError("Le titre doit contenir au moins 3 caractères.");
       return;
     }
-    console.log(selectedFile);
     onFileUpload?.({ file: selectedFile.file, title: fileTitle });
     handleClearPreview();
   };

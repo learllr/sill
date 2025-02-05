@@ -50,15 +50,10 @@ export default (sequelize) => {
       status: {
         type: DataTypes.ENUM("En attente", "Accepté", "Rejeté"),
         allowNull: false,
-        defaultValue: "En attente",
       },
       quoteNumber: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          notEmpty: true,
-        },
       },
       sentOn: {
         type: DataTypes.STRING,

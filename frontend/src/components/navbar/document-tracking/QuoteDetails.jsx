@@ -156,7 +156,6 @@ export default function QuoteDetails() {
           label: "Date d'envoi",
           name: "sentOn",
           type: "text",
-          isDate: true,
           value: quote?.sentOn || "",
         },
         {

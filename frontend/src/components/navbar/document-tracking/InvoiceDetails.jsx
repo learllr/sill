@@ -145,7 +145,6 @@ export default function InvoiceDetails() {
           label: "Date de paiement",
           name: "paidOn",
           type: "text",
-          isDate: true,
           value: invoice?.paidOn || "",
         },
         {

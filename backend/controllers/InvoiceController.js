@@ -35,11 +35,9 @@ export const getInvoicesByProjectAndParticipant = async (req, res) => {
     );
 
     if (!invoices || invoices.length === 0) {
-      return res
-        .status(404)
-        .json({
-          error: "Aucune facture trouvée pour ce participant et ce projet",
-        });
+      return res.status(404).json({
+        error: "Aucune facture trouvée pour ce participant et ce projet",
+      });
     }
 
     res.status(200).json(invoices);

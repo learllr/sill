@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { highlightText } from "../../../../utils/textUtils.js";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useForm } from "react-hook-form";
 import axios from "../../../axiosConfig.js";
 import Body from "../../common/Body.jsx";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
+import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
+import EmployeeFormFields from "./EmployeeFormFields.jsx";
+import { highlightText } from "../../../../utils/textUtils.js";
 
 export default function Employees() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const fetchEmployees = async () => {
     const response = await axios.get("/employee");
@@ -21,21 +26,47 @@ export default function Employees() {
     error,
   } = useQuery("employees", fetchEmployees);
 
-  const filteredEmployees = employees?.filter(
-    (employee) =>
-      employee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employee.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employee.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase())
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const createEmployee = useMutation(
+    async (employeeData) => {
+      await axios.post("/employee", employeeData);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("employees");
+        setIsDialogOpen(false);
+        reset();
+      },
+      onError: () => {
+        alert("Erreur : Impossible d'ajouter le salarié.");
+      },
+    }
   );
 
-  if (isLoading)
-    return (
-      <Body children={<p className="text-sm">Chargement des salariés...</p>} />
+  const onSubmit = (data) => {
+    const sanitizedData = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [
+        key,
+        value === "" ? null : value,
+      ])
     );
-  if (error)
+
+    createEmployee.mutate(sanitizedData);
+  };
+
+  const filteredEmployees = employees?.filter((employee) => {
     return (
-      <Body children={<p>Erreur lors de la récupération des salariés.</p>} />
+      employee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
+  });
 
   return (
     <Body>
@@ -44,41 +75,52 @@ export default function Employees() {
           title="Salariés"
           searchValue={searchTerm}
           onSearchChange={(value) => setSearchTerm(value)}
-          onAdd={() => console.log("Ajout d'un salarié")}
+          onAdd={() => setIsDialogOpen(true)}
           onReset={() => setSearchTerm("")}
         />
 
-        {filteredEmployees?.length > 0 ? (
+        <ScrollableDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          title="Ajouter un salarié"
+          description="Remplissez les informations du nouveau salarié."
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <EmployeeFormFields register={register} errors={errors} />
+        </ScrollableDialog>
+
+        {isLoading ? (
+          <p className="text-sm">Chargement des salariés...</p>
+        ) : error ? (
+          <p className="text-red-500">
+            Erreur lors de la récupération des salariés.
+          </p>
+        ) : filteredEmployees?.length > 0 ? (
           <ul className="mt-4 space-y-2">
             {filteredEmployees.map((employee) => (
               <li key={employee.id}>
                 <button
                   onClick={() => navigate(`/salarié/${employee.id}`)}
-                  className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
+                  className="w-full text-sm flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
                 >
-                  <div className="text-sm flex flex-col items-start">
-                    <p
-                      className="leading-tight"
-                      dangerouslySetInnerHTML={{
-                        __html: `${highlightText(
-                          `${employee.firstName} ${employee.lastName}`,
-                          searchTerm
-                        )}`,
-                      }}
-                    />
-                    <p
-                      className="text-xs text-gray-500"
-                      dangerouslySetInnerHTML={{
-                        __html: highlightText(
-                          employee.jobTitle || "Poste inconnu",
-                          searchTerm
-                        ),
-                      }}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-400 whitespace-nowrap">
-                    {new Date(employee.createdAt).toLocaleDateString()}
-                  </p>
+                  <p
+                    className="leading-tight"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(
+                        `${employee.firstName} ${employee.lastName}`,
+                        searchTerm
+                      ),
+                    }}
+                  />
+                  <p
+                    className="text-xs text-gray-400 whitespace-nowrap"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(
+                        employee.email || "Aucun email",
+                        searchTerm
+                      ),
+                    }}
+                  />
                 </button>
               </li>
             ))}

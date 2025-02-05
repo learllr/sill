@@ -5,7 +5,6 @@ const DetailsDisplay = ({ data = [] }) => {
   const formatValue = (item) => {
     const {
       value,
-      isDate,
       isPhone,
       isPrice,
       isPostalCode,
@@ -25,14 +24,6 @@ const DetailsDisplay = ({ data = [] }) => {
           (option) => option.value === value
         );
         formattedValue = selectedOption?.label || "Non spécifié";
-        break;
-      }
-
-      case isDate: {
-        const date = new Date(value);
-        formattedValue = isNaN(date)
-          ? value
-          : date.toLocaleDateString("fr-FR").split("/").join("/");
         break;
       }
 
