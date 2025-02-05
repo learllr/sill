@@ -1,20 +1,13 @@
 import {
   NavigationMenu,
-  NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuLink,
+  NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
 const menuItems = {
-  Fournisseur: ["Devis", "Factures", "Bons pour accord"],
-  Client: [
-    "Devis",
-    "Factures",
-    "Fiches techniques",
-    "Bons de commandes",
-    "Bons de livraison",
-    "AR de commandes",
-  ],
+  Fournisseur: ["Devis", "Factures", "Fiches techniques", "Bons pour accord"],
+  Client: ["Devis", "Factures", "Devis validés"],
   "Sous-traitant": ["Administratif", "Contrats", "Factures"],
   Architecte: [
     "Plans",
@@ -23,6 +16,7 @@ const menuItems = {
     "Ordres de règlement",
     "Réserves",
     "Marchés",
+    "DOE",
   ],
 };
 

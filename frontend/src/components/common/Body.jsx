@@ -20,19 +20,15 @@ const data = {
   navMain: [
     {
       title: "Gestion de chantiers",
+      items: [{ title: "Chantiers", url: "/chantiers" }],
+    },
+    {
+      title: "Gestion des intervenants",
       items: [
-        { title: "Chantiers", url: "/chantiers" },
         { title: "Clients", url: "/clients" },
         { title: "Fournisseurs", url: "/fournisseurs" },
         { title: "Sous-traitants", url: "/sous-traitants" },
         { title: "Architectes", url: "/architectes" },
-      ],
-    },
-    {
-      title: "Suivi de documents",
-      items: [
-        { title: "Devis", url: "/devis" },
-        { title: "Factures", url: "/factures" },
       ],
     },
     {

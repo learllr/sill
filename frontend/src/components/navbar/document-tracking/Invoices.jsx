@@ -119,7 +119,7 @@ export default function Invoices() {
           isDate: true,
         },
         {
-          label: "Projet",
+          label: "Chantier",
           name: "projectId",
           type: "combobox",
           value: 0,
