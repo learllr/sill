@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../../src/axiosConfig.js";
 import { getTypeName } from "../../../../utils/typeUtils.js";
-import Body from "../../common/Body";
 import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
 import DynamicForm from "../../common/Pages/DynamicForm";
@@ -60,14 +59,8 @@ export default function ParticipantDetails({ typeId, typeName }) {
     formState: { errors },
   } = useForm();
 
-  if (isLoading)
-    return (
-      <Body children={<p className="text-sm">Chargement des détails...</p>} />
-    );
-  if (error)
-    return (
-      <Body children={<p>Erreur lors de la récupération des détails.</p>} />
-    );
+  if (isLoading) return <p className="text-sm">Chargement des détails...</p>;
+  if (error) return <p>Erreur lors de la récupération des détails.</p>;
 
   const handleEdit = () => {
     reset(participant);
@@ -142,30 +135,28 @@ export default function ParticipantDetails({ typeId, typeName }) {
   ];
 
   return (
-    <Body>
-      <div className="px-4 w-full">
-        <DetailsHeaderActions
-          title={participant?.name}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+    <div className="px-4 w-full">
+      <DetailsHeaderActions
+        title={participant?.name}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
-        <div className="p-4 border border-gray-300 bg-white">
-          {isEditing ? (
-            <DynamicForm
-              fields={fields}
-              register={register}
-              errors={errors}
-              onSubmit={(data) => {
-                updateParticipant.mutate(data);
-              }}
-              onCancel={() => setIsEditing(false)}
-            />
-          ) : (
-            <DetailsDisplay data={fields} />
-          )}
-        </div>
+      <div className="p-4 border border-gray-300 bg-white">
+        {isEditing ? (
+          <DynamicForm
+            fields={fields}
+            register={register}
+            errors={errors}
+            onSubmit={(data) => {
+              updateParticipant.mutate(data);
+            }}
+            onCancel={() => setIsEditing(false)}
+          />
+        ) : (
+          <DetailsDisplay data={fields} />
+        )}
       </div>
-    </Body>
+    </div>
   );
 }

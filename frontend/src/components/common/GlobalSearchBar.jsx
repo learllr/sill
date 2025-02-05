@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { highlightText } from "../../../utils/textUtils.js";
 import axios from "../../axiosConfig.js";
 
-export default function SearchBar() {
+export default function GlobalSearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
   const [isFocused, setIsFocused] = useState(false);

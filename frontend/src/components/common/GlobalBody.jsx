@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import { GalleryVerticalEnd } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import Header from "./Header.jsx";
+import GlobalHeader from "./GlobalHeader.jsx";
 
 const data = {
   navMain: [
@@ -109,12 +109,12 @@ function AppSidebar({ ...props }) {
   );
 }
 
-export default function Body({ children }) {
+export default function GlobalBody({ children }) {
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarContent>
-        <Header />
+        <GlobalHeader />
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarContent>
     </SidebarProvider>

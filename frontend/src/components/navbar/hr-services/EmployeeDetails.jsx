@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../../axiosConfig.js";
-import Body from "../../common/Body";
 import DetailsDisplay from "../../common/Pages/DetailsDisplay";
 import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions";
 import DynamicForm from "../../common/Pages/DynamicForm";
@@ -52,14 +51,8 @@ export default function EmployeeDetails() {
 
   const { reset } = useForm();
 
-  if (isLoading)
-    return (
-      <Body children={<p className="text-sm">Chargement des détails...</p>} />
-    );
-  if (error)
-    return (
-      <Body children={<p>Erreur lors de la récupération des détails.</p>} />
-    );
+  if (isLoading) return <p className="text-sm">Chargement des détails...</p>;
+  if (error) return <p>Erreur lors de la récupération des détails.</p>;
 
   const handleEdit = () => {
     reset(employee);
@@ -216,27 +209,25 @@ export default function EmployeeDetails() {
   ];
 
   return (
-    <Body>
-      <div className="px-4 w-full">
-        <DetailsHeaderActions
-          title={`${employee?.firstName} ${employee?.lastName}`}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-        <div className="p-4 border border-gray-300 bg-white">
-          {isEditing ? (
-            <DynamicForm
-              fields={fields}
-              onSubmit={(data) => {
-                updateEmployee.mutate(data);
-              }}
-              onCancel={() => setIsEditing(false)}
-            />
-          ) : (
-            <DetailsDisplay data={fields} />
-          )}
-        </div>
+    <div className="px-4 w-full">
+      <DetailsHeaderActions
+        title={`${employee?.firstName} ${employee?.lastName}`}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+      <div className="p-4 border border-gray-300 bg-white">
+        {isEditing ? (
+          <DynamicForm
+            fields={fields}
+            onSubmit={(data) => {
+              updateEmployee.mutate(data);
+            }}
+            onCancel={() => setIsEditing(false)}
+          />
+        ) : (
+          <DetailsDisplay data={fields} />
+        )}
       </div>
-    </Body>
+    </div>
   );
 }

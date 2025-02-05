@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../../src/axiosConfig.js";
 import { highlightText } from "../../../../utils/textUtils.js";
-import Body from "../../common/Body.jsx";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
 import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
 
@@ -67,123 +66,113 @@ export default function Projects() {
     );
   });
 
-  if (isLoading)
-    return (
-      <Body children={<p className="text-sm">Chargement des chantiers...</p>} />
-    );
-  if (error)
-    return (
-      <Body children={<p>Erreur lors de la récupération des chantiers.</p>} />
-    );
+  if (isLoading) return <p className="text-sm">Chargement des chantiers...</p>;
+  if (error) return <p>Erreur lors de la récupération des chantiers.</p>;
 
   return (
-    <Body>
-      <div className="px-4 w-full">
-        <GeneralHeaderActions
-          title="Chantiers"
-          searchValue={searchTerm}
-          onSearchChange={(value) => setSearchTerm(value)}
-          onAdd={() => setIsDialogOpen(true)}
-          onReset={() => {
-            reset();
-            setSearchTerm("");
-          }}
-        />
+    <div className="px-4 w-full">
+      <GeneralHeaderActions
+        title="Chantiers"
+        searchValue={searchTerm}
+        onSearchChange={(value) => setSearchTerm(value)}
+        onAdd={() => setIsDialogOpen(true)}
+        onReset={() => {
+          reset();
+          setSearchTerm("");
+        }}
+      />
 
-        <ScrollableDialog
-          isOpen={isDialogOpen}
-          onClose={setIsDialogOpen}
-          title="Ajouter un chantier"
-          description="Remplissez le formulaire ci-dessous pour ajouter un chantier à la liste."
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div>
-            <div className="flex flex-row space-x-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nom
-              </label>
-              <span className="text-red-500">*</span>
-            </div>
-            <Input
-              {...register("name", { required: "Nom requis" })}
-              placeholder="Nom du chantier"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-            )}
+      <ScrollableDialog
+        isOpen={isDialogOpen}
+        onClose={setIsDialogOpen}
+        title="Ajouter un chantier"
+        description="Remplissez le formulaire ci-dessous pour ajouter un chantier à la liste."
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div>
+          <div className="flex flex-row space-x-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nom
+            </label>
+            <span className="text-red-500">*</span>
           </div>
-          <div>
-            <div className="flex flex-row space-x-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Statut
-              </label>
-              <span className="text-red-500">*</span>
-            </div>
-            <select
-              {...register("status", { required: "Statut requis" })}
-              className="border rounded-md px-3 py-2 text-sm w-full"
-            >
-              <option value="Non commencé">Non commencé</option>
-              <option value="En cours">En cours</option>
-              <option value="Terminé">Terminé</option>
-            </select>
-            {errors.status && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.status.message}
-              </p>
-            )}
+          <Input
+            {...register("name", { required: "Nom requis" })}
+            placeholder="Nom du chantier"
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+          )}
+        </div>
+        <div>
+          <div className="flex flex-row space-x-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Statut
+            </label>
+            <span className="text-red-500">*</span>
           </div>
-        </ScrollableDialog>
-
-        <div className="flex flex-row justify-center items-center mb-4 space-x-2">
-          <label className="block text-sm font-medium mb-1">
-            Filtrer par statut :
-          </label>
           <select
-            value={filter}
-            onChange={handleFilterChange}
-            className="border rounded-md px-3 py-2 text-sm"
+            {...register("status", { required: "Statut requis" })}
+            className="border rounded-md px-3 py-2 text-sm w-full"
           >
-            <option value="">Tous</option>
             <option value="Non commencé">Non commencé</option>
             <option value="En cours">En cours</option>
             <option value="Terminé">Terminé</option>
           </select>
+          {errors.status && (
+            <p className="text-red-500 text-sm mt-1">{errors.status.message}</p>
+          )}
         </div>
+      </ScrollableDialog>
 
-        {filteredProjects?.length > 0 ? (
-          <ul>
-            {filteredProjects.map((project) => (
-              <li key={project.id} className="mb-2">
-                <button
-                  onClick={() => navigate(`/chantier/${project.id}`)}
-                  className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
-                >
-                  <div className="text-sm flex flex-col items-start">
-                    <p
-                      className="leading-tight"
-                      dangerouslySetInnerHTML={{
-                        __html: highlightText(project.name, searchTerm),
-                      }}
-                    />
-                  </div>
+      <div className="flex flex-row justify-center items-center mb-4 space-x-2">
+        <label className="block text-sm font-medium mb-1">
+          Filtrer par statut :
+        </label>
+        <select
+          value={filter}
+          onChange={handleFilterChange}
+          className="border rounded-md px-3 py-2 text-sm"
+        >
+          <option value="">Tous</option>
+          <option value="Non commencé">Non commencé</option>
+          <option value="En cours">En cours</option>
+          <option value="Terminé">Terminé</option>
+        </select>
+      </div>
+
+      {filteredProjects?.length > 0 ? (
+        <ul>
+          {filteredProjects.map((project) => (
+            <li key={project.id} className="mb-2">
+              <button
+                onClick={() => navigate(`/chantier/${project.id}`)}
+                className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
+              >
+                <div className="text-sm flex flex-col items-start">
                   <p
-                    className="text-xs text-gray-400 whitespace-nowrap"
+                    className="leading-tight"
                     dangerouslySetInnerHTML={{
-                      __html: highlightText(
-                        new Date(project.createdAt).toLocaleDateString(),
-                        searchTerm
-                      ),
+                      __html: highlightText(project.name, searchTerm),
                     }}
                   />
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-center text-gray-500">Aucun chantier.</p>
-        )}
-      </div>
-    </Body>
+                </div>
+                <p
+                  className="text-xs text-gray-400 whitespace-nowrap"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightText(
+                      new Date(project.createdAt).toLocaleDateString(),
+                      searchTerm
+                    ),
+                  }}
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-center text-gray-500">Aucun chantier.</p>
+      )}
+    </div>
   );
 }

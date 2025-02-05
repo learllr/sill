@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { highlightText } from "../../../../utils/textUtils.js";
 import { getTypeName } from "../../../../utils/typeUtils.js";
 import axios from "../../../axiosConfig.js";
-import Body from "../../common/Body.jsx";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
 import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
 
@@ -72,144 +71,138 @@ export default function Participants({ typeId }) {
   });
 
   return (
-    <Body>
-      <div className="px-4 w-full">
-        <GeneralHeaderActions
-          title={titlePlural}
-          searchValue={searchTerm}
-          onSearchChange={(value) => setSearchTerm(value)}
-          onAdd={() => setIsDialogOpen(true)}
-          onReset={() => setSearchTerm("")}
-        />
+    <div className="px-4 w-full">
+      <GeneralHeaderActions
+        title={titlePlural}
+        searchValue={searchTerm}
+        onSearchChange={(value) => setSearchTerm(value)}
+        onAdd={() => setIsDialogOpen(true)}
+        onReset={() => setSearchTerm("")}
+      />
 
-        <ScrollableDialog
-          isOpen={isDialogOpen}
-          onClose={setIsDialogOpen}
-          title={`Ajouter un ${titleSingular.toLowerCase()}`}
-          description={`Remplissez le formulaire ci-dessous pour ajouter un ${titleSingular.toLowerCase()} à la liste.`}
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div>
-            <div className="flex flex-row space-x-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nom
-              </label>
-              <span className="text-red-500">*</span>
-            </div>
-            <Input
-              {...register("name", { required: "Nom requis" })}
-              placeholder={`Nom ${titleSingular.toLowerCase()}`}
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-            )}
-          </div>
-          <div>
+      <ScrollableDialog
+        isOpen={isDialogOpen}
+        onClose={setIsDialogOpen}
+        title={`Ajouter un ${titleSingular.toLowerCase()}`}
+        description={`Remplissez le formulaire ci-dessous pour ajouter un ${titleSingular.toLowerCase()} à la liste.`}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div>
+          <div className="flex flex-row space-x-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Interlocuteur
+              Nom
             </label>
-            <Input
-              {...register("contactPerson")}
-              placeholder="Interlocuteur principal"
-            />
+            <span className="text-red-500">*</span>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Téléphone
-            </label>
-            <Input {...register("phone")} placeholder="Numéro de téléphone" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <Input
-              {...register("email", {
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Email invalide",
-                },
-              })}
-              placeholder="Adresse email"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Adresse
-            </label>
-            <Input {...register("address")} placeholder="Adresse" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Site web
-            </label>
-            <Input {...register("website")} placeholder="Site web" />
-          </div>
-        </ScrollableDialog>
+          <Input
+            {...register("name", { required: "Nom requis" })}
+            placeholder={`Nom ${titleSingular.toLowerCase()}`}
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+          )}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Interlocuteur
+          </label>
+          <Input
+            {...register("contactPerson")}
+            placeholder="Interlocuteur principal"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Téléphone
+          </label>
+          <Input {...register("phone")} placeholder="Numéro de téléphone" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email
+          </label>
+          <Input
+            {...register("email", {
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Email invalide",
+              },
+            })}
+            placeholder="Adresse email"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          )}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Adresse
+          </label>
+          <Input {...register("address")} placeholder="Adresse" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Site web
+          </label>
+          <Input {...register("website")} placeholder="Site web" />
+        </div>
+      </ScrollableDialog>
 
-        {isLoading ? (
-          <p className="text-sm">
-            Chargement des {titlePlural.toLowerCase()}...
-          </p>
-        ) : error ? (
-          <p className="text-red-500">
-            Erreur lors de la récupération des {titlePlural.toLowerCase()}.
-          </p>
-        ) : filteredParticipants?.length > 0 ? (
-          <ul>
-            {filteredParticipants.map((participant) => (
-              <li key={participant.id} className="mb-2">
-                <button
-                  onClick={() =>
-                    navigate(
-                      `/${getTypeName(typeId, false).toLowerCase()}/${
-                        participant.id
-                      }`
-                    )
-                  }
-                  className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
-                >
-                  <div className="text-sm flex flex-col items-start">
-                    <p
-                      className="leading-tight"
-                      dangerouslySetInnerHTML={{
-                        __html: highlightText(participant.name, searchTerm),
-                      }}
-                    />
-                    <p
-                      className="text-xs text-gray-400"
-                      dangerouslySetInnerHTML={{
-                        __html: highlightText(
-                          participant.contactPerson || "",
-                          searchTerm
-                        ),
-                      }}
-                    />
-                  </div>
+      {isLoading ? (
+        <p className="text-sm">Chargement des {titlePlural.toLowerCase()}...</p>
+      ) : error ? (
+        <p className="text-red-500">
+          Erreur lors de la récupération des {titlePlural.toLowerCase()}.
+        </p>
+      ) : filteredParticipants?.length > 0 ? (
+        <ul>
+          {filteredParticipants.map((participant) => (
+            <li key={participant.id} className="mb-2">
+              <button
+                onClick={() =>
+                  navigate(
+                    `/${getTypeName(typeId, false).toLowerCase()}/${
+                      participant.id
+                    }`
+                  )
+                }
+                className="w-full flex items-center justify-between px-4 py-3 border rounded-md text-gray-700 hover:bg-gray-100 transition"
+              >
+                <div className="text-sm flex flex-col items-start">
                   <p
-                    className="text-xs text-gray-400 whitespace-nowrap"
+                    className="leading-tight"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(participant.name, searchTerm),
+                    }}
+                  />
+                  <p
+                    className="text-xs text-gray-400"
                     dangerouslySetInnerHTML={{
                       __html: highlightText(
-                        new Date(participant.createdAt).toLocaleDateString(),
+                        participant.contactPerson || "",
                         searchTerm
                       ),
                     }}
                   />
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-center text-gray-500">
-            Aucun {titleSingular.toLowerCase()}.
-          </p>
-        )}
-      </div>
-    </Body>
+                </div>
+                <p
+                  className="text-xs text-gray-400 whitespace-nowrap"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightText(
+                      new Date(participant.createdAt).toLocaleDateString(),
+                      searchTerm
+                    ),
+                  }}
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-center text-gray-500">
+          Aucun {titleSingular.toLowerCase()}.
+        </p>
+      )}
+    </div>
   );
 }
