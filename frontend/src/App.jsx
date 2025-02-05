@@ -4,10 +4,6 @@ import Home from "./components/Home.jsx";
 import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting.jsx";
 import Bank from "./components/navbar/aministrative-services/Bank.jsx";
 import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
-import InvoiceDetails from "./components/navbar/document-tracking/InvoiceDetails.jsx";
-import Invoices from "./components/navbar/document-tracking/Invoices.jsx";
-import QuoteDetails from "./components/navbar/document-tracking/QuoteDetails.jsx";
-import Quotes from "./components/navbar/document-tracking/Quotes.jsx";
 import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails.jsx";
 import Employees from "./components/navbar/hr-services/Employees.jsx";
 import Memos from "./components/navbar/hr-services/Memos.jsx";
@@ -43,10 +39,6 @@ export default function App() {
             element={<ParticipantDetails typeId={id} typeName={name} />}
           />
         ))}
-        <Route path="/devis" element={<Quotes />} />
-        <Route path="/devis/:id" element={<QuoteDetails />} />
-        <Route path="/factures" element={<Invoices />} />
-        <Route path="/facture/:id" element={<InvoiceDetails />} />
         <Route path="/salariés" element={<Employees />} />
         <Route path="/salarié/:id" element={<EmployeeDetails />} />
         <Route path="/notes-de-service" element={<Memos />} />
