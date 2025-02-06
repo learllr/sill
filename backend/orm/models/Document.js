@@ -1,5 +1,7 @@
 "use strict";
 import { DataTypes, Model } from "sequelize";
+import { DocumentType } from "../../../shared/constants/types.js";
+import { Months } from "../../../shared/constants/general.js";
 
 export default (sequelize) => {
   class Document extends Model {}
@@ -12,13 +14,18 @@ export default (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      typeId: {
-        type: DataTypes.INTEGER,
+      type: {
+        type: DataTypes.ENUM(...Object.values(DocumentType)),
         allowNull: false,
+      },
+      participantId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
         references: {
-          model: "TypeDocuments",
+          model: "Participants",
           key: "id",
         },
+        onDelete: "SET NULL",
       },
       projectId: {
         type: DataTypes.INTEGER,
@@ -27,16 +34,21 @@ export default (sequelize) => {
           model: "Projects",
           key: "id",
         },
+        onDelete: "SET NULL",
       },
-      title: {
-        type: DataTypes.STRING,
+      year: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          notEmpty: true,
-          len: [3, 100],
+          isInt: true,
+          min: 2000,
         },
       },
-      imagePath: {
+      month: {
+        type: DataTypes.ENUM(...Object.values(Months)),
+        allowNull: false,
+      },
+      path: {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
@@ -53,9 +65,9 @@ export default (sequelize) => {
   );
 
   Document.associate = (models) => {
-    Document.belongsTo(models.TypeDocument, {
-      foreignKey: "typeId",
-      as: "type",
+    Document.belongsTo(models.Participant, {
+      foreignKey: "participantId",
+      as: "participant",
     });
 
     Document.belongsTo(models.Project, {

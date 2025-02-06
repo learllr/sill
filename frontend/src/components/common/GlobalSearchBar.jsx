@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { highlightText } from "../../../utils/textUtils.js";
+import { highlightText } from "../../../../shared/utils/textUtils.js";
 import axios from "../../axiosConfig.js";
 
 export default function GlobalSearchBar() {

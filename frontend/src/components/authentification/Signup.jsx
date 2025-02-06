@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   capitalizeFirstLetter,
   formatToUpperCase,
-} from "../../../utils/textUtils.js";
+} from "../../../../shared/utils/textUtils.js";
 import { useAlert } from "../contexts/AlertContext";
 import { useUser } from "../contexts/UserContext";
 

@@ -1,5 +1,5 @@
 import db from "../orm/models/index.js";
-const { Participant, TypeParticipant } = db;
+const { Participant } = db;
 
 export default class ParticipantDAO {
   static async getAllParticipantsByType(typeId) {

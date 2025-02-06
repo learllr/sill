@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../../src/axiosConfig.js";
-import { highlightText } from "../../../../utils/textUtils.js";
+import { highlightText } from "../../../../../shared/utils/textUtils.js";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
 import ScrollableDialog from "../../common/Pages/ScrollableDialog.jsx";
 

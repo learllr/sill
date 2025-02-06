@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { highlightText } from "../../../../utils/textUtils.js";
+import { highlightText } from "../../../../../shared/utils/textUtils.js";
 import axios from "../../../axiosConfig.js";
 import GeneralHeaderActions from "../../common/Pages/GeneralHeaderActions.jsx";
 

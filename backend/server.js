@@ -15,7 +15,7 @@ import searchRoutes from "./routes/searchRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 5000;
 const frontendUrl = "http://localhost:5173";
 
 app.use(express.json());

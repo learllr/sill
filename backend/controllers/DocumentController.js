@@ -26,21 +26,21 @@ export const getDocumentById = async (req, res) => {
   }
 };
 
-export const getDocumentsByTypeId = async (req, res) => {
+export const getDocumentsByTypeName = async (req, res) => {
   try {
-    const { typeId } = req.params;
-    const documents = await DocumentDAO.getDocumentsByType(typeId);
+    const { typeName } = req.params;
+    const decodedTypeName = decodeURIComponent(typeName);
+    const documents = await DocumentDAO.getDocumentsByType(decodedTypeName);
 
-    if (!documents || documents.length === 0) {
-      return res.status(200).json({
-        message: "Aucun document trouvé pour ce type",
-        documents: [],
-      });
+    if (!documents.length) {
+      return res
+        .status(200)
+        .json({ message: "Aucun document trouvé", documents: [] });
     }
 
     res.status(200).json({ documents });
   } catch (error) {
-    console.error("Erreur lors de la récupération des documents :", error);
+    console.error("Erreur :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération des documents" });
@@ -49,35 +49,26 @@ export const getDocumentsByTypeId = async (req, res) => {
 
 export const createDocument = async (req, res) => {
   try {
-    const { title, typeId, projectId: projectIdFromBody } = req.body;
-    let imagePath = null;
+    const { year, month, type } = req.body;
+    let path = req.file ? req.file.filename : null;
 
-    if (req.file) {
-      imagePath = req.file.filename;
+    if (!year || !month || !type) {
+      return res
+        .status(400)
+        .json({ error: "Tous les champs (année, mois, type) sont requis." });
     }
-
-    if ([16, 17].includes(Number(typeId))) {
-      await DocumentDAO.deleteDocumentsByTypeId(typeId);
-    }
-
-    const projectId = [16, 17].includes(Number(typeId))
-      ? null
-      : projectIdFromBody;
 
     const document = await DocumentDAO.createDocument({
-      title,
-      typeId,
-      projectId,
-      imagePath,
+      year,
+      month,
+      type,
+      path,
     });
 
-    res.status(201).json({
-      message: `Document de type ${typeId} créé avec succès`,
-      document,
-    });
+    res.status(201).json({ message: "Document ajouté avec succès", document });
   } catch (error) {
-    console.error("Erreur lors de la création du document :", error);
-    res.status(500).json({ error: "Erreur lors de la création du document" });
+    console.error("Erreur lors de l'ajout du document :", error);
+    res.status(500).json({ error: "Erreur lors de l'ajout du document" });
   }
 };
 

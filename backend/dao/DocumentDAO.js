@@ -1,17 +1,12 @@
 import fs from "fs";
 import path from "path";
 import db from "../orm/models/index.js";
-const { Document, TypeDocument, Project } = db;
+const { Document, Project } = db;
 
 export default class DocumentDAO {
   static async getAllDocuments() {
     return await Document.findAll({
       include: [
-        {
-          model: TypeDocument,
-          as: "type",
-          attributes: ["type"],
-        },
         {
           model: Project,
           as: "project",
@@ -27,11 +22,6 @@ export default class DocumentDAO {
       where: { id },
       include: [
         {
-          model: TypeDocument,
-          as: "type",
-          attributes: ["type"],
-        },
-        {
           model: Project,
           as: "project",
           attributes: ["name"],
@@ -40,10 +30,9 @@ export default class DocumentDAO {
     });
   }
 
-  static async getDocumentsByType(typeId) {
+  static async getDocumentsByType(typeName) {
     return await Document.findAll({
-      where: { typeId },
-      attributes: ["id", "title", "imagePath", "typeId", "createdAt"],
+      where: { type: typeName },
     });
   }
 

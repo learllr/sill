@@ -1,5 +1,5 @@
 import db from "../orm/models/index.js";
-const { Project, Participant, TypeParticipant, ProjectParticipant } = db;
+const { Project, Participant, ProjectParticipant } = db;
 
 export default class ProjectDAO {
   static async getAllProjects(whereClause = {}, includeData = true) {
@@ -8,33 +8,21 @@ export default class ProjectDAO {
           {
             model: Participant,
             as: "clients",
-            include: [
-              { model: TypeParticipant, as: "type", attributes: ["name"] },
-            ],
             attributes: ["id", "name", "contactPerson", "email"],
           },
           {
             model: Participant,
             as: "suppliers",
-            include: [
-              { model: TypeParticipant, as: "type", attributes: ["name"] },
-            ],
             attributes: ["id", "name", "contactPerson", "email"],
           },
           {
             model: Participant,
             as: "subcontractors",
-            include: [
-              { model: TypeParticipant, as: "type", attributes: ["name"] },
-            ],
             attributes: ["id", "name", "contactPerson", "email"],
           },
           {
             model: Participant,
             as: "architects",
-            include: [
-              { model: TypeParticipant, as: "type", attributes: ["name"] },
-            ],
             attributes: ["id", "name", "contactPerson", "email"],
           },
         ]

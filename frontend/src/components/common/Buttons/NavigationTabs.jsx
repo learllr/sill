@@ -5,11 +5,11 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
-export default function NavigationTabs({ items, onTabChange }) {
+export default function NavigationTabs({ menuItems, onTabChange }) {
   return (
     <NavigationMenu>
-      <NavigationMenuList className="flex space-x-4 border-b pb-2">
-        {items.map((item) => (
+      <NavigationMenuList className="flex space-x-4 border-b pb-2 mb-6">
+        {menuItems.map((item) => (
           <NavigationMenuItem key={item}>
             <NavigationMenuLink
               onClick={() => onTabChange(item)}

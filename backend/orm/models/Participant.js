@@ -1,5 +1,6 @@
 "use strict";
 import { DataTypes, Model } from "sequelize";
+import { ParticipantType } from "../../../shared/constants/types.js";
 
 export default (sequelize) => {
   class Participant extends Model {}
@@ -12,13 +13,9 @@ export default (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      typeId: {
-        type: DataTypes.INTEGER,
+      type: {
+        type: DataTypes.ENUM(...Object.values(ParticipantType)),
         allowNull: false,
-        references: {
-          model: "TypeParticipants",
-          key: "id",
-        },
       },
       name: {
         type: DataTypes.STRING,
@@ -58,11 +55,6 @@ export default (sequelize) => {
   );
 
   Participant.associate = (models) => {
-    Participant.belongsTo(models.TypeParticipant, {
-      foreignKey: "typeId",
-      as: "type",
-    });
-
     Participant.belongsToMany(models.Project, {
       through: models.ProjectParticipant,
       foreignKey: "participantId",

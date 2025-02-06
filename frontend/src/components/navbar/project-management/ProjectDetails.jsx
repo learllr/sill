@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getTypeName } from "../../../../utils/typeUtils.js";
+import { getTypeName } from "../../../../../shared/constants/types.js";
 import { Trash, FileText } from "lucide-react";
 import ParticipantProjectDetails from "./ParticipantProjectDetails.jsx";
 import { useMutation } from "react-query";
