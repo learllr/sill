@@ -74,8 +74,15 @@ export const createDocument = async (req, res) => {
 
 export const updateDocument = async (req, res) => {
   try {
+    console.log("Body reçu :", req.body);
+    console.log("Fichier reçu :", req.file);
+
     const { id } = req.params;
     const updatedData = req.body;
+
+    if (req.file) {
+      updatedData.path = `${req.file.filename}`;
+    }
 
     const document = await DocumentDAO.getDocumentById(id);
 
@@ -92,6 +99,7 @@ export const updateDocument = async (req, res) => {
       .status(200)
       .json({ message: "Document mis à jour avec succès", updatedDocument });
   } catch (error) {
+    console.error("Erreur serveur :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la mise à jour du document" });

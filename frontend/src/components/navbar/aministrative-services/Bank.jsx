@@ -22,6 +22,7 @@ export default function Bank() {
   );
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
   const {
     data: documents,
@@ -35,6 +36,7 @@ export default function Bank() {
 
   const handleDocumentAdded = () => {
     setIsDetailVisible(false);
+    setSelectedDocument(null);
     queryClient.invalidateQueries(["documents", selectedTab]);
   };
 
@@ -53,10 +55,12 @@ export default function Bank() {
               onAdd={() => {
                 setIsDetailVisible(true);
                 setIsAddingNew(true);
+                setSelectedDocument(null);
               }}
-              onSelectItem={() => {
+              onSelectItem={(document) => {
                 setIsDetailVisible(true);
                 setIsAddingNew(false);
+                setSelectedDocument(document);
               }}
             />
           )}
@@ -68,6 +72,7 @@ export default function Bank() {
               onClose={handleDocumentAdded}
               isNew={isAddingNew}
               documentType={selectedTab}
+              document={selectedDocument}
             />
           </div>
         )}

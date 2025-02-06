@@ -26,6 +26,7 @@ export default (sequelize) => {
           key: "id",
         },
         onDelete: "SET NULL",
+        defaultValue: null,
       },
       projectId: {
         type: DataTypes.INTEGER,
@@ -35,6 +36,7 @@ export default (sequelize) => {
           key: "id",
         },
         onDelete: "SET NULL",
+        defaultValue: null,
       },
       year: {
         type: DataTypes.INTEGER,

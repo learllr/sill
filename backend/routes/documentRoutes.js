@@ -15,7 +15,7 @@ router.get("/", getAllDocuments);
 router.get("/:id", getDocumentById);
 router.get("/type/:typeName", getDocumentsByTypeName);
 router.post("/", upload.single("file"), createDocument);
-router.put("/:id", updateDocument);
+router.put("/:id", upload.single("file"), updateDocument);
 router.delete("/:id", deleteDocument);
 
 export default router;

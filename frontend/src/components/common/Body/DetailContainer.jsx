@@ -1,21 +1,33 @@
+import { useState } from "react";
 import { Trash2, Pencil, X } from "lucide-react";
 import NewDocumentForm from "./NewDocumentForm";
+import EditDocumentForm from "./EditDocumentForm";
 
-export default function DetailContainer({ onClose, isNew, documentType }) {
+export default function DetailContainer({
+  onClose,
+  isNew,
+  documentType,
+  document,
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+
   return (
     <div className="border p-4 flex flex-col space-y-3">
       <div className="flex justify-end space-x-2">
-        {!isNew && (
+        {!isNew && !isEditing && (
           <button className="p-2 bg-red-500 text-white hover:bg-red-600 transition">
             <Trash2 className="w-5 h-5" />
           </button>
         )}
 
-        {!isNew ? (
-          <button className="p-2 bg-blue-500 text-white hover:bg-blue-600 transition">
+        {!isNew && !isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="p-2 bg-blue-500 text-white hover:bg-blue-600 transition"
+          >
             <Pencil className="w-5 h-5" />
           </button>
-        ) : null}
+        )}
 
         <button
           onClick={onClose}
@@ -27,8 +39,33 @@ export default function DetailContainer({ onClose, isNew, documentType }) {
 
       {isNew ? (
         <NewDocumentForm onSave={onClose} documentType={documentType} />
+      ) : isEditing ? (
+        <EditDocumentForm
+          document={document}
+          onSave={() => {
+            setIsEditing(false);
+            onClose();
+          }}
+          documentType={documentType}
+        />
       ) : (
-        <div className="p-2">Édition du document</div>
+        <div className="p-2 space-y-3">
+          <h2 className="text-lg font-semibold">Détails du document</h2>
+          <p>
+            <strong>Année :</strong> {document?.year}
+          </p>
+          <p>
+            <strong>Mois :</strong> {document?.month}
+          </p>
+          <a
+            href={`${import.meta.env.VITE_BASE_URL}/uploads/${document?.path}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            Voir le document
+          </a>
+        </div>
       )}
     </div>
   );

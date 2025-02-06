@@ -41,7 +41,7 @@ export default class DocumentDAO {
   }
 
   static async updateDocument(document, updatedData) {
-    return await Document.update(updatedData);
+    return await document.update(updatedData);
   }
 
   static async deleteDocument(document) {
