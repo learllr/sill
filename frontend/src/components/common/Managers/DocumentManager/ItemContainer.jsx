@@ -1,10 +1,10 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { sortAndGroupDocuments } from "../../../../../shared/utils/organizeDocuments.js";
-import NavigationSubTabs from "../Buttons/NavigationSubTabs.jsx";
-import IconButton from "./Design/IconButton.jsx";
-import DocumentCard from "./DocumentCard";
-import ScrollBarSearch from "./ScrollBarSearch";
+import { sortAndGroupDocuments } from "../../../../../../shared/utils/organizeDocuments.js";
+import IconButton from "../../Design/Buttons/IconButton.jsx";
+import NavigationSubTabs from "../../Design/Buttons/NavigationSubTabs.jsx";
+import ScrollBarSearch from "../ScrollBarSearch.jsx";
+import DocumentCard from "./DocumentCard.jsx";
 
 export default function ItemContainer({
   items,

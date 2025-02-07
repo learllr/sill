@@ -1,9 +1,9 @@
 import { Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import IconButton from "./Design/IconButton";
+import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentDetails from "./DocumentDetails.jsx";
-import EditDocumentForm from "./EditDocumentForm";
-import NewDocumentForm from "./NewDocumentForm";
+import EditDocumentForm from "./EditDocumentForm.jsx";
+import NewDocumentForm from "./NewDocumentForm.jsx";
 
 export default function DetailContainer({
   onClose,

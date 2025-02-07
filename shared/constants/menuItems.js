@@ -16,3 +16,9 @@ export const ziedMenuItems = [
 ];
 
 export const memoMenuItems = [{ label: "Notes de services" }];
+
+export const employeeMenuItems = [
+  {
+    subMenu: ["Tous", "Actifs", "Inactifs"],
+  },
+];

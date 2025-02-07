@@ -35,7 +35,7 @@ const data = {
       title: "Services RH",
       items: [
         { title: "Salariés", url: "/salariés" },
-        { title: "Notes de services", url: "/notes-de-service" },
+        { title: "Notes", url: "/notes" },
       ],
     },
     {

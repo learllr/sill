@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { bankMenuItems } from "../../../../../shared/constants/menuItems.js";
 import { DocumentType } from "../../../../../shared/constants/types.js";
-import DocumentManager from "../../common/Body/DocumentManager.jsx";
+import DocumentManager from "../../common/Managers/DocumentManager/DocumentManager.jsx";
 
 export default function Bank() {
   const [selectedMainTab, setSelectedMainTab] = useState(

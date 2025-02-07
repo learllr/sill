@@ -1,3 +1,4 @@
+import { sanitizeNullValues } from "../../shared/utils/databaseUtils.js";
 import EmployeeDAO from "../dao/EmployeeDAO.js";
 
 export const getAllEmployees = async (req, res) => {
@@ -9,6 +10,25 @@ export const getAllEmployees = async (req, res) => {
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération des employés" });
+  }
+};
+
+export const createEmployee = async (req, res) => {
+  try {
+    let employeeData = { ...req.body };
+
+    if (req.file) {
+      employeeData.profilePicture = req.file.filename;
+    }
+
+    employeeData = sanitizeNullValues(employeeData);
+
+    const employee = await EmployeeDAO.createEmployee(employeeData);
+
+    res.status(201).json({ message: "Employé ajouté avec succès", employee });
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de l'employé :", error);
+    res.status(500).json({ error: "Erreur lors de l'ajout de l'employé" });
   }
 };
 
@@ -33,7 +53,14 @@ export const getEmployeeById = async (req, res) => {
 export const updateEmployeeById = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedData = req.body;
+    let updatedData = { ...req.body };
+
+    if (req.file) {
+      updatedData.profilePicture = req.file.filename;
+    }
+
+    // Nettoyage des valeurs nulles
+    updatedData = sanitizeNullValues(updatedData);
 
     const employee = await EmployeeDAO.getEmployeeById(id);
     if (!employee) {

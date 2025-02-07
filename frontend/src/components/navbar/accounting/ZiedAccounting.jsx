@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ziedMenuItems } from "../../../../../shared/constants/menuItems.js";
-import DocumentManager from "../../common/Body/DocumentManager.jsx";
+import DocumentManager from "../../common/Managers/DocumentManager/DocumentManager.jsx";
 
 export default function ZiedAccounting() {
   const [selectedMainTab, setSelectedMainTab] = useState(

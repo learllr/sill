@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useDocuments } from "../../../hooks/useDocuments.jsx";
-import DetailContainer from "../../common/Body/DetailContainer.jsx";
-import ItemContainer from "../../common/Body/ItemContainer.jsx";
-import Section from "../../common/Body/Section.jsx";
-import NavigationTabs from "../../common/Buttons/NavigationTabs.jsx";
-import Loading from "./Design/Loading.jsx";
+import { useDocuments } from "../../../../hooks/useDocuments.jsx";
+import NavigationTabs from "../../Design/Buttons/NavigationTabs.jsx";
+import Loading from "../../Design/Loading.jsx";
+import Section from "../Section.jsx";
+import DetailContainer from "./DetailContainer.jsx";
+import ItemContainer from "./ItemContainer.jsx";
 
 export default function DocumentManager({
   title,

@@ -1,16 +1,14 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import GlobalBody from "./components/common/GlobalBody.jsx";
 import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting.jsx";
 import Bank from "./components/navbar/aministrative-services/Bank.jsx";
 import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
-import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails.jsx";
 import Employees from "./components/navbar/hr-services/Employees.jsx";
 import Memos from "./components/navbar/hr-services/Memos.jsx";
-import ParticipantDetails from "./components/navbar/project-management/ParticipantDetails.jsx";
 import Participants from "./components/navbar/project-management/Participants.jsx";
 import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
 import Projects from "./components/navbar/project-management/Projects.jsx";
-import GlobalBody from "./components/common/GlobalBody.jsx";
 
 export default function App() {
   const participantTypes = [
@@ -34,16 +32,9 @@ export default function App() {
               element={<Participants typeId={id} />}
             />
           ))}
-          {participantTypes.map(({ id, name }) => (
-            <Route
-              key={`${name}-details`}
-              path={`/${name}/:id`}
-              element={<ParticipantDetails typeId={id} typeName={name} />}
-            />
-          ))}
+
           <Route path="/salariés" element={<Employees />} />
-          <Route path="/salarié/:id" element={<EmployeeDetails />} />
-          <Route path="/notes-de-service" element={<Memos />} />
+          <Route path="/notes" element={<Memos />} />
           <Route
             path="/administrative-services"
             element={<h1>Administrative Services</h1>}

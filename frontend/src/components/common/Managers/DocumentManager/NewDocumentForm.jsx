@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Months } from "../../../../../shared/constants/general.js";
-import { useParticipants } from "../../../hooks/useParticipants";
-import { useProjects } from "../../../hooks/useProjects.jsx";
-import Combobox from "../Buttons/Combobox.jsx";
-import IconButton from "./Design/IconButton.jsx";
+import { Months } from "../../../../../../shared/constants/general.js";
+import { useParticipants } from "../../../../hooks/useParticipants.jsx";
+import { useProjects } from "../../../../hooks/useProjects.jsx";
+import Combobox from "../../Design/Buttons/Combobox.jsx";
+import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
 const MAX_FILE_SIZE_MB = 5;

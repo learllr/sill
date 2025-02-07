@@ -16,7 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
-import { highlightText } from "../../../../../shared/utils/textUtils.js";
+import { highlightText } from "../../../../../../shared/utils/textUtils.js";
 
 export default function Combobox({
   subjects = [],

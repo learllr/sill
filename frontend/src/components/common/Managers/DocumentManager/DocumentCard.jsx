@@ -1,4 +1,4 @@
-import getFileIcon from "../../../../../shared/utils/getFileIcon.jsx";
+import getFileIcon from "../../../../../../shared/utils/getFileIcon";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 

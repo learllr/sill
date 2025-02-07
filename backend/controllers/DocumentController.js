@@ -50,11 +50,13 @@ export const getDocumentsByTypeName = async (req, res) => {
 
 export const createDocument = async (req, res) => {
   try {
-    const documentData = { ...req.body };
+    let documentData = { ...req.body };
 
     if (req.file) {
       documentData.path = req.file.filename;
     }
+
+    documentData = sanitizeNullValues(documentData);
 
     const document = await DocumentDAO.createDocument(documentData);
 

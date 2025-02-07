@@ -12,6 +12,16 @@ export default (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
+      active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
+      gender: {
+        type: DataTypes.ENUM(["Homme", "Femme"]),
+        allowNull: false,
+        defaultValue: "Homme",
+      },
       firstName: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -109,13 +119,10 @@ export default (sequelize) => {
       btpCard: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
+        defaultValue: false,
       },
       medicalCheckupDate: {
         type: DataTypes.STRING,
-        allowNull: true,
-      },
-      active: {
-        type: DataTypes.BOOLEAN,
         allowNull: true,
       },
     },

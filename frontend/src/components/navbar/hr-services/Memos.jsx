@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { memoMenuItems } from "../../../../../shared/constants/menuItems.js";
 import { DocumentType } from "../../../../../shared/constants/types.js";
-import DocumentManager from "../../common/Body/DocumentManager.jsx";
+import DocumentManager from "../../common/Managers/DocumentManager/DocumentManager.jsx";
 
 export default function Memos() {
   const [selectedMainTab, setSelectedMainTab] = useState(
@@ -10,7 +10,7 @@ export default function Memos() {
 
   return (
     <DocumentManager
-      title="Mémos"
+      title="Notes"
       selectedMainTab={selectedMainTab}
       setSelectedMainTab={setSelectedMainTab}
       menuItems={memoMenuItems}
