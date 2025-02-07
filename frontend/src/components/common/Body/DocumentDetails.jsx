@@ -3,7 +3,11 @@ import { useParticipants } from "../../../hooks/useParticipants";
 import { useProjects } from "../../../hooks/useProjects";
 import DocumentPreview from "./DocumentPreview";
 
-export default function DocumentDetails({ document }) {
+export default function DocumentDetails({
+  document,
+  isParticipant,
+  isProject,
+}) {
   const { participants } = useParticipants(!!document?.participantId);
   const { projects } = useProjects(!!document?.projectId);
 
@@ -23,16 +27,20 @@ export default function DocumentDetails({ document }) {
         <p>
           <strong>Mois :</strong> {document?.month}
         </p>
-
-        <p>
-          <strong>Intervenant :</strong> {participantName}
-        </p>
-        <p>
-          <strong>Chantier :</strong> {projectName}
-        </p>
+        {isParticipant && (
+          <p>
+            <strong>Intervenant :</strong> {participantName}
+          </p>
+        )}
+        {isProject && (
+          <p>
+            <strong>Chantier :</strong> {projectName}
+          </p>
+        )}
         <p>
           <strong>Créé le :</strong> {formatDateTime(document?.createdAt)}
         </p>
+
         <p>
           <strong>Modifié le :</strong> {formatDateTime(document?.updatedAt)}
         </p>

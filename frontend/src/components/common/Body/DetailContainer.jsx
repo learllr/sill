@@ -72,7 +72,11 @@ export default function DetailContainer({
             isProject={isProject}
           />
         ) : (
-          <DocumentDetails document={document} />
+          <DocumentDetails
+            document={document}
+            isParticipant={isParticipant}
+            isProject={isProject}
+          />
         )}
       </div>
     </div>

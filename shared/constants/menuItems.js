@@ -14,3 +14,5 @@ export const ziedMenuItems = [
     label: "Les envois",
   },
 ];
+
+export const memoMenuItems = [{ label: "Notes de services" }];

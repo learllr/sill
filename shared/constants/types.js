@@ -12,6 +12,7 @@ export const DocumentType = {
   BILANS: "Bilans",
   STATUTS: "Statuts",
   CEDIG: "CEDIG",
+  NOTES_DE_SERVICE: "Notes de services",
 };
 
 export const typeMapping = {
