@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
@@ -22,6 +24,11 @@ export default function DetailContainer({
       onClose();
     }
   };
+
+  const formatDate = (date) =>
+    date
+      ? format(new Date(date), "dd/MM/yyyy", { locale: fr })
+      : "Non renseigné";
 
   return (
     <div className="border p-4 flex flex-col space-y-3 h-[64vh] overflow-auto">
@@ -66,7 +73,17 @@ export default function DetailContainer({
             isUpdating={updateMutation.isLoading}
           />
         ) : (
-          <ContactDetails contact={contact} contactType={contactType} />
+          <>
+            <ContactDetails contact={contact} contactType={contactType} />
+            <div className="mt-4 text-gray-600 text-sm text-center">
+              <p>
+                <strong>Créé le :</strong> {formatDate(contact?.createdAt)}
+              </p>
+              <p>
+                <strong>Modifié le :</strong> {formatDate(contact?.updatedAt)}
+              </p>
+            </div>
+          </>
         )}
       </div>
     </div>

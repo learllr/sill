@@ -17,7 +17,7 @@ export default function ContactDetails({ contact, contactType }) {
   return (
     <div className="p-2 space-y-4">
       <h2 className="text-lg text-center font-semibold">Détails du contact</h2>
-      <div className="flex flex-col space-y-1">
+      <div className="flex flex-col space-y-1 text-left">
         {fields.length > 0 ? (
           fields.map(({ name, label, type }) => {
             let value = contact?.[name];

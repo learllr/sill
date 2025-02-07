@@ -17,7 +17,7 @@ export default function EditContactForm({
 
   const initialFormData = fields.reduce((acc, field) => {
     acc[field.name] =
-      contact[field.name] !== undefined
+      contact[field.name] !== undefined && contact[field.name] !== null
         ? contact[field.name]
         : field.type === "checkbox"
         ? field.defaultValue || false
@@ -69,7 +69,7 @@ export default function EditContactForm({
               {type === "select" ? (
                 <select
                   name={name}
-                  value={formData[name]}
+                  value={formData[name] || ""}
                   onChange={handleChange}
                   className="block w-full mt-1 border rounded-md p-2"
                 >
@@ -84,15 +84,14 @@ export default function EditContactForm({
                 <input
                   type="checkbox"
                   name={name}
-                  checked={formData[name]}
+                  checked={formData[name] || false}
                   onChange={handleChange}
-                  className="mt-1"
                 />
               ) : (
                 <input
                   type={type}
                   name={name}
-                  value={formData[name]}
+                  value={formData[name] || ""}
                   onChange={handleChange}
                   className="block w-full mt-1 border rounded-md p-2"
                   {...(type === "number" ? { min: 0 } : {})}
@@ -112,7 +111,7 @@ export default function EditContactForm({
                   {type === "select" ? (
                     <select
                       name={name}
-                      value={formData[name]}
+                      value={formData[name] || ""}
                       onChange={handleChange}
                       className="block w-full mt-1 border rounded-md p-2"
                     >
@@ -127,15 +126,14 @@ export default function EditContactForm({
                     <input
                       type="checkbox"
                       name={name}
-                      checked={formData[name]}
+                      checked={formData[name] || false}
                       onChange={handleChange}
-                      className="mt-1"
                     />
                   ) : (
                     <input
                       type={type}
                       name={name}
-                      value={formData[name]}
+                      value={formData[name] || ""}
                       onChange={handleChange}
                       className="block w-full mt-1 border rounded-md p-2"
                       {...(type === "number" ? { min: 0 } : {})}
