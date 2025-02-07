@@ -18,6 +18,8 @@ export default function ZiedAccounting() {
       selectedSubTab={selectedSubTab}
       setSelectedSubTab={setSelectedSubTab}
       menuItems={ziedMenuItems}
+      isParticipant={true}
+      isProject={true}
     />
   );
 }

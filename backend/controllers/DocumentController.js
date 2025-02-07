@@ -49,21 +49,13 @@ export const getDocumentsByTypeName = async (req, res) => {
 
 export const createDocument = async (req, res) => {
   try {
-    const { year, month, type } = req.body;
-    let path = req.file ? req.file.filename : null;
+    const documentData = { ...req.body };
 
-    if (!year || !month || !type) {
-      return res
-        .status(400)
-        .json({ error: "Tous les champs (année, mois, type) sont requis." });
+    if (req.file) {
+      documentData.path = req.file.filename;
     }
 
-    const document = await DocumentDAO.createDocument({
-      year,
-      month,
-      type,
-      path,
-    });
+    const document = await DocumentDAO.createDocument(documentData);
 
     res.status(201).json({ message: "Document ajouté avec succès", document });
   } catch (error) {

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -21,7 +19,7 @@ import { useState } from "react";
 import { highlightText } from "../../../../../shared/utils/textUtils.js";
 
 export default function Combobox({
-  subjects,
+  subjects = [],
   onSelect,
   placeholder,
   defaultValue,
@@ -36,7 +34,13 @@ export default function Combobox({
     if (onSelect) onSelect(currentValue);
   };
 
-  const options = [{ label: "Aucun", value: 0 }, ...subjects];
+  const options = [{ id: 0, name: "Aucun" }, ...subjects];
+
+  const filteredOptions = options.filter(
+    (option) =>
+      option.name &&
+      option.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -48,7 +52,7 @@ export default function Combobox({
           className="w-full justify-between font-normal"
         >
           {value
-            ? options.find((option) => option.value === value)?.label
+            ? options.find((option) => option.id === value)?.name
             : placeholder || "Sélectionnez une option..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -57,38 +61,32 @@ export default function Combobox({
         <Command>
           <CommandInput
             placeholder={placeholder}
-            onInput={(e) => setSearchTerm(e.target.value)}
+            onInput={(e) => setSearchTerm(e.target.id)}
           />
           <ScrollArea className="max-h-48 overflow-y-auto">
             <CommandList>
               <CommandEmpty>Aucune option trouvée.</CommandEmpty>
               <CommandGroup>
-                {options
-                  .filter((option) =>
-                    option.label
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
-                  )
-                  .map((option) => (
-                    <CommandItem
-                      key={option.value}
-                      value={option.value}
-                      onSelect={() => handleSelect(option.value)}
-                      className="cursor-pointer"
-                    >
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: highlightText(option.label, searchTerm),
-                        }}
-                      />
-                      <Check
-                        className={cn(
-                          "ml-auto",
-                          value === option.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
+                {filteredOptions.map((option) => (
+                  <CommandItem
+                    key={option.id}
+                    value={option.id}
+                    onSelect={() => handleSelect(option.id)}
+                    className="cursor-pointer"
+                  >
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: highlightText(option.name, searchTerm),
+                      }}
+                    />
+                    <Check
+                      className={cn(
+                        "ml-auto",
+                        value === option.id ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                  </CommandItem>
+                ))}
               </CommandGroup>
             </CommandList>
           </ScrollArea>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import axios from "../../../axiosConfig.js";
+import { useDocuments } from "../../../hooks/useDocuments.jsx";
 import DetailContainer from "../../common/Body/DetailContainer.jsx";
 import ItemContainer from "../../common/Body/ItemContainer.jsx";
 import Section from "../../common/Body/Section.jsx";
@@ -14,8 +13,9 @@ export default function DocumentManager({
   selectedSubTab = null,
   setSelectedSubTab = null,
   menuItems,
+  isParticipant,
+  isProject,
 }) {
-  const queryClient = useQueryClient();
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
 
@@ -25,84 +25,13 @@ export default function DocumentManager({
   const [error, setError] = useState("");
 
   const {
-    data: documents,
+    documents,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: ["documents", selectedMainTab, selectedSubTab],
-    queryFn: async () => {
-      try {
-        const response = await axios.get(
-          `/document/type/${encodeURIComponent(selectedMainTab)}`
-        );
-        return response.data.documents;
-      } catch (error) {
-        console.error("Erreur lors de la récupération des documents :", error);
-        throw new Error("Erreur lors du chargement des documents.");
-      }
-    },
-    enabled: !!selectedMainTab,
-  });
-
-  const addMutation = useMutation({
-    mutationFn: async (formData) => {
-      const response = await axios.post("/document", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries([
-        "documents",
-        selectedMainTab,
-        selectedSubTab,
-      ]);
-      setIsDetailVisible(false);
-      setSelectedDocument(null);
-    },
-    onError: () => {
-      setError("Erreur lors de l'ajout du document.");
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (documentId) => {
-      await axios.delete(`/document/${documentId}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries([
-        "documents",
-        selectedMainTab,
-        selectedSubTab,
-      ]);
-      setIsDetailVisible(false);
-      setSelectedDocument(null);
-    },
-    onError: () => {
-      setError("Erreur lors de la suppression du document.");
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async ({ documentId, formData }) => {
-      const response = await axios.put(`/document/${documentId}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries([
-        "documents",
-        selectedMainTab,
-        selectedSubTab,
-      ]);
-      setIsDetailVisible(false);
-      setSelectedDocument(null);
-    },
-    onError: () => {
-      setError("Erreur lors de la modification du document.");
-    },
-  });
+    addMutation,
+    deleteMutation,
+    updateMutation,
+  } = useDocuments(selectedMainTab, selectedSubTab);
 
   return (
     <div>
@@ -153,23 +82,15 @@ export default function DocumentManager({
               onClose={() => {
                 setIsDetailVisible(false);
                 setSelectedDocument(null);
-                queryClient.invalidateQueries([
-                  "documents",
-                  selectedMainTab,
-                  selectedSubTab,
-                ]);
               }}
               isNew={isAddingNew}
               documentType={selectedMainTab}
               document={selectedDocument}
-              onAdd={(formData) => addMutation.mutate(formData)}
-              isAdding={addMutation.isLoading}
-              onDelete={(documentId) => deleteMutation.mutate(documentId)}
-              isDeleting={deleteMutation.isLoading}
-              onUpdate={(documentId, formData) =>
-                updateMutation.mutate({ documentId, formData })
-              }
-              isUpdating={updateMutation.isLoading}
+              addMutation={addMutation}
+              deleteMutation={deleteMutation}
+              updateMutation={updateMutation}
+              isParticipant={isParticipant}
+              isProject={isProject}
             />
           </div>
         )}

@@ -2,37 +2,8 @@ import db from "../orm/models/index.js";
 const { Project, Participant, ProjectParticipant } = db;
 
 export default class ProjectDAO {
-  static async getAllProjects(whereClause = {}, includeData = true) {
-    const include = includeData
-      ? [
-          {
-            model: Participant,
-            as: "clients",
-            attributes: ["id", "name", "contactPerson", "email"],
-          },
-          {
-            model: Participant,
-            as: "suppliers",
-            attributes: ["id", "name", "contactPerson", "email"],
-          },
-          {
-            model: Participant,
-            as: "subcontractors",
-            attributes: ["id", "name", "contactPerson", "email"],
-          },
-          {
-            model: Participant,
-            as: "architects",
-            attributes: ["id", "name", "contactPerson", "email"],
-          },
-        ]
-      : [];
-
-    return await Project.findAll({
-      where: whereClause,
-      include,
-      attributes: ["id", "name", "status", "createdAt"],
-    });
+  static async getAllProjects() {
+    return await Project.findAll();
   }
 
   static async getProjectById(id) {
@@ -72,11 +43,11 @@ export default class ProjectDAO {
     return await project.destroy();
   }
 
-  static async addParticipantToProject(projectId, participantId, typeId) {
+  static async addParticipantToProject(projectId, participantId, type) {
     return await ProjectParticipant.create({
       projectId,
       participantId,
-      typeId,
+      type,
     });
   }
 

@@ -2,8 +2,7 @@ import ParticipantDAO from "../dao/ParticipantDAO.js";
 
 export const getAllParticipants = async (req, res) => {
   try {
-    const { typeId } = req.params;
-    const participants = await ParticipantDAO.getAllParticipantsByType(typeId);
+    const participants = await ParticipantDAO.getAllParticipants();
     res.status(200).json(participants);
   } catch (error) {
     res
@@ -14,10 +13,10 @@ export const getAllParticipants = async (req, res) => {
 
 export const getParticipantById = async (req, res) => {
   try {
-    const { id, typeId } = req.params;
+    const { id, type } = req.params;
     const participant = await ParticipantDAO.getParticipantByIdAndType(
       id,
-      typeId
+      type
     );
     if (!participant)
       return res.status(404).json({ error: "Participant non trouvé" });
@@ -44,12 +43,12 @@ export const createParticipant = async (req, res) => {
 
 export const updateParticipant = async (req, res) => {
   try {
-    const { id, typeId } = req.params;
+    const { id, type } = req.params;
     const updatedData = req.body;
 
     const updatedParticipant = await ParticipantDAO.updateParticipant(
       id,
-      typeId,
+      type,
       updatedData
     );
 
@@ -66,11 +65,11 @@ export const updateParticipant = async (req, res) => {
 
 export const deleteParticipantById = async (req, res) => {
   try {
-    const { id, typeId } = req.params;
+    const { id, type } = req.params;
 
     const participant = await ParticipantDAO.getParticipantByIdAndType(
       id,
-      typeId
+      type
     );
     if (!participant) {
       return res.status(404).json({ error: "Participant non trouvé" });

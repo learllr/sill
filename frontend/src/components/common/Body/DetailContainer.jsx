@@ -10,16 +10,18 @@ export default function DetailContainer({
   isNew,
   documentType,
   document,
-  onDelete,
-  isDeleting,
-  onUpdate,
-  isUpdating,
+  addMutation,
+  deleteMutation,
+  updateMutation,
+  isParticipant,
+  isProject,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleDelete = () => {
     if (window.confirm("Voulez-vous vraiment supprimer ce document ?")) {
-      onDelete(document.id);
+      deleteMutation.mutate(document.id);
+      onClose();
     }
   };
 
@@ -30,9 +32,9 @@ export default function DetailContainer({
           <IconButton
             onClick={handleDelete}
             variant="red"
-            disabled={isDeleting}
+            disabled={deleteMutation.isLoading}
           >
-            {isDeleting ? "Suppression..." : <Trash2 />}
+            {deleteMutation.isLoading ? "Suppression..." : <Trash2 />}
           </IconButton>
         )}
 
@@ -49,14 +51,23 @@ export default function DetailContainer({
 
       <div className="w-72 mx-auto">
         {isNew ? (
-          <NewDocumentForm onSave={onClose} documentType={documentType} />
+          <NewDocumentForm
+            onSave={onClose}
+            documentType={documentType}
+            addMutation={addMutation}
+            isParticipant={isParticipant}
+            isProject={isProject}
+          />
         ) : isEditing ? (
           <EditDocumentForm
             document={document}
             onSave={onClose}
             documentType={documentType}
-            onUpdate={onUpdate}
-            isUpdating={isUpdating}
+            onUpdate={(documentId, formData) => {
+              updateMutation.mutate({ documentId, formData });
+              onClose();
+            }}
+            isUpdating={updateMutation.isLoading}
           />
         ) : (
           <DocumentDetails document={document} />

@@ -2,31 +2,17 @@ import db from "../orm/models/index.js";
 const { Participant } = db;
 
 export default class ParticipantDAO {
-  static async getAllParticipantsByType(typeId) {
-    return await Participant.findAll({
-      where: { typeId },
-      attributes: [
-        "id",
-        "name",
-        "typeId",
-        "contactPerson",
-        "phone",
-        "email",
-        "address",
-        "website",
-        "updatedAt",
-        "createdAt",
-      ],
-    });
+  static async getAllParticipants() {
+    return await Participant.findAll();
   }
 
-  static async getParticipantByIdAndType(id, typeId) {
+  static async getParticipantByIdAndType(id, type) {
     return await Participant.findOne({
-      where: { id, typeId },
+      where: { id, type },
       attributes: [
         "id",
         "name",
-        "typeId",
+        "type",
         "contactPerson",
         "phone",
         "email",
@@ -42,9 +28,9 @@ export default class ParticipantDAO {
     return await Participant.create(data);
   }
 
-  static async updateParticipant(id, typeId, updatedData) {
+  static async updateParticipant(id, type, updatedData) {
     return await Participant.update(updatedData, {
-      where: { id, typeId },
+      where: { id, type },
     });
   }
 
