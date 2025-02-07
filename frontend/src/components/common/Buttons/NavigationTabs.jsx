@@ -5,7 +5,11 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
-export default function NavigationTabs({ menuItems, onTabChange }) {
+export default function NavigationTabs({
+  menuItems,
+  selectedTab,
+  onTabChange,
+}) {
   return (
     <NavigationMenu>
       <NavigationMenuList className="flex space-x-4 border-b pb-2 mb-4">
@@ -13,7 +17,12 @@ export default function NavigationTabs({ menuItems, onTabChange }) {
           <NavigationMenuItem key={item}>
             <NavigationMenuLink
               onClick={() => onTabChange(item)}
-              className="px-3 py-1 text-sm font-medium text-gray-700 hover:text-black cursor-pointer"
+              className={`px-3 py-1 text-sm font-medium cursor-pointer 
+                ${
+                  selectedTab === item
+                    ? "text-black font-bold"
+                    : "text-gray-600 hover:text-black"
+                }`}
             >
               {item}
             </NavigationMenuLink>

@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { LogOut, Settings } from "lucide-react";
-import GlobalSearchBar from "./GlobalSearchBar";
 
 export default function GlobalHeader() {
   return (
@@ -10,10 +9,6 @@ export default function GlobalHeader() {
       <div className="flex items-center shrink-0">
         <SidebarTrigger />
         <Separator orientation="vertical" className="h-4" />
-      </div>
-
-      <div className="flex flex-grow items-center mx-4">
-        <GlobalSearchBar />
       </div>
 
       <div className="flex items-center gap-2 shrink-0">

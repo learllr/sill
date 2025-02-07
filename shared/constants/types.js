@@ -9,6 +9,9 @@ export const ParticipantType = {
 export const DocumentType = {
   RELEVES_DE_COMPTES: "Relevés de comptes",
   DOCUMENTS_BANCAIRES: "Documents bancaires",
+  BILANS: "Bilans",
+  STATUTS: "Statuts",
+  CEDIG: "CEDIG",
 };
 
 export const typeMapping = {

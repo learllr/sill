@@ -1,24 +1,17 @@
-import React, { useState } from "react";
-import DetailsHeaderActions from "../../common/Pages/DetailsHeaderActions.jsx";
-import SillStatusNavMenu from "./SillStatusNavMenu.jsx";
+import { useState } from "react";
+import { sillStatusMenuItems } from "../../../../../shared/constants/menuItems.js";
+import { DocumentType } from "../../../../../shared/constants/types.js";
+import DocumentManager from "../../common/Body/DocumentManager.jsx";
 
-export default function StatutSILL() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [selectedTab, setSelectedTab] = useState("Bilans");
+export default function SillStatus() {
+  const [selectedMainTab, setSelectedMainTab] = useState(DocumentType.BILANS);
 
   return (
-    <div className="px-4 w-full">
-      <DetailsHeaderActions
-        title="Statut SILL"
-        onEdit={() => setIsEditing(!isEditing)}
-        onDelete={() => {}}
-        showRemoveButton={false}
-      />
-
-      <SillStatusNavMenu
-        selectedTab={selectedTab}
-        onTabChange={setSelectedTab}
-      />
-    </div>
+    <DocumentManager
+      title="Statut SILL"
+      selectedMainTab={selectedMainTab}
+      setSelectedMainTab={setSelectedMainTab}
+      menuItems={sillStatusMenuItems}
+    />
   );
 }

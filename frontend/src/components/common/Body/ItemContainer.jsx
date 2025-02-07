@@ -1,11 +1,19 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { sortAndGroupDocuments } from "../../../../../shared/utils/organizeDocuments.js";
+import NavigationSubTabs from "../Buttons/NavigationSubTabs.jsx";
 import IconButton from "./Design/IconButton.jsx";
 import DocumentCard from "./DocumentCard";
 import ScrollBarSearch from "./ScrollBarSearch";
 
-export default function ItemContainer({ items, onAdd, onSelectItem }) {
+export default function ItemContainer({
+  items,
+  subMenuItems,
+  selectedSubTab,
+  setSelectedSubTab,
+  onAdd,
+  onSelectItem,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = items.filter((item) => {
@@ -34,6 +42,14 @@ export default function ItemContainer({ items, onAdd, onSelectItem }) {
           <Plus />
         </IconButton>
       </div>
+
+      {setSelectedSubTab && subMenuItems.length > 0 && (
+        <NavigationSubTabs
+          subMenuItems={subMenuItems}
+          selectedSubTab={selectedSubTab}
+          setSelectedSubTab={setSelectedSubTab}
+        />
+      )}
 
       <div className="space-y-4 p-2 overflow-auto">
         {Object.keys(groupedByYear).length > 0 ? (
