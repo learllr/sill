@@ -25,13 +25,14 @@ export default function Combobox({
   defaultValue,
 }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(defaultValue || "");
+  const [value, setValue] = useState(defaultValue || null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSelect = (currentValue) => {
-    setValue(currentValue === value ? "" : currentValue);
+    const selectedValue = currentValue === 0 ? null : currentValue;
+    setValue(selectedValue);
     setOpen(false);
-    if (onSelect) onSelect(currentValue);
+    if (onSelect) onSelect(selectedValue);
   };
 
   const options = [{ id: 0, name: "Aucun" }, ...subjects];
@@ -51,7 +52,7 @@ export default function Combobox({
           aria-expanded={open}
           className="w-full justify-between font-normal"
         >
-          {value
+          {value !== null
             ? options.find((option) => option.id === value)?.name
             : placeholder || "Sélectionnez une option..."}
           <ChevronsUpDown className="opacity-50" />
@@ -61,7 +62,7 @@ export default function Combobox({
         <Command>
           <CommandInput
             placeholder={placeholder}
-            onInput={(e) => setSearchTerm(e.target.id)}
+            onInput={(e) => setSearchTerm(e.target.value)}
           />
           <ScrollArea className="max-h-48 overflow-y-auto">
             <CommandList>

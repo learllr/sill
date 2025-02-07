@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Months } from "../../../../../shared/constants/general.js";
+import { useParticipants } from "../../../hooks/useParticipants";
+import { useProjects } from "../../../hooks/useProjects";
+import Combobox from "../Buttons/Combobox.jsx";
 import IconButton from "./Design/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
@@ -11,11 +14,23 @@ export default function EditDocumentForm({
   documentType,
   onUpdate,
   isUpdating,
+  isParticipant,
+  isProject,
 }) {
   const [selectedYear, setSelectedYear] = useState(document.year);
   const [selectedMonth, setSelectedMonth] = useState(document.month);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
+  const [selectedParticipant, setSelectedParticipant] = useState(
+    document.participantId || null
+  );
+  const [selectedProject, setSelectedProject] = useState(
+    document.projectId || null
+  );
+
+  const { participants, isLoadingParticipants } =
+    useParticipants(isParticipant);
+  const { projects, isLoadingProjects } = useProjects(isProject);
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -39,8 +54,17 @@ export default function EditDocumentForm({
     formData.append("year", selectedYear);
     formData.append("month", selectedMonth);
     formData.append("type", documentType);
+
     if (file) {
       formData.append("file", file);
+    }
+
+    if (isParticipant) {
+      formData.append("participantId", selectedParticipant ?? "");
+    }
+
+    if (isProject) {
+      formData.append("projectId", selectedProject ?? "");
     }
 
     onUpdate(document.id, formData);
@@ -90,6 +114,32 @@ export default function EditDocumentForm({
           ))}
         </select>
       </label>
+
+      {isParticipant && (
+        <label className="block">
+          <span className="text-gray-700">Intervenant</span>
+          <Combobox
+            subjects={participants}
+            onSelect={(value) => setSelectedParticipant(value)}
+            placeholder="Sélectionnez un intervenant..."
+            defaultValue={selectedParticipant}
+            isLoading={isLoadingParticipants}
+          />
+        </label>
+      )}
+
+      {isProject && (
+        <label className="block">
+          <span className="text-gray-700">Chantier</span>
+          <Combobox
+            subjects={projects}
+            onSelect={(value) => setSelectedProject(value)}
+            placeholder="Sélectionnez un chantier..."
+            defaultValue={selectedProject}
+            isLoading={isLoadingProjects}
+          />
+        </label>
+      )}
 
       <IconButton
         onClick={handleSubmit}

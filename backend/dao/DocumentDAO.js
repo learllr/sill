@@ -20,12 +20,6 @@ export default class DocumentDAO {
   static async getDocumentById(id) {
     return await Document.findOne({
       where: { id },
-      include: [
-        {
-          model: Project,
-          as: "project",
-        },
-      ],
     });
   }
 

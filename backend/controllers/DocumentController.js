@@ -1,3 +1,4 @@
+import { sanitizeNullValues } from "../../shared/utils/databaseUtils.js";
 import DocumentDAO from "../dao/DocumentDAO.js";
 
 export const getAllDocuments = async (req, res) => {
@@ -67,11 +68,13 @@ export const createDocument = async (req, res) => {
 export const updateDocument = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedData = req.body;
+    let updatedData = { ...req.body };
 
     if (req.file) {
       updatedData.path = req.file.filename;
     }
+
+    updatedData = sanitizeNullValues(updatedData);
 
     const document = await DocumentDAO.getDocumentById(id);
 

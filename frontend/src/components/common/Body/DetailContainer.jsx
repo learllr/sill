@@ -68,6 +68,8 @@ export default function DetailContainer({
               onClose();
             }}
             isUpdating={updateMutation.isLoading}
+            isParticipant={isParticipant}
+            isProject={isProject}
           />
         ) : (
           <DocumentDetails document={document} />
