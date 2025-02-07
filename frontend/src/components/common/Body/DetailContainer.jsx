@@ -1,7 +1,9 @@
+import { Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import { Trash2, Pencil, X } from "lucide-react";
-import NewDocumentForm from "./NewDocumentForm";
+import IconButton from "./Design/IconButton";
+import DocumentDetails from "./DocumentDetails.jsx";
 import EditDocumentForm from "./EditDocumentForm";
+import NewDocumentForm from "./NewDocumentForm";
 
 export default function DetailContainer({
   onClose,
@@ -22,64 +24,44 @@ export default function DetailContainer({
   };
 
   return (
-    <div className="border p-4 flex flex-col space-y-3">
+    <div className="border p-4 flex flex-col space-y-3 h-[64vh] overflow-auto">
       <div className="flex justify-end space-x-2">
         {!isNew && !isEditing && (
-          <button
+          <IconButton
             onClick={handleDelete}
-            className="p-2 bg-red-500 text-white hover:bg-red-600 transition"
+            variant="red"
             disabled={isDeleting}
           >
-            {isDeleting ? "Suppression..." : <Trash2 className="w-5 h-5" />}
-          </button>
+            {isDeleting ? "Suppression..." : <Trash2 />}
+          </IconButton>
         )}
 
         {!isNew && !isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="p-2 bg-blue-500 text-white hover:bg-blue-600 transition"
-          >
-            <Pencil className="w-5 h-5" />
-          </button>
+          <IconButton onClick={() => setIsEditing(true)} variant="blue">
+            <Pencil />
+          </IconButton>
         )}
 
-        <button
-          onClick={onClose}
-          className="p-2 bg-gray-400 text-white hover:bg-gray-500 transition"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <IconButton onClick={onClose} variant="gray">
+          <X />
+        </IconButton>
       </div>
 
-      {isNew ? (
-        <NewDocumentForm onSave={onClose} documentType={documentType} />
-      ) : isEditing ? (
-        <EditDocumentForm
-          document={document}
-          onSave={onClose}
-          documentType={documentType}
-          onUpdate={onUpdate}
-          isUpdating={isUpdating}
-        />
-      ) : (
-        <div className="p-2 space-y-3">
-          <h2 className="text-lg font-semibold">Détails du document</h2>
-          <p>
-            <strong>Année :</strong> {document?.year}
-          </p>
-          <p>
-            <strong>Mois :</strong> {document?.month}
-          </p>
-          <a
-            href={`${import.meta.env.VITE_BASE_URL}/uploads/${document?.path}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
-          >
-            Voir le document
-          </a>
-        </div>
-      )}
+      <div className="w-72 mx-auto">
+        {isNew ? (
+          <NewDocumentForm onSave={onClose} documentType={documentType} />
+        ) : isEditing ? (
+          <EditDocumentForm
+            document={document}
+            onSave={onClose}
+            documentType={documentType}
+            onUpdate={onUpdate}
+            isUpdating={isUpdating}
+          />
+        ) : (
+          <DocumentDetails document={document} />
+        )}
+      </div>
     </div>
   );
 }

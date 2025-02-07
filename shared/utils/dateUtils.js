@@ -1,14 +1,11 @@
-import dayjs from "dayjs";
+export function formatDateTime(dateString) {
+  if (!dateString) return "Date indisponible";
 
-export const calculateAge = (birthDate) => {
-  const now = dayjs();
-  const birth = dayjs(birthDate);
-  const years = now.diff(birth, "year");
-
-  if (years > 1) {
-    return `${years} ans`;
-  } else {
-    const months = now.diff(birth, "month");
-    return `${months} mois`;
-  }
-};
+  return new Date(dateString).toLocaleString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}

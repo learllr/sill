@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Months } from "../../../../../shared/constants/general.js";
+import IconButton from "./Design/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
 const MAX_FILE_SIZE_MB = 5;
@@ -90,13 +91,14 @@ export default function EditDocumentForm({
         </select>
       </label>
 
-      <button
+      <IconButton
         onClick={handleSubmit}
-        className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
         disabled={isUpdating}
+        variant="blue"
+        className="w-full"
       >
         {isUpdating ? "Modification en cours..." : "Modifier"}
-      </button>
+      </IconButton>
     </div>
   );
 }

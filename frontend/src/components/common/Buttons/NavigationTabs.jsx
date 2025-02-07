@@ -8,7 +8,7 @@ import {
 export default function NavigationTabs({ menuItems, onTabChange }) {
   return (
     <NavigationMenu>
-      <NavigationMenuList className="flex space-x-4 border-b pb-2 mb-6">
+      <NavigationMenuList className="flex space-x-4 border-b pb-2 mb-4">
         {menuItems.map((item) => (
           <NavigationMenuItem key={item}>
             <NavigationMenuLink

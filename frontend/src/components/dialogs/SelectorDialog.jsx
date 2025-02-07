@@ -12,8 +12,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { highlightText } from "../../../../shared/utils/textUtils.js";
 import { getTypeName } from "../../../../shared/constants/types.js";
+import { highlightText } from "../../../../shared/utils/textUtils.js";
 import axios from "../../axiosConfig.js";
 
 export default function SelectorDialog({ type, typeId, onSelect, onClose }) {

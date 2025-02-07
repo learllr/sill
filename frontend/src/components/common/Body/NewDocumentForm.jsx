@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
-import axios from "../../../axiosConfig.js";
 import { Months } from "../../../../../shared/constants/general.js";
+import axios from "../../../axiosConfig.js";
+import IconButton from "./Design/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
 const MAX_FILE_SIZE_MB = 5;
@@ -103,13 +104,14 @@ export default function NewDocumentForm({ onSave, documentType }) {
         </select>
       </label>
 
-      <button
+      <IconButton
         onClick={handleSubmit}
-        className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
+        className="w-full"
+        variant="green"
         disabled={mutation.isLoading}
       >
         {mutation.isLoading ? "Ajout en cours..." : "Ajouter"}
-      </button>
+      </IconButton>
     </div>
   );
 }
