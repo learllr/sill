@@ -8,15 +8,29 @@ export default function DetailContainer({
   isNew,
   documentType,
   document,
+  onDelete,
+  isDeleting,
+  onUpdate,
+  isUpdating,
 }) {
   const [isEditing, setIsEditing] = useState(false);
+
+  const handleDelete = () => {
+    if (window.confirm("Voulez-vous vraiment supprimer ce document ?")) {
+      onDelete(document.id);
+    }
+  };
 
   return (
     <div className="border p-4 flex flex-col space-y-3">
       <div className="flex justify-end space-x-2">
         {!isNew && !isEditing && (
-          <button className="p-2 bg-red-500 text-white hover:bg-red-600 transition">
-            <Trash2 className="w-5 h-5" />
+          <button
+            onClick={handleDelete}
+            className="p-2 bg-red-500 text-white hover:bg-red-600 transition"
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Suppression..." : <Trash2 className="w-5 h-5" />}
           </button>
         )}
 
@@ -42,11 +56,10 @@ export default function DetailContainer({
       ) : isEditing ? (
         <EditDocumentForm
           document={document}
-          onSave={() => {
-            setIsEditing(false);
-            onClose();
-          }}
+          onSave={onClose}
           documentType={documentType}
+          onUpdate={onUpdate}
+          isUpdating={isUpdating}
         />
       ) : (
         <div className="p-2 space-y-3">

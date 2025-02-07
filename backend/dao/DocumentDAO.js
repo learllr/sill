@@ -45,8 +45,8 @@ export default class DocumentDAO {
   }
 
   static async deleteDocument(document) {
-    if (document.imagePath) {
-      const filePath = path.resolve("uploads", document.imagePath);
+    if (document.path) {
+      const filePath = path.resolve("uploads", document.path);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }

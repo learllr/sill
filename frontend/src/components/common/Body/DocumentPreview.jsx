@@ -17,7 +17,7 @@ export default function DocumentPreview({ file }) {
     if (file instanceof File) {
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
-      setFileType(file.name.split(".").pop().toLowerCase()); // Déduire le type à partir du nom du fichier
+      setFileType(file.name.split(".").pop().toLowerCase());
 
       return () => URL.revokeObjectURL(objectUrl);
     } else if (file.path) {

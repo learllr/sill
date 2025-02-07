@@ -1,36 +1,20 @@
 import { useState } from "react";
-import { useMutation } from "react-query";
-import axios from "../../../axiosConfig.js";
 import { Months } from "../../../../../shared/constants/general.js";
 import DocumentPreview from "./DocumentPreview.jsx";
 
 const MAX_FILE_SIZE_MB = 5;
 
-export default function EditDocumentForm({ document, onSave, documentType }) {
+export default function EditDocumentForm({
+  document,
+  onSave,
+  documentType,
+  onUpdate,
+  isUpdating,
+}) {
   const [selectedYear, setSelectedYear] = useState(document.year);
   const [selectedMonth, setSelectedMonth] = useState(document.month);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-
-  const mutation = useMutation({
-    mutationFn: async (formData) => {
-      const response = await axios.put(`/document/${document.id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return response.data;
-    },
-    onSuccess: () => {
-      setSuccess("Document mis à jour avec succès !");
-      setTimeout(() => {
-        setSuccess("");
-        onSave();
-      }, 1500);
-    },
-    onError: () => {
-      setError("Erreur lors de la mise à jour du document.");
-    },
-  });
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -58,7 +42,7 @@ export default function EditDocumentForm({ document, onSave, documentType }) {
       formData.append("file", file);
     }
 
-    mutation.mutate(formData);
+    onUpdate(document.id, formData);
   };
 
   return (
@@ -79,7 +63,6 @@ export default function EditDocumentForm({ document, onSave, documentType }) {
       </label>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
-      {success && <p className="text-green-500 text-sm">{success}</p>}
 
       <label className="block">
         <span className="text-gray-700">Année</span>
@@ -110,9 +93,9 @@ export default function EditDocumentForm({ document, onSave, documentType }) {
       <button
         onClick={handleSubmit}
         className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-        disabled={mutation.isLoading}
+        disabled={isUpdating}
       >
-        {mutation.isLoading ? "Modification en cours..." : "Modifier"}
+        {isUpdating ? "Modification en cours..." : "Modifier"}
       </button>
     </div>
   );
