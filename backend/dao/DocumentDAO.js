@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import db from "../orm/models/index.js";
+
 const { Document, Project } = db;
 
 export default class DocumentDAO {
@@ -13,7 +14,6 @@ export default class DocumentDAO {
           attributes: ["name"],
         },
       ],
-      attributes: ["id", "title", "imagePath", "createdAt", "updatedAt"],
     });
   }
 
@@ -24,7 +24,6 @@ export default class DocumentDAO {
         {
           model: Project,
           as: "project",
-          attributes: ["name"],
         },
       ],
     });
@@ -41,6 +40,14 @@ export default class DocumentDAO {
   }
 
   static async updateDocument(document, updatedData) {
+    if (updatedData.path && document.path) {
+      const oldFilePath = path.resolve("uploads", document.path);
+
+      if (fs.existsSync(oldFilePath)) {
+        fs.unlinkSync(oldFilePath);
+      }
+    }
+
     return await document.update(updatedData);
   }
 
@@ -54,26 +61,6 @@ export default class DocumentDAO {
 
     return await Document.destroy({
       where: { id: document.id },
-    });
-  }
-
-  static async deleteDocumentsByTypeId(typeId) {
-    const documents = await Document.findAll({
-      where: { typeId },
-      attributes: ["imagePath"],
-    });
-
-    for (const doc of documents) {
-      if (doc.imagePath) {
-        const filePath = path.resolve("uploads", doc.imagePath);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      }
-    }
-
-    return await Document.destroy({
-      where: { typeId },
     });
   }
 }

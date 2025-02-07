@@ -1,4 +1,4 @@
-import { File, FileText, FileImage } from "lucide-react";
+import { File, FileImage, FileText } from "lucide-react";
 
 export default function getFileIcon(filePath) {
   if (!filePath) return <File className="w-10 h-10 text-gray-500" />;

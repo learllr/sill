@@ -62,12 +62,8 @@ function AppSidebar({ ...props }) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link to="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">SILL</span>
-                </div>
+                <GalleryVerticalEnd />
+                <span className="font-semibold">SILL</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
