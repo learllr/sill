@@ -13,8 +13,11 @@ export default function DocumentManager({
   selectedSubTab = null,
   setSelectedSubTab = null,
   menuItems,
-  isParticipant,
-  isProject,
+  isParticipant = false,
+  isProject = false,
+  employeeId = null,
+  documentScope = "main",
+  ContactInfoComponent = null,
 }) {
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
@@ -24,6 +27,11 @@ export default function DocumentManager({
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [error, setError] = useState("");
 
+  const documentType =
+    documentScope === "sub" && selectedSubTab
+      ? selectedSubTab
+      : selectedMainTab;
+
   const {
     documents,
     isLoading,
@@ -31,11 +39,17 @@ export default function DocumentManager({
     addMutation,
     deleteMutation,
     updateMutation,
-  } = useDocuments(selectedMainTab, selectedSubTab);
+  } = useDocuments(documentType);
 
   return (
-    <div>
+    <div className="mb-4">
       <Section title={title} />
+
+      {ContactInfoComponent && (
+        <div className="mb-6">
+          <ContactInfoComponent />
+        </div>
+      )}
 
       <NavigationTabs
         menuItems={menuItems.map((item) => item.label)}
@@ -72,6 +86,7 @@ export default function DocumentManager({
                 setIsAddingNew(false);
                 setSelectedDocument(document);
               }}
+              employeeId={employeeId}
             />
           )}
         </div>
@@ -84,13 +99,14 @@ export default function DocumentManager({
                 setSelectedDocument(null);
               }}
               isNew={isAddingNew}
-              documentType={selectedMainTab}
+              documentType={documentType}
               document={selectedDocument}
               addMutation={addMutation}
               deleteMutation={deleteMutation}
               updateMutation={updateMutation}
               isParticipant={isParticipant}
               isProject={isProject}
+              employeeId={employeeId}
             />
           </div>
         )}

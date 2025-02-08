@@ -14,6 +14,7 @@ export default function NewDocumentForm({
   addMutation,
   isParticipant,
   isProject,
+  employeeId,
 }) {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(Months[0]);
@@ -57,12 +58,16 @@ export default function NewDocumentForm({
     formData.append("month", selectedMonth);
     formData.append("type", documentType);
 
-    if (isParticipant && selectedParticipant) {
-      formData.append("participantId", selectedParticipant);
-    }
+    if (employeeId) {
+      formData.append("employeeId", employeeId);
+    } else {
+      if (isParticipant && selectedParticipant) {
+        formData.append("participantId", selectedParticipant);
+      }
 
-    if (isProject && selectedProject) {
-      formData.append("projectId", selectedProject);
+      if (isProject && selectedProject) {
+        formData.append("projectId", selectedProject);
+      }
     }
 
     addMutation.mutate(formData, {
@@ -115,7 +120,7 @@ export default function NewDocumentForm({
         </select>
       </label>
 
-      {isParticipant && (
+      {!employeeId && isParticipant && (
         <label className="block">
           <span className="text-gray-700">Intervenant</span>
           <Combobox
@@ -127,7 +132,7 @@ export default function NewDocumentForm({
         </label>
       )}
 
-      {isProject && (
+      {!employeeId && isProject && (
         <label className="block">
           <span className="text-gray-700">Chantier</span>
           <Combobox

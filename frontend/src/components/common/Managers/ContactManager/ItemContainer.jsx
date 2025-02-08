@@ -33,7 +33,7 @@ export default function ItemContainer({
   });
 
   return (
-    <div className="border p-4 flex flex-col space-y-3 h-[64vh]">
+    <div className="border p-4 flex flex-col space-y-3 h-[80vh]">
       <div className="flex justify-between items-center space-x-2">
         <ScrollBarSearch
           searchTerm={searchTerm}

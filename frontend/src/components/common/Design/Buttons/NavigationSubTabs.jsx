@@ -8,7 +8,7 @@ export default function NavigationSubTabs({
   if (subMenuItems.length === 0) return null;
 
   return (
-    <div className="flex space-x-2 border-b pb-2">
+    <div className="flex flex-wrap gap-2 border-b pb-2">
       {subMenuItems.map((sub) => (
         <button
           key={sub}

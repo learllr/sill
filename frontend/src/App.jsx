@@ -4,6 +4,7 @@ import GlobalBody from "./components/common/GlobalBody.jsx";
 import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting.jsx";
 import Bank from "./components/navbar/aministrative-services/Bank.jsx";
 import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
+import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails.jsx";
 import Employees from "./components/navbar/hr-services/Employees.jsx";
 import Memos from "./components/navbar/hr-services/Memos.jsx";
 import Participants from "./components/navbar/project-management/Participants.jsx";
@@ -34,6 +35,7 @@ export default function App() {
           ))}
 
           <Route path="/salariés" element={<Employees />} />
+          <Route path="/salariés/:id" element={<EmployeeDetails />} />
           <Route path="/notes" element={<Memos />} />
           <Route
             path="/administrative-services"

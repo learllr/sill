@@ -16,6 +16,7 @@ export default function EditDocumentForm({
   isUpdating,
   isParticipant,
   isProject,
+  employeeId,
 }) {
   const [selectedYear, setSelectedYear] = useState(document.year);
   const [selectedMonth, setSelectedMonth] = useState(document.month);
@@ -51,9 +52,13 @@ export default function EditDocumentForm({
 
   const handleSubmit = () => {
     const formData = new FormData();
-    formData.append("year", selectedYear);
-    formData.append("month", selectedMonth);
+
     formData.append("type", documentType);
+
+    if (!employeeId) {
+      formData.append("year", selectedYear);
+      formData.append("month", selectedMonth);
+    }
 
     if (file) {
       formData.append("file", file);
@@ -89,31 +94,35 @@ export default function EditDocumentForm({
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      <label className="block">
-        <span className="text-gray-700">Année</span>
-        <input
-          type="number"
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          min="2000"
-          className="block w-full mt-1 border rounded-md p-2"
-        />
-      </label>
+      {!employeeId && (
+        <>
+          <label className="block">
+            <span className="text-gray-700">Année</span>
+            <input
+              type="number"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              min="2000"
+              className="block w-full mt-1 border rounded-md p-2"
+            />
+          </label>
 
-      <label className="block">
-        <span className="text-gray-700">Mois</span>
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="block w-full mt-1 border rounded-md p-2"
-        >
-          {Months.map((month) => (
-            <option key={month} value={month}>
-              {month}
-            </option>
-          ))}
-        </select>
-      </label>
+          <label className="block">
+            <span className="text-gray-700">Mois</span>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="block w-full mt-1 border rounded-md p-2"
+            >
+              {Months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      )}
 
       {isParticipant && (
         <label className="block">

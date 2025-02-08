@@ -25,6 +25,7 @@ export default function NewContactForm({ onSave, contactType, addMutation }) {
   };
 
   const handleSubmit = () => {
+    console.log(fields);
     const missingFields = fields
       .filter((field) => field.required && !formData[field.name])
       .map((field) => field.label);

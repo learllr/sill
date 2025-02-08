@@ -48,101 +48,60 @@ export default function EditContactForm({
       return;
     }
 
-    onUpdate(contact.id, formData, {
-      onSuccess: onSave,
-      onError: () => setError("Erreur lors de la modification du contact."),
-    });
+    onUpdate(
+      { contactId: contact.id, formData },
+      {
+        onSuccess: onSave,
+        onError: () => setError("Erreur lors de la modification du contact."),
+      }
+    );
   };
 
   return (
-    <div className="p-2 space-y-3">
-      <h1 className="text-lg font-semibold text-center mb-5">
-        Modifier {contactType === "employee" ? "le salarié" : "le contact"}
-      </h1>
-
-      {Array.isArray(fieldsData)
-        ? fields.map(({ name, label, type, options, required }) => (
-            <label key={name} className="block">
-              <span className="text-gray-700">
-                {label} {required && <span className="text-red-500">*</span>}
-              </span>
-              {type === "select" ? (
-                <select
-                  name={name}
-                  value={formData[name] || ""}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                >
-                  <option value="">Sélectionner...</option>
-                  {options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              ) : type === "checkbox" ? (
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {fields.map(({ name, label, type, options, required }) => (
+          <label key={name} className="block">
+            <span className="text-gray-700">
+              {label} {required && <span className="text-red-500">*</span>}
+            </span>
+            {type === "select" ? (
+              <select
+                name={name}
+                value={formData[name] || ""}
+                onChange={handleChange}
+                className="block w-full mt-1 border rounded-md p-2"
+              >
+                <option value="">Sélectionner...</option>
+                {options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            ) : type === "checkbox" ? (
+              <div className="flex items-center space-x-2 mt-1">
                 <input
                   type="checkbox"
                   name={name}
                   checked={formData[name] || false}
                   onChange={handleChange}
                 />
-              ) : (
-                <input
-                  type={type}
-                  name={name}
-                  value={formData[name] || ""}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                  {...(type === "number" ? { min: 0 } : {})}
-                />
-              )}
-            </label>
-          ))
-        : fieldsData.map(({ section, fields }) => (
-            <div key={section} className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">{section}</h3>
-              {fields.map(({ name, label, type, options, required }) => (
-                <label key={name} className="block">
-                  <span className="text-gray-700">
-                    {label}{" "}
-                    {required && <span className="text-red-500">*</span>}
-                  </span>
-                  {type === "select" ? (
-                    <select
-                      name={name}
-                      value={formData[name] || ""}
-                      onChange={handleChange}
-                      className="block w-full mt-1 border rounded-md p-2"
-                    >
-                      <option value="">Sélectionner...</option>
-                      {options.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  ) : type === "checkbox" ? (
-                    <input
-                      type="checkbox"
-                      name={name}
-                      checked={formData[name] || false}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <input
-                      type={type}
-                      name={name}
-                      value={formData[name] || ""}
-                      onChange={handleChange}
-                      className="block w-full mt-1 border rounded-md p-2"
-                      {...(type === "number" ? { min: 0 } : {})}
-                    />
-                  )}
-                </label>
-              ))}
-            </div>
-          ))}
+                <span>{label}</span>
+              </div>
+            ) : (
+              <input
+                type={type}
+                name={name}
+                value={formData[name] || ""}
+                onChange={handleChange}
+                className="block w-full mt-1 border rounded-md p-2"
+                {...(type === "number" ? { min: 0 } : {})}
+              />
+            )}
+          </label>
+        ))}
+      </div>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 

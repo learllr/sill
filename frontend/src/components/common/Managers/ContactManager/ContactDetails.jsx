@@ -38,6 +38,14 @@ export default function ContactDetails({ contact, contactType }) {
           </p>
         )}
       </div>
+      <div className="mt-4 text-gray-600 text-sm text-center">
+        <p>
+          <strong>Créé le :</strong> {formatDate(contact?.createdAt)}
+        </p>
+        <p>
+          <strong>Modifié le :</strong> {formatDate(contact?.updatedAt)}
+        </p>
+      </div>
     </div>
   );
 }

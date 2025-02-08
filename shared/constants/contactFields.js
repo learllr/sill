@@ -3,7 +3,6 @@ export const EMPLOYEE_FIELDS = [
     name: "active",
     label: "Actif",
     type: "checkbox",
-    required: true,
     defaultValue: 1,
   },
   {

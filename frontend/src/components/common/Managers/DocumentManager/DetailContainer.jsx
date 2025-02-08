@@ -15,6 +15,7 @@ export default function DetailContainer({
   updateMutation,
   isParticipant,
   isProject,
+  employeeId,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -26,7 +27,7 @@ export default function DetailContainer({
   };
 
   return (
-    <div className="border p-4 flex flex-col space-y-3 h-[64vh] overflow-auto">
+    <div className="border p-4 flex flex-col space-y-3 h-[80vh] overflow-auto">
       <div className="flex justify-end space-x-2">
         {!isNew && !isEditing && (
           <IconButton
@@ -57,6 +58,7 @@ export default function DetailContainer({
             addMutation={addMutation}
             isParticipant={isParticipant}
             isProject={isProject}
+            employeeId={employeeId}
           />
         ) : isEditing ? (
           <EditDocumentForm
@@ -70,12 +72,14 @@ export default function DetailContainer({
             isUpdating={updateMutation.isLoading}
             isParticipant={isParticipant}
             isProject={isProject}
+            employeeId={employeeId}
           />
         ) : (
           <DocumentDetails
             document={document}
             isParticipant={isParticipant}
             isProject={isProject}
+            employeeId={employeeId}
           />
         )}
       </div>

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useContacts } from "../../../../hooks/useContacts.jsx";
 import Loading from "../../Design/Loading.jsx";
 import Section from "../Section.jsx";
-import DetailContainer from "./DetailContainer.jsx";
+import AddContainer from "./AddContainer.jsx";
 import ItemContainer from "./ItemContainer.jsx";
 
 export default function ContactManager({
@@ -12,21 +13,15 @@ export default function ContactManager({
   selectedSubTab,
   setSelectedSubTab,
 }) {
+  const navigate = useNavigate();
   const subMenuItems = menuItems?.[0]?.subMenu || [];
 
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
-  const [selectedContact, setSelectedContact] = useState(null);
   const [error, setError] = useState("");
 
-  const {
-    contacts,
-    isLoading,
-    isError,
-    addMutation,
-    deleteMutation,
-    updateMutation,
-  } = useContacts(contactType);
+  const { contacts, isLoading, isError, addMutation } =
+    useContacts(contactType);
 
   return (
     <div>
@@ -47,12 +42,11 @@ export default function ContactManager({
               onAdd={() => {
                 setIsDetailVisible(true);
                 setIsAddingNew(true);
-                setSelectedContact(null);
               }}
               onSelectItem={(contact) => {
-                setIsDetailVisible(true);
-                setIsAddingNew(false);
-                setSelectedContact(contact);
+                if (contactType === "employee") {
+                  navigate(`/salariés/${contact.id}`);
+                }
               }}
               contactType={contactType}
             />
@@ -61,17 +55,13 @@ export default function ContactManager({
 
         {isDetailVisible && (
           <div className="w-1/3">
-            <DetailContainer
+            <AddContainer
               onClose={() => {
                 setIsDetailVisible(false);
-                setSelectedContact(null);
               }}
               isNew={isAddingNew}
               contactType={contactType}
-              contact={selectedContact}
               addMutation={addMutation}
-              deleteMutation={deleteMutation}
-              updateMutation={updateMutation}
             />
           </div>
         )}

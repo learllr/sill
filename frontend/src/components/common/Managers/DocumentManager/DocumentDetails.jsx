@@ -7,6 +7,7 @@ export default function DocumentDetails({
   document,
   isParticipant,
   isProject,
+  employeeId,
 }) {
   const { participants } = useParticipants(!!document?.participantId);
   const { projects } = useProjects(!!document?.projectId);
@@ -21,12 +22,16 @@ export default function DocumentDetails({
       <h2 className="text-lg text-center font-semibold">Détails du document</h2>
       <DocumentPreview file={document} />
       <div className="flex flex-col space-y-1">
-        <p>
-          <strong>Année :</strong> {document?.year}
-        </p>
-        <p>
-          <strong>Mois :</strong> {document?.month}
-        </p>
+        {!employeeId && (
+          <>
+            <p>
+              <strong>Année :</strong> {document?.year}
+            </p>
+            <p>
+              <strong>Mois :</strong> {document?.month}
+            </p>
+          </>
+        )}
         {isParticipant && (
           <p>
             <strong>Intervenant :</strong> {participantName}
@@ -38,11 +43,11 @@ export default function DocumentDetails({
           </p>
         )}
       </div>
-      <div className="text-gray-600 text-center ">
+
+      <div className="text-gray-600 text-center">
         <p>
           <strong>Créé le :</strong> {formatDateTime(document?.createdAt)}
         </p>
-
         <p>
           <strong>Modifié le :</strong> {formatDateTime(document?.updatedAt)}
         </p>

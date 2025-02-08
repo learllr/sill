@@ -1,0 +1,86 @@
+import { Pencil, Trash2, X } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
+import { useContacts } from "../../../../hooks/useContacts.jsx";
+import IconButton from "../../Design/Buttons/IconButton.jsx";
+import Loading from "../../Design/Loading.jsx";
+import EditContactForm from "./EditContactForm.jsx";
+
+export default function ContactInfo({ contactId, contactType }) {
+  const navigate = useNavigate();
+  const { contacts, isLoading, isError, updateMutation, deleteMutation } =
+    useContacts(contactType);
+  const contact = contacts?.find((c) => c.id === parseInt(contactId));
+  const fields = CONTACT_FIELDS[contactType] || [];
+  const [isEditing, setIsEditing] = useState(false);
+
+  if (isLoading) return <Loading />;
+  if (isError || !contact)
+    return <p className="text-red-500 text-center">Contact introuvable.</p>;
+
+  const getRedirectPath = () => {
+    return contactType === "employee" ? "/salariés" : `/${contactType}s`;
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Voulez-vous vraiment supprimer ce contact ?")) {
+      deleteMutation.mutate(contact.id, {
+        onSuccess: () => navigate(getRedirectPath()),
+      });
+    }
+  };
+
+  return (
+    <div className="border p-4 w-full">
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-lg font-semibold">Informations générales</h2>
+        <div className="flex space-x-2">
+          <IconButton
+            onClick={handleDelete}
+            variant="red"
+            disabled={deleteMutation.isLoading}
+          >
+            {deleteMutation.isLoading ? "Suppression..." : <Trash2 />}
+          </IconButton>
+          {!isEditing ? (
+            <IconButton onClick={() => setIsEditing(true)} variant="blue">
+              <Pencil />
+            </IconButton>
+          ) : (
+            <IconButton onClick={() => setIsEditing(false)} variant="gray">
+              <X />
+            </IconButton>
+          )}
+        </div>
+      </div>
+
+      {isEditing ? (
+        <EditContactForm
+          contact={contact}
+          onSave={() => setIsEditing(false)}
+          contactType={contactType}
+          onUpdate={updateMutation.mutate}
+          isUpdating={updateMutation.isLoading}
+        />
+      ) : (
+        <>
+          {fields.map(({ name, label, type, options }) => {
+            let value = contact[name];
+
+            if (value === null || value === "" || value === "0.00") return null;
+            if (type === "checkbox") value = value ? "Oui" : "Non";
+            if (type === "select" && options)
+              value = options.includes(value) ? value : "Non défini";
+
+            return (
+              <p key={name}>
+                <strong>{label} :</strong> {value}
+              </p>
+            );
+          })}
+        </>
+      )}
+    </div>
+  );
+}

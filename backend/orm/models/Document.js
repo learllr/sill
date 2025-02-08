@@ -1,7 +1,7 @@
 "use strict";
 import { DataTypes, Model } from "sequelize";
-import { DocumentType } from "../../../shared/constants/types.js";
 import { Months } from "../../../shared/constants/general.js";
+import { DocumentType } from "../../../shared/constants/types.js";
 
 export default (sequelize) => {
   class Document extends Model {}
@@ -17,6 +17,16 @@ export default (sequelize) => {
       type: {
         type: DataTypes.ENUM(...Object.values(DocumentType)),
         allowNull: false,
+      },
+      employeeId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Employees",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        defaultValue: null,
       },
       participantId: {
         type: DataTypes.INTEGER,
@@ -67,6 +77,11 @@ export default (sequelize) => {
   );
 
   Document.associate = (models) => {
+    Document.belongsTo(models.Employee, {
+      foreignKey: "employeeId",
+      as: "employee",
+    });
+
     Document.belongsTo(models.Participant, {
       foreignKey: "participantId",
       as: "participant",

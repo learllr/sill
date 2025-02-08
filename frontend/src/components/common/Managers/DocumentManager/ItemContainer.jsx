@@ -13,6 +13,7 @@ export default function ItemContainer({
   setSelectedSubTab,
   onAdd,
   onSelectItem,
+  employeeId,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -32,7 +33,7 @@ export default function ItemContainer({
   const groupedByYear = sortAndGroupDocuments(filteredItems);
 
   return (
-    <div className="border p-4 flex flex-col space-y-3 h-[64vh]">
+    <div className="border p-4 flex flex-col space-y-3 h-[80vh]">
       <div className="flex justify-between items-center space-x-2">
         <ScrollBarSearch
           searchTerm={searchTerm}
@@ -55,7 +56,11 @@ export default function ItemContainer({
         {Object.keys(groupedByYear).length > 0 ? (
           Object.entries(groupedByYear).map(([year, docs]) => (
             <div key={year}>
-              <h3 className="text-base font-bold text-gray-700 mb-1">{year}</h3>
+              {!employeeId && (
+                <h3 className="text-base font-bold text-gray-700 mb-1">
+                  {year}
+                </h3>
+              )}
               <div
                 className="grid gap-3"
                 style={{
@@ -68,6 +73,7 @@ export default function ItemContainer({
                     key={item.id}
                     document={item}
                     onSelectItem={onSelectItem}
+                    employeeId={employeeId}
                   />
                 ))}
               </div>
