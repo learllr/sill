@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getTypeName } from "../../../../../../shared/constants/types.js";
 import { useContacts } from "../../../../hooks/useContacts.jsx";
 import Loading from "../../Design/Loading.jsx";
 import Section from "../Section.jsx";
@@ -46,6 +47,10 @@ export default function ContactManager({
               onSelectItem={(contact) => {
                 if (contactType === "employee") {
                   navigate(`/salariés/${contact.id}`);
+                } else {
+                  navigate(
+                    `/${getTypeName(contactType, "plural")}/${contact.id}`
+                  );
                 }
               }}
               contactType={contactType}

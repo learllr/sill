@@ -2,6 +2,7 @@ import { Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
+import { getTypeName } from "../../../../../../shared/constants/types.js";
 import { useContacts } from "../../../../hooks/useContacts.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import Loading from "../../Design/Loading.jsx";
@@ -9,18 +10,27 @@ import EditContactForm from "./EditContactForm.jsx";
 
 export default function ContactInfo({ contactId, contactType }) {
   const navigate = useNavigate();
+  const isEmployee = contactType === "employee";
   const { contacts, isLoading, isError, updateMutation, deleteMutation } =
-    useContacts(contactType);
+    useContacts(
+      isEmployee ? contactType : getTypeName(contactType, "singular")
+    );
   const contact = contacts?.find((c) => c.id === parseInt(contactId));
-  const fields = CONTACT_FIELDS[contactType] || [];
-  const [isEditing, setIsEditing] = useState(false);
 
+  const fields =
+    CONTACT_FIELDS[
+      isEmployee ? contactType : getTypeName(contactType, "english")
+    ] || [];
+
+  const [isEditing, setIsEditing] = useState(false);
   if (isLoading) return <Loading />;
   if (isError || !contact)
     return <p className="text-red-500 text-center">Contact introuvable.</p>;
 
   const getRedirectPath = () => {
-    return contactType === "employee" ? "/salariés" : `/${contactType}s`;
+    return contactType === "employee"
+      ? "/salariés"
+      : `/${getTypeName(contactType, "plural")}`;
   };
 
   const handleDelete = () => {
@@ -68,10 +78,47 @@ export default function ContactInfo({ contactId, contactType }) {
           {fields.map(({ name, label, type, options }) => {
             let value = contact[name];
 
-            if (value === null || value === "" || value === "0.00") return null;
+            if (!value || value === "0.00") return null;
             if (type === "checkbox") value = value ? "Oui" : "Non";
             if (type === "select" && options)
               value = options.includes(value) ? value : "Non défini";
+            if (Array.isArray(value)) {
+              const filteredContacts = value.filter(
+                (item) => item.name || item.phone || item.email
+              );
+
+              if (filteredContacts.length === 0) return null;
+
+              return (
+                <div key={name}>
+                  <strong>
+                    {label}
+                    {filteredContacts.length > 1 ? "s" : ""} :
+                  </strong>
+                  <ul className="list-disc list-inside">
+                    {filteredContacts.map((item, index) => (
+                      <li key={index} className="ml-5">
+                        {item.name && (
+                          <span>
+                            <strong>Nom :</strong> {item.name}{" "}
+                          </span>
+                        )}
+                        {item.phone && (
+                          <span>
+                            - <strong>Téléphone :</strong> {item.phone}{" "}
+                          </span>
+                        )}
+                        {item.email && (
+                          <span>
+                            - <strong>Email :</strong> {item.email}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            }
 
             return (
               <p key={name}>

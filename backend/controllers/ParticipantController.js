@@ -1,8 +1,10 @@
+import { sanitizeNullValues } from "../../shared/utils/databaseUtils.js";
 import ParticipantDAO from "../dao/ParticipantDAO.js";
 
 export const getAllParticipants = async (req, res) => {
   try {
-    const participants = await ParticipantDAO.getAllParticipants();
+    const { type } = req.params;
+    const participants = await ParticipantDAO.getAllParticipants(type);
     res.status(200).json(participants);
   } catch (error) {
     res
@@ -13,11 +15,8 @@ export const getAllParticipants = async (req, res) => {
 
 export const getParticipantById = async (req, res) => {
   try {
-    const { id, type } = req.params;
-    const participant = await ParticipantDAO.getParticipantByIdAndType(
-      id,
-      type
-    );
+    const { id } = req.params;
+    const participant = await ParticipantDAO.getParticipantById(id);
     if (!participant)
       return res.status(404).json({ error: "Participant non trouvé" });
     res.status(200).json(participant);
@@ -30,11 +29,15 @@ export const getParticipantById = async (req, res) => {
 
 export const createParticipant = async (req, res) => {
   try {
-    const participant = await ParticipantDAO.createParticipant(req.body);
-    res
-      .status(201)
-      .json({ message: "Participant créé avec succès", participant });
+    console.log(req.body);
+    const participantData = sanitizeNullValues(req.body);
+    await ParticipantDAO.createParticipant(participantData);
+
+    res.status(201).json({
+      message: "Participant créé avec succès",
+    });
   } catch (error) {
+    console.error("Erreur serveur :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la création du participant" });
@@ -43,14 +46,16 @@ export const createParticipant = async (req, res) => {
 
 export const updateParticipant = async (req, res) => {
   try {
-    const { id, type } = req.params;
-    const updatedData = req.body;
+    const { id } = req.params;
+    const updatedData = sanitizeNullValues(req.body);
 
     const updatedParticipant = await ParticipantDAO.updateParticipant(
       id,
-      type,
       updatedData
     );
+    if (!updatedParticipant) {
+      return res.status(404).json({ error: "Participant non trouvé" });
+    }
 
     res.status(200).json({
       message: "Participant mis à jour avec succès",
@@ -65,12 +70,9 @@ export const updateParticipant = async (req, res) => {
 
 export const deleteParticipantById = async (req, res) => {
   try {
-    const { id, type } = req.params;
+    const { id } = req.params;
 
-    const participant = await ParticipantDAO.getParticipantByIdAndType(
-      id,
-      type
-    );
+    const participant = await ParticipantDAO.getParticipantById(id);
     if (!participant) {
       return res.status(404).json({ error: "Participant non trouvé" });
     }

@@ -51,18 +51,20 @@ export default function DocumentManager({
         </div>
       )}
 
-      <NavigationTabs
-        menuItems={menuItems.map((item) => item.label)}
-        onTabChange={(tab) => {
-          setSelectedMainTab(tab);
-          if (setSelectedSubTab) {
-            const newSubMenu =
-              menuItems.find((item) => item.label === tab)?.subMenu || [];
-            setSelectedSubTab(newSubMenu.length ? newSubMenu[0] : "");
-          }
-        }}
-        selectedTab={selectedMainTab}
-      />
+      {selectedMainTab?.length > 0 && (
+        <NavigationTabs
+          menuItems={menuItems.map((item) => item.label)}
+          onTabChange={(tab) => {
+            setSelectedMainTab(tab);
+            if (setSelectedSubTab) {
+              const newSubMenu =
+                menuItems.find((item) => item.label === tab)?.subMenu || [];
+              setSelectedSubTab(newSubMenu.length ? newSubMenu[0] : "");
+            }
+          }}
+          selectedTab={selectedMainTab}
+        />
+      )}
 
       {error && <p className="text-red-500 text-center">{error}</p>}
 

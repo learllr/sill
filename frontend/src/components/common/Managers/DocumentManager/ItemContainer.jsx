@@ -20,14 +20,18 @@ export default function ItemContainer({
   const filteredItems = items.filter((item) => {
     if (!searchTerm) return true;
 
-    const year = item.year ? item.year.toString() : "";
-    const month = item.month ? item.month.toLowerCase() : "";
-
     const searchTerms = searchTerm.toLowerCase().split(" ");
 
-    return searchTerms.every(
-      (term) => year.includes(term) || month.includes(term)
-    );
+    if (employeeId) {
+      const createdAt = item.createdAt ? item.createdAt.toLowerCase() : "";
+      return searchTerms.every((term) => createdAt.includes(term));
+    } else {
+      const year = item.year ? item.year.toString() : "";
+      const month = item.month ? item.month.toLowerCase() : "";
+      return searchTerms.every(
+        (term) => year.includes(term) || month.includes(term)
+      );
+    }
   });
 
   const groupedByYear = sortAndGroupDocuments(filteredItems);

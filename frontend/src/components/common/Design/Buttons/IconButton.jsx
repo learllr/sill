@@ -8,7 +8,7 @@ export default function IconButton({
   variant = "gray",
 }) {
   const baseStyles =
-    "p-2 rounded-md transition flex items-center justify-center";
+    "p-2 rounded-md transition flex items-center justify-center space-x-2";
 
   const variants = {
     gray: "bg-gray-400 text-white hover:bg-gray-500",
@@ -25,9 +25,15 @@ export default function IconButton({
       }`}
       disabled={disabled}
     >
-      {typeof children === "string"
-        ? children
-        : React.cloneElement(children, { className: "w-5 h-5" })}
+      {React.Children.map(children, (child, index) => {
+        if (typeof child === "string") {
+          return <span className="text-sm">{child}</span>;
+        } else {
+          return React.cloneElement(child, {
+            className: "w-5 h-5",
+          });
+        }
+      })}
     </button>
   );
 }

@@ -22,9 +22,13 @@ export default function ContactCard({ contact, contactType, onSelectItem }) {
       <div className="flex items-center space-x-3">
         <User className={userColor} />
         <div>
-          <p className="text-md text-gray-800">
-            {contact.firstName} {contact.lastName.toUpperCase()}
-          </p>
+          {isEmployee ? (
+            <p className="text-md text-gray-800">
+              {contact.firstName} {contact.lastName?.toUpperCase()}
+            </p>
+          ) : (
+            <p className="text-md text-gray-800">{contact.name}</p>
+          )}
         </div>
       </div>
     </div>

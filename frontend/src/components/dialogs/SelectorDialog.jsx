@@ -54,11 +54,10 @@ export default function SelectorDialog({ type, typeId, onSelect, onClose }) {
 
   const title = getTypeName(
     type === "participants" ? typeId : "employees",
-    false
+    "singular"
   ).toLowerCase();
   const titlePlural = getTypeName(
-    type === "participants" ? typeId : "employees",
-    true
+    type === "participants" ? typeId : "employees"
   ).toLowerCase();
 
   return (

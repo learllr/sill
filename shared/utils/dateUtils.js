@@ -9,3 +9,13 @@ export function formatDateTime(dateString) {
     minute: "2-digit",
   });
 }
+
+export function formatDate(dateString) {
+  if (!dateString) return "Date indisponible";
+
+  return new Date(dateString).toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}

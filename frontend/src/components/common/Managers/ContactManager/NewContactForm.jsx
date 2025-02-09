@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
+import { getTypeName } from "../../../../../../shared/constants/types.js";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
+import FormField from "./FormField.jsx";
 
 export default function NewContactForm({ onSave, contactType, addMutation }) {
-  const fields = CONTACT_FIELDS[contactType] || [];
-
+  const isEmployee = contactType === "employee";
+  const fields =
+    CONTACT_FIELDS[
+      isEmployee ? contactType : `${getTypeName(contactType, "english")}`
+    ] || [];
   const initialFormData = fields.reduce((acc, field) => {
     acc[field.name] =
       field.type === "checkbox"
@@ -25,7 +30,6 @@ export default function NewContactForm({ onSave, contactType, addMutation }) {
   };
 
   const handleSubmit = () => {
-    console.log(fields);
     const missingFields = fields
       .filter((field) => field.required && !formData[field.name])
       .map((field) => field.label);
@@ -46,47 +50,20 @@ export default function NewContactForm({ onSave, contactType, addMutation }) {
   return (
     <div className="p-2 space-y-3">
       <h1 className="text-lg font-semibold text-center mb-5">
-        Ajouter un {contactType === "employee" ? "salarié" : "contact"}
+        Ajouter un {contactType === "Salarié" ? "salarié" : "contact"}
       </h1>
 
       {fields.map(({ name, label, type, options, required }) => (
-        <label key={name} className="block">
-          <span className="text-gray-700">
-            {label} {required && <span className="text-red-500">*</span>}
-          </span>
-          {type === "select" ? (
-            <select
-              name={name}
-              value={formData[name]}
-              onChange={handleChange}
-              className="block w-full mt-1 border rounded-md p-2"
-            >
-              <option value="">Sélectionner...</option>
-              {options.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          ) : type === "checkbox" ? (
-            <input
-              type="checkbox"
-              name={name}
-              checked={formData[name]}
-              onChange={handleChange}
-              className="mt-1"
-            />
-          ) : (
-            <input
-              type={type}
-              name={name}
-              value={formData[name]}
-              onChange={handleChange}
-              className="block w-full mt-1 border rounded-md p-2"
-              {...(type === "number" ? { min: 0 } : {})}
-            />
-          )}
-        </label>
+        <FormField
+          key={name}
+          name={name}
+          label={label}
+          type={type}
+          options={options}
+          required={required}
+          value={formData[name]}
+          onChange={handleChange}
+        />
       ))}
 
       {error && <p className="text-red-500 text-sm">{error}</p>}

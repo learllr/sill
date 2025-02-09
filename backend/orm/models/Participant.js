@@ -25,19 +25,7 @@ export default (sequelize) => {
           len: [3, 100],
         },
       },
-      contactPerson: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       address: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      phone: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      email: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -73,6 +61,12 @@ export default (sequelize) => {
       foreignKey: "participantId",
       as: "invoices",
       onDelete: "SET NULL",
+    });
+
+    Participant.hasMany(models.ContactPerson, {
+      foreignKey: "participantId",
+      as: "contactPersons",
+      onDelete: "CASCADE",
     });
   };
 

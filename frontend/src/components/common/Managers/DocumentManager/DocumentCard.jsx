@@ -1,4 +1,4 @@
-import { formatDateTime } from "../../../../../../shared/utils/dateUtils.js";
+import { formatDate } from "../../../../../../shared/utils/dateUtils.js";
 import getFileIcon from "../../../../../../shared/utils/getFileIcon";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -12,7 +12,7 @@ export default function DocumentCard({ document, onSelectItem, employeeId }) {
       {getFileIcon(document.path)}
       <p className="mt-2">
         {employeeId
-          ? formatDateTime(document.createdAt)
+          ? formatDate(document.createdAt)
           : `${document.year} - ${document.month}`}
       </p>
     </div>

@@ -74,29 +74,17 @@ export const EMPLOYEE_FIELDS = [
   },
 ];
 
-export const SUPPLIER_FIELDS = [
-  { name: "companyName", label: "Nom de l'entreprise", type: "text" },
-  { name: "contactPerson", label: "Personne de contact", type: "text" },
-  { name: "phone", label: "Téléphone", type: "text" },
-  { name: "email", label: "Email", type: "email" },
+export const ALL_CONTACT_FIELDS = [
+  { name: "name", label: "Nom de l'entreprise", type: "text", required: true },
+  { name: "contactPersons", label: "Interlocuteur", type: "contactPersons" },
   { name: "address", label: "Adresse", type: "text" },
-  { name: "postalCode", label: "Code postal", type: "text" },
-  { name: "city", label: "Ville", type: "text" },
   { name: "website", label: "Site web", type: "text" },
-];
-
-export const CLIENT_FIELDS = [
-  { name: "companyName", label: "Nom de l'entreprise", type: "text" },
-  { name: "contactPerson", label: "Personne de contact", type: "text" },
-  { name: "phone", label: "Téléphone", type: "text" },
-  { name: "email", label: "Email", type: "email" },
-  { name: "address", label: "Adresse", type: "text" },
-  { name: "postalCode", label: "Code postal", type: "text" },
-  { name: "city", label: "Ville", type: "text" },
 ];
 
 export const CONTACT_FIELDS = {
   employee: EMPLOYEE_FIELDS,
-  supplier: SUPPLIER_FIELDS,
-  client: CLIENT_FIELDS,
+  client: ALL_CONTACT_FIELDS,
+  supplier: ALL_CONTACT_FIELDS,
+  subcontractor: ALL_CONTACT_FIELDS,
+  architect: ALL_CONTACT_FIELDS,
 };

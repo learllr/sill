@@ -2,15 +2,16 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   getPrecisionContactMenuItems,
-  ParticipantType,
+  getTypeName,
 } from "../../../../../shared/constants/types.js";
 import ContactInfo from "../../common/Managers/ContactManager/ContactInfo.jsx";
 import DocumentManager from "../../common/Managers/DocumentManager/DocumentManager.jsx";
 
-export default function EmployeeDetails() {
+export default function ParticipantDetails({ participantType }) {
   const { id } = useParams();
 
-  const menuItems = getPrecisionContactMenuItems(ParticipantType.SALARIE);
+  const menuItems =
+    getPrecisionContactMenuItems[getTypeName(participantType, "english")] || [];
 
   const [selectedMainTab, setSelectedMainTab] = useState(
     menuItems[0]?.label || ""
@@ -22,16 +23,16 @@ export default function EmployeeDetails() {
   return (
     <div className="space-y-6">
       <DocumentManager
-        title="Détails du salarié"
+        title={`Détails du ${getTypeName(participantType, "singular")}`}
         selectedMainTab={selectedMainTab}
         setSelectedMainTab={setSelectedMainTab}
         selectedSubTab={selectedSubTab}
         setSelectedSubTab={setSelectedSubTab}
         menuItems={menuItems}
-        employeeId={id}
+        participantId={id}
         documentScope="sub"
         ContactInfoComponent={() => (
-          <ContactInfo contactId={id} contactType="employee" />
+          <ContactInfo contactId={id} contactType={participantType} />
         )}
       />
     </div>

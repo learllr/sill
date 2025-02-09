@@ -4,6 +4,8 @@ import axios from "../axiosConfig.js";
 export const useContacts = (contactType) => {
   const queryClient = useQueryClient();
 
+  const isEmployee = contactType === "employee";
+
   // Récupérer les contacts
   const {
     data: contacts,
@@ -12,7 +14,9 @@ export const useContacts = (contactType) => {
   } = useQuery({
     queryKey: ["contacts", contactType],
     queryFn: async () => {
-      const response = await axios.get(`/${contactType}`);
+      const response = await axios.get(
+        isEmployee ? "/employee" : `/participant/${contactType}`
+      );
       return response.data;
     },
     enabled: !!contactType,
@@ -21,7 +25,11 @@ export const useContacts = (contactType) => {
   // Ajouter un contact
   const addMutation = useMutation({
     mutationFn: async (formData) => {
-      const response = await axios.post(`/${contactType}`, formData);
+      const response = await axios.post(
+        isEmployee ? "/employee" : "/participant",
+        { ...formData, type: contactType }
+      );
+
       return response.data;
     },
     onSuccess: () => {
@@ -32,7 +40,10 @@ export const useContacts = (contactType) => {
   // Supprimer un contact
   const deleteMutation = useMutation({
     mutationFn: async (contactId) => {
-      await axios.delete(`/${contactType}/${contactId}`);
+      const endpoint = isEmployee
+        ? `/employee/${contactId}`
+        : `/participant/${contactId}`;
+      await axios.delete(endpoint);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["contacts", contactType]);
@@ -42,10 +53,10 @@ export const useContacts = (contactType) => {
   // Modifier un contact
   const updateMutation = useMutation({
     mutationFn: async ({ contactId, formData }) => {
-      const response = await axios.put(
-        `/${contactType}/${contactId}`,
-        formData
-      );
+      const endpoint = isEmployee
+        ? `/employee/${contactId}`
+        : `/participant/${contactType}/${contactId}`;
+      const response = await axios.put(endpoint, formData);
       return response.data;
     },
     onSuccess: () => {

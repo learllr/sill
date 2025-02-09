@@ -47,3 +47,62 @@ export const precisionEmployeeMenuItems = [
     ],
   },
 ];
+
+export const precisionClientMenuItems = [
+  {
+    subMenu: ["Devis", "Factures", "Devis validés"],
+  },
+];
+
+export const precisionSupplierMenuItems = [
+  {
+    subMenu: ["Devis", "Factures", "Fiches techniques", "Bons pour accord"],
+  },
+];
+
+export const precisionSubcontractorMenuItems = [
+  {
+    subMenu: ["Administratif", "Contrats", "Factures"],
+  },
+];
+
+export const precisionArchitectMenuItems = [
+  {
+    subMenu: [
+      "Plans",
+      "Bons de commandes",
+      "PV",
+      "Ordres de règlement",
+      "Réserves",
+      "Marchés",
+      "DOE",
+    ],
+  },
+];
+
+export const projectContactMenuItems = [
+  {
+    label: "Client",
+    subMenu: ["Devis", "Factures", "Devis validés"],
+  },
+  {
+    label: "Fournisseur",
+    subMenu: ["Devis", "Factures", "Fiches techniques", "Bons pour accord"],
+  },
+  {
+    label: "Sous-traitant",
+    subMenu: ["Administratif", "Contrats", "Factures"],
+  },
+  {
+    label: "Architecte",
+    subMenu: [
+      "Plans",
+      "Bons de commandes",
+      "PV",
+      "Ordres de règlement",
+      "Réserves",
+      "Marchés",
+      "DOE",
+    ],
+  },
+];

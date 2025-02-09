@@ -1,9 +1,15 @@
+import {
+  precisionArchitectMenuItems,
+  precisionClientMenuItems,
+  precisionSubcontractorMenuItems,
+  precisionSupplierMenuItems,
+} from "./menuItems.js";
+
 export const ParticipantType = {
   CLIENT: "Client",
   FOURNISSEUR: "Fournisseur",
   SOUS_TRAITANT: "Sous-traitant",
   ARCHITECTE: "Architecte",
-  SALARIE: "salarié",
 };
 
 export const DocumentType = {
@@ -11,7 +17,7 @@ export const DocumentType = {
   RELEVES_DE_COMPTES: "Relevés de comptes",
   DOCUMENTS_BANCAIRES: "Documents bancaires",
 
-  // Statut SILL
+  // Statuts
   BILANS: "Bilans",
   STATUTS: "Statuts",
 
@@ -37,28 +43,46 @@ export const DocumentType = {
 };
 
 export const typeMapping = {
-  [ParticipantType.CLIENT]: { singular: "client", plural: "clients" },
+  [ParticipantType.CLIENT]: {
+    singular: "client",
+    plural: "clients",
+    english: "client",
+  },
   [ParticipantType.FOURNISSEUR]: {
     singular: "fournisseur",
     plural: "fournisseurs",
+    english: "supplier",
   },
   [ParticipantType.SOUS_TRAITANT]: {
     singular: "sous-traitant",
     plural: "sous-traitants",
+    english: "subcontractor",
   },
   [ParticipantType.ARCHITECTE]: {
     singular: "architecte",
     plural: "architectes",
+    english: "architect",
   },
-  [ParticipantType.SALARIE]: { singular: "salarié", plural: "salariés" },
 };
 
-export const getTypeName = (typeId, isPlural = true) => {
-  return typeMapping[typeId]
-    ? isPlural
-      ? typeMapping[typeId].plural
-      : typeMapping[typeId].singular
-    : isPlural
-    ? "Participants"
-    : "Participant";
+export const getTypeName = (typeId, type = "plural") => {
+  return (
+    typeMapping[typeId]?.[type] ||
+    (type === "english" ? "Participants" : "participants")
+  );
+};
+
+export const getPrecisionContactMenuItems = (participantType) => {
+  switch (participantType) {
+    case ParticipantType.CLIENT:
+      return precisionClientMenuItems;
+    case ParticipantType.FOURNISSEUR:
+      return precisionSupplierMenuItems;
+    case ParticipantType.SOUS_TRAITANT:
+      return precisionSubcontractorMenuItems;
+    case ParticipantType.ARCHITECTE:
+      return precisionArchitectMenuItems;
+    default:
+      return [];
+  }
 };

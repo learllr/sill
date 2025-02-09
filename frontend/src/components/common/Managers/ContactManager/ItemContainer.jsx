@@ -16,20 +16,30 @@ export default function ItemContainer({
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredBySubTab = items.filter((contact) => {
-    if (selectedSubTab === "Actifs") return contact.active;
-    if (selectedSubTab === "Inactifs") return !contact.active;
-    return true;
-  });
+  const isEmployee = contactType === "employee";
+
+  const filteredBySubTab = isEmployee
+    ? items.filter((contact) => {
+        if (selectedSubTab === "Actifs") return contact.active;
+        if (selectedSubTab === "Inactifs") return !contact.active;
+        return true;
+      })
+    : items;
 
   const filteredItems = filteredBySubTab.filter((contact) => {
     if (!searchTerm) return true;
-    const firstName = contact.firstName?.toLowerCase() || "";
-    const lastName = contact.lastName?.toLowerCase() || "";
-    return (
-      firstName.includes(searchTerm.toLowerCase()) ||
-      lastName.includes(searchTerm.toLowerCase())
-    );
+
+    if (isEmployee) {
+      const firstName = contact.firstName?.toLowerCase() || "";
+      const lastName = contact.lastName?.toLowerCase() || "";
+      return (
+        firstName.includes(searchTerm.toLowerCase()) ||
+        lastName.includes(searchTerm.toLowerCase())
+      );
+    } else {
+      const name = contact.name?.toLowerCase() || "";
+      return name.includes(searchTerm.toLowerCase());
+    }
   });
 
   return (
@@ -44,7 +54,7 @@ export default function ItemContainer({
         </IconButton>
       </div>
 
-      {subMenuItems.length > 0 && (
+      {isEmployee && subMenuItems?.length > 0 && (
         <NavigationSubTabs
           subMenuItems={subMenuItems}
           selectedSubTab={selectedSubTab}
@@ -71,7 +81,7 @@ export default function ItemContainer({
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500">Aucun contact trouvé</p>
+          <p className="text-center text-gray-500">{`Aucun ${contactType} trouvé`}</p>
         )}
       </div>
     </div>
