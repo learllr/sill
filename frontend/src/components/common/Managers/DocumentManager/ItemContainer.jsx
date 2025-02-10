@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { sortAndGroupDocuments } from "../../../../../../shared/utils/organizeDocuments.js";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import NavigationSubTabs from "../../Design/Buttons/NavigationSubTabs.jsx";
@@ -17,7 +18,31 @@ export default function ItemContainer({
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredItems = items.filter((item) => {
+  const filteredBySubTab = items.filter((item) => {
+    if (
+      item.type === DocumentType.DEVIS ||
+      item.type === DocumentType.DEVIS_VALIDES
+    ) {
+      const status = item.quoteInfos[0].status;
+      if (selectedSubTab === "En attente") return status === "En attente";
+      if (selectedSubTab === "Acceptés") return status === "Accepté";
+      if (selectedSubTab === "Rejetés") return status === "Rejeté";
+    } else if (item.type === DocumentType.FACTURES) {
+      const paidOn = item.invoiceInfos[0]?.paidOn;
+
+      if (selectedSubTab === "Payés") {
+        return !!paidOn;
+      }
+
+      if (selectedSubTab === "Non payés") {
+        return !paidOn;
+      }
+    }
+
+    return selectedSubTab === "Tous" || !selectedSubTab;
+  });
+
+  const filteredItems = filteredBySubTab.filter((item) => {
     if (!searchTerm) return true;
 
     const searchTerms = searchTerm.toLowerCase().split(" ");

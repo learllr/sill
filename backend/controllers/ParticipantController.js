@@ -29,7 +29,6 @@ export const getParticipantById = async (req, res) => {
 
 export const createParticipant = async (req, res) => {
   try {
-    console.log(req.body);
     const participantData = sanitizeNullValues(req.body);
     await ParticipantDAO.createParticipant(participantData);
 

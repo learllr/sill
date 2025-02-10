@@ -50,33 +50,70 @@ export const precisionEmployeeMenuItems = [
 
 export const precisionClientMenuItems = [
   {
-    subMenu: ["Devis", "Factures", "Devis validés"],
+    label: "Factures",
+    subMenu: ["Tous", "Non payés", "Payés"],
+  },
+  {
+    label: "Devis",
+    subMenu: ["Tous", "En attente", "Acceptés", "Rejetés"],
+  },
+  {
+    label: "Devis validés",
+    subMenu: ["Tous", "En attente", "Acceptés", "Rejetés"],
   },
 ];
 
 export const precisionSupplierMenuItems = [
   {
-    subMenu: ["Devis", "Factures", "Fiches techniques", "Bons pour accord"],
+    label: "Factures",
+    subMenu: ["Tous", "Non payés", "Payés"],
+  },
+  {
+    label: "Devis",
+  },
+  {
+    label: "Fiches techniques",
+  },
+  {
+    label: "Bon pour accord",
   },
 ];
 
 export const precisionSubcontractorMenuItems = [
   {
-    subMenu: ["Administratif", "Contrats", "Factures"],
+    label: "Factures",
+    subMenu: ["Tous", "Non payés", "Payés"],
+  },
+  {
+    label: "Contrats",
+  },
+  {
+    label: "Administratif",
   },
 ];
 
 export const precisionArchitectMenuItems = [
   {
-    subMenu: [
-      "Plans",
-      "Bons de commandes",
-      "PV",
-      "Ordres de règlement",
-      "Réserves",
-      "Marchés",
-      "DOE",
-    ],
+    label: "Plans",
+  },
+  {
+    label: "Bons de commandes",
+  },
+  {
+    label: "PV",
+    subMenu: ["Tous", "Avec réserves", "Sans réserves"],
+  },
+  {
+    label: "Ordres de règlement",
+  },
+  {
+    label: "Réserves",
+  },
+  {
+    label: "Marchés",
+  },
+  {
+    label: "DOE",
   },
 ];
 

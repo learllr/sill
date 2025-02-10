@@ -50,13 +50,11 @@ export const getDocumentsByTypeName = async (req, res) => {
 
 export const createDocument = async (req, res) => {
   try {
-    let documentData = { ...req.body };
+    let documentData = sanitizeNullValues({ ...req.body });
 
     if (req.file) {
       documentData.path = req.file.filename;
     }
-
-    documentData = sanitizeNullValues(documentData);
 
     const document = await DocumentDAO.createDocument(documentData);
 
@@ -70,13 +68,11 @@ export const createDocument = async (req, res) => {
 export const updateDocument = async (req, res) => {
   try {
     const { id } = req.params;
-    let updatedData = { ...req.body };
+    let updatedData = sanitizeNullValues({ ...req.body });
 
     if (req.file) {
       updatedData.path = req.file.filename;
     }
-
-    updatedData = sanitizeNullValues(updatedData);
 
     const document = await DocumentDAO.getDocumentById(id);
 

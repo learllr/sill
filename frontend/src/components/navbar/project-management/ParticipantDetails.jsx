@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   getPrecisionContactMenuItems,
@@ -10,15 +10,17 @@ import DocumentManager from "../../common/Managers/DocumentManager/DocumentManag
 export default function ParticipantDetails({ participantType }) {
   const { id } = useParams();
 
-  const menuItems =
-    getPrecisionContactMenuItems[getTypeName(participantType, "english")] || [];
+  const menuItems = getPrecisionContactMenuItems(participantType) || [];
 
-  const [selectedMainTab, setSelectedMainTab] = useState(
-    menuItems[0]?.label || ""
-  );
-  const [selectedSubTab, setSelectedSubTab] = useState(
-    menuItems[0]?.subMenu?.[0] || ""
-  );
+  const [selectedMainTab, setSelectedMainTab] = useState("");
+  const [selectedSubTab, setSelectedSubTab] = useState("");
+
+  useEffect(() => {
+    if (menuItems.length > 0) {
+      setSelectedMainTab(menuItems[0].label);
+      setSelectedSubTab(menuItems[0].subMenu?.[0] || "");
+    }
+  }, [menuItems]);
 
   return (
     <div className="space-y-6">
@@ -30,7 +32,6 @@ export default function ParticipantDetails({ participantType }) {
         setSelectedSubTab={setSelectedSubTab}
         menuItems={menuItems}
         participantId={id}
-        documentScope="sub"
         ContactInfoComponent={() => (
           <ContactInfo contactId={id} contactType={participantType} />
         )}

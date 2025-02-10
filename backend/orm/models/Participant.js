@@ -51,21 +51,21 @@ export default (sequelize) => {
       onDelete: "SET NULL",
     });
 
-    Participant.hasMany(models.Quote, {
-      foreignKey: "participantId",
-      as: "quotes",
-      onDelete: "SET NULL",
-    });
-
-    Participant.hasMany(models.Invoice, {
-      foreignKey: "participantId",
-      as: "invoices",
-      onDelete: "SET NULL",
-    });
-
     Participant.hasMany(models.ContactPerson, {
       foreignKey: "participantId",
       as: "contactPersons",
+      onDelete: "CASCADE",
+    });
+
+    Participant.hasMany(models.InvoiceInfos, {
+      foreignKey: "documentId",
+      as: "invoices",
+      onDelete: "CASCADE",
+    });
+
+    Participant.hasMany(models.QuoteInfos, {
+      foreignKey: "documentId",
+      as: "quotes",
       onDelete: "CASCADE",
     });
   };

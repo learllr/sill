@@ -25,7 +25,9 @@ export default function ContactInfo({ contactId, contactType }) {
   const [isEditing, setIsEditing] = useState(false);
   if (isLoading) return <Loading />;
   if (isError || !contact)
-    return <p className="text-red-500 text-center">Contact introuvable.</p>;
+    return (
+      <p className="text-red-500 text-center">{`${contactType} introuvable.`}</p>
+    );
 
   const getRedirectPath = () => {
     return contactType === "employee"

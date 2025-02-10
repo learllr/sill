@@ -25,21 +25,36 @@ export const DocumentType = {
   CEDIG: "CEDIG",
 
   // Notes
-  NOTES_DE_SERVICE: "Notes de services",
+  NOTES_DE_SERVICE: "Notes de service",
 
   // Employé
-  PIECE_IDENTITE: "Pièce d'identité",
+  PIECES_D_IDENTITE: "Pièces d'identité",
   PERMIS: "Permis",
-  PHOTO_IDENTITE: "Photo d'identité",
-  COUVERTURE_SANTE: "Couverture santé",
-  DECLARATION_URSSAFF: "Déclaration URSSAFF",
+  PHOTOS_D_IDENTITE: "Photos d'identité",
+  COUVERTURES_SANTE: "Couvertures santé",
+  DECLARATIONS_URSSAF: "Déclarations URSSAF",
   CONTRATS: "Contrats",
-  BULLETINS_SALAIRES: "Bulletins de salaires",
+  BULLETINS_DE_SALAIRE: "Bulletins de salaire",
   FRAIS: "Frais",
   COURRIERS: "Courriers",
   CONGES: "Congés",
-  ACCIDENTS_TRAVAIL: "Accidents du travail",
+  ACCIDENTS_DU_TRAVAIL: "Accidents du travail",
   VISITES_MEDICALES: "Visites médicales",
+
+  // Participant (Client, Fournisseur, Sous-traitant, Architecte)
+  FACTURES: "Factures",
+  DEVIS: "Devis",
+  DEVIS_VALIDES: "Devis validés",
+  FICHES_TECHNIQUES: "Fiches techniques",
+  BONS_POUR_ACCORD: "Bons pour accord",
+  ADMINISTRATIFS: "Administratifs",
+  PLANS: "Plans",
+  BONS_DE_COMMANDE: "Bons de commande",
+  PROCES_VERBAUX: "Procès-verbaux",
+  ORDRES_DE_REGLEMENT: "Ordres de règlement",
+  RESERVES: "Réserves",
+  MARCHES: "Marchés",
+  DOE: "DOE",
 };
 
 export const typeMapping = {

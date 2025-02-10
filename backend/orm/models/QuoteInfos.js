@@ -2,9 +2,9 @@
 import { DataTypes, Model } from "sequelize";
 
 export default (sequelize) => {
-  class Quote extends Model {}
+  class QuoteInfos extends Model {}
 
-  Quote.init(
+  QuoteInfos.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -12,20 +12,14 @@ export default (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      title: {
-        type: DataTypes.STRING,
+      documentId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        validate: {
-          notEmpty: true,
-          len: [3, 100],
+        references: {
+          model: "Documents",
+          key: "id",
         },
-      },
-      imagePath: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-          isUrl: true,
-        },
+        onDelete: "CASCADE",
       },
       participantId: {
         type: DataTypes.INTEGER,
@@ -34,6 +28,7 @@ export default (sequelize) => {
           model: "Participants",
           key: "id",
         },
+        onDelete: "SET NULL",
       },
       projectId: {
         type: DataTypes.INTEGER,
@@ -42,6 +37,7 @@ export default (sequelize) => {
           model: "Projects",
           key: "id",
         },
+        onDelete: "SET NULL",
       },
       lot: {
         type: DataTypes.STRING,
@@ -54,14 +50,10 @@ export default (sequelize) => {
       },
       quoteNumber: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-          notEmpty: true,
-        },
+        allowNull: true,
       },
       sentOn: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATEONLY,
         allowNull: true,
       },
       remarks: {
@@ -71,25 +63,31 @@ export default (sequelize) => {
     },
     {
       sequelize,
-      modelName: "Quote",
-      tableName: "Quotes",
+      modelName: "QuoteInfos",
+      tableName: "QuoteInfos",
       timestamps: true,
     }
   );
 
-  Quote.associate = (models) => {
-    Quote.belongsTo(models.Participant, {
+  QuoteInfos.associate = (models) => {
+    QuoteInfos.belongsTo(models.Document, {
+      foreignKey: "documentId",
+      as: "document",
+      onDelete: "CASCADE",
+    });
+
+    QuoteInfos.belongsTo(models.Participant, {
       foreignKey: "participantId",
       as: "participant",
       onDelete: "SET NULL",
     });
 
-    Quote.belongsTo(models.Project, {
+    QuoteInfos.belongsTo(models.Project, {
       foreignKey: "projectId",
       as: "project",
       onDelete: "SET NULL",
     });
   };
 
-  return Quote;
+  return QuoteInfos;
 };

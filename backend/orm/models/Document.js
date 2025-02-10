@@ -91,6 +91,18 @@ export default (sequelize) => {
       foreignKey: "projectId",
       as: "project",
     });
+
+    Document.hasMany(models.InvoiceInfos, {
+      foreignKey: "documentId",
+      as: "invoiceInfos",
+      onDelete: "CASCADE",
+    });
+
+    Document.hasMany(models.QuoteInfos, {
+      foreignKey: "documentId",
+      as: "quoteInfos",
+      onDelete: "CASCADE",
+    });
   };
 
   return Document;

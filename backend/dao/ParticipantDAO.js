@@ -1,19 +1,27 @@
 import db from "../orm/models/index.js";
-const { Participant, ContactPerson } = db;
+const { Participant, ContactPerson, InvoiceInfos, QuoteInfos } = db;
 
 export default class ParticipantDAO {
   static async getAllParticipants(type = null) {
     const whereCondition = type ? { type } : {};
     return await Participant.findAll({
       where: whereCondition,
-      include: [{ model: ContactPerson, as: "contactPersons" }],
+      include: [
+        { model: ContactPerson, as: "contactPersons" },
+        { model: InvoiceInfos, as: "invoices" },
+        { model: QuoteInfos, as: "quotes" },
+      ],
     });
   }
 
   static async getParticipantById(id) {
     return await Participant.findOne({
       where: { id },
-      include: [{ model: ContactPerson, as: "contactPersons" }],
+      include: [
+        { model: ContactPerson, as: "contactPersons" },
+        { model: InvoiceInfos, as: "invoices" },
+        { model: QuoteInfos, as: "quotes" },
+      ],
     });
   }
 
