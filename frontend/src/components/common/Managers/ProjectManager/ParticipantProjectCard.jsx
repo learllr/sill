@@ -1,5 +1,5 @@
 import { User, FileText, Trash2 } from "lucide-react";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
+import { useNavigate } from "react-router-dom";
 import { ParticipantType } from "../../../../../../shared/constants/types.js";
 
 export default function ParticipantProjectCard({
@@ -8,6 +8,7 @@ export default function ParticipantProjectCard({
   onDelete,
   mainTab,
 }) {
+  const navigate = useNavigate();
   const participantKey = {
     [ParticipantType.CLIENT]: "clients",
     [ParticipantType.FOURNISSEUR]: "suppliers",
@@ -30,16 +31,19 @@ export default function ParticipantProjectCard({
           </div>
 
           <div className="flex space-x-2">
-            <IconButton
-              onClick={() => onSelectItem(participant)}
-              variant="blue"
+            <button
+              onClick={() => navigate(`/${mainTab}s/${participant.id}`)}
+              className="bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-full p-2 transition"
             >
               <FileText size={16} />
-            </IconButton>
+            </button>
 
-            <IconButton onClick={() => onDelete(participant.id)} variant="red">
+            <button
+              onClick={() => onDelete(participant.id)}
+              className="bg-gray-100 hover:bg-red-100 text-red-600 rounded-full p-2 transition"
+            >
               <Trash2 size={16} />
-            </IconButton>
+            </button>
           </div>
         </div>
       ))}
