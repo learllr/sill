@@ -1,5 +1,6 @@
 "use strict";
 import { DataTypes, Model } from "sequelize";
+import { ParticipantType } from "../../../shared/constants/types.js";
 
 export default (sequelize) => {
   class Project extends Model {}
@@ -40,7 +41,7 @@ export default (sequelize) => {
       foreignKey: "projectId",
       otherKey: "participantId",
       as: "clients",
-      scope: { typeId: 1 },
+      scope: { type: ParticipantType.CLIENT },
       onDelete: "SET NULL",
     });
 
@@ -49,7 +50,7 @@ export default (sequelize) => {
       foreignKey: "projectId",
       otherKey: "participantId",
       as: "suppliers",
-      scope: { typeId: 2 },
+      scope: { type: ParticipantType.FOURNISSEUR },
       onDelete: "SET NULL",
     });
 
@@ -58,7 +59,7 @@ export default (sequelize) => {
       foreignKey: "projectId",
       otherKey: "participantId",
       as: "subcontractors",
-      scope: { typeId: 3 },
+      scope: { type: ParticipantType.SOUS_TRAITANT },
       onDelete: "SET NULL",
     });
 
@@ -67,7 +68,7 @@ export default (sequelize) => {
       foreignKey: "projectId",
       otherKey: "participantId",
       as: "architects",
-      scope: { typeId: 4 },
+      scope: { type: ParticipantType.ARCHITECTE },
       onDelete: "SET NULL",
     });
   };

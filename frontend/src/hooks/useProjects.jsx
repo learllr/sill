@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../axiosConfig.js";
 
-export const useProjects = (selectedSubTab = "Tous") => {
+export const useProjects = (selectedSubTab = "Tous", projectId = null) => {
   const queryClient = useQueryClient();
 
   // Récupérer les projets
@@ -9,10 +9,14 @@ export const useProjects = (selectedSubTab = "Tous") => {
     data: projects = [],
     isLoading: isLoadingProjects,
     isError,
-  } = useQuery(["projects", selectedSubTab], async () => {
-    const response = await axios.get("/project", {
-      params: selectedSubTab === "Tous" ? {} : { status: selectedSubTab },
-    });
+  } = useQuery(["projects", projectId || selectedSubTab], async () => {
+    const params = projectId
+      ? {}
+      : selectedSubTab === "Tous"
+      ? {}
+      : { participantType: selectedSubTab };
+
+    const response = await axios.get("/project", { params });
     return response.data;
   });
 
@@ -30,7 +34,6 @@ export const useProjects = (selectedSubTab = "Tous") => {
   // Modifier un projet
   const updateProject = useMutation({
     mutationFn: async ({ projectId, updatedData }) => {
-      console.log(projectId, updatedData);
       const response = await axios.put(`/project/${projectId}`, updatedData);
       return response.data;
     },

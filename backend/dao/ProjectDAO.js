@@ -2,8 +2,37 @@ import db from "../orm/models/index.js";
 const { Project, Participant, ProjectParticipant } = db;
 
 export default class ProjectDAO {
-  static async getAllProjects() {
-    return await Project.findAll();
+  static async getAllProjects({ status, participantType }) {
+    const whereClause = status && status !== "Tous" ? { status } : {};
+
+    const includeParticipants = participantType
+      ? [
+          {
+            model: Participant,
+            as:
+              participantType === "Client"
+                ? "clients"
+                : participantType === "Fournisseur"
+                ? "suppliers"
+                : participantType === "Sous-traitant"
+                ? "subcontractors"
+                : participantType === "Architecte"
+                ? "architects"
+                : null,
+            required: true,
+          },
+        ]
+      : [
+          { model: Participant, as: "clients" },
+          { model: Participant, as: "suppliers" },
+          { model: Participant, as: "subcontractors" },
+          { model: Participant, as: "architects" },
+        ];
+
+    return await Project.findAll({
+      where: whereClause,
+      include: includeParticipants,
+    });
   }
 
   static async getProjectById(id) {

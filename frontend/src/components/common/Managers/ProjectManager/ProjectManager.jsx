@@ -27,7 +27,7 @@ export default function ProjectManager({
     addProject,
     isLoadingProjects: isLoading,
     isError,
-  } = useProjects(selectedSubTab);
+  } = useProjects(selectedMainTab, projectId);
 
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -85,6 +85,7 @@ export default function ProjectManager({
                 navigate(`/chantiers/${project.id}`);
               }}
               projectId={projectId}
+              mainTab={selectedMainTab}
             />
           )}
         </div>

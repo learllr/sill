@@ -1,27 +1,37 @@
-import { formatDateTime } from "../../../../../../shared/utils/dateUtils.js";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import ProjectManager from "../../common/Managers/ProjectManager/ProjectManager.jsx";
+import MarketInfo from "../../common/Managers/ProjectManager/MarketInfo.jsx";
+import ProjectInfo from "../../common/Managers/ProjectManager/ProjectInfo.jsx";
+import { precisionProjectItems } from "../../../../../shared/constants/menuItems.js";
 
-export default function ProjectDetails({ project }) {
+export default function ProjectDetails() {
+  const { id } = useParams();
+  const menuItems = precisionProjectItems;
+
+  const [selectedMainTab, setSelectedMainTab] = useState("");
+  const [selectedSubTab, setSelectedSubTab] = useState("");
+
+  useEffect(() => {
+    if (menuItems.length > 0) {
+      setSelectedMainTab(menuItems[0].label);
+      setSelectedSubTab(menuItems[0].subMenu?.[0] || "");
+    }
+  }, [menuItems]);
+
   return (
-    <div className="p-2 space-y-4">
-      <h2 className="text-lg text-center font-semibold">Détails du chantier</h2>
-
-      <div className="flex flex-col space-y-1">
-        <p>
-          <strong>Nom :</strong> {project?.name || "Non renseigné"}
-        </p>
-        <p>
-          <strong>Statut :</strong> {project?.status || "Non renseigné"}
-        </p>
-      </div>
-
-      <div className="text-gray-600 text-center">
-        <p>
-          <strong>Créé le :</strong> {formatDateTime(project?.createdAt)}
-        </p>
-        <p>
-          <strong>Mis à jour le :</strong> {formatDateTime(project?.updatedAt)}
-        </p>
-      </div>
+    <div className="space-y-6">
+      <ProjectManager
+        title="Détails du chantier"
+        selectedMainTab={selectedMainTab}
+        setSelectedMainTab={setSelectedMainTab}
+        selectedSubTab={selectedSubTab}
+        setSelectedSubTab={setSelectedSubTab}
+        menuItems={menuItems}
+        projectId={id}
+        ProjectInfoComponent={() => <ProjectInfo projectId={id} />}
+        MarketInfoComponent={() => <MarketInfo projectId={id} />}
+      />
     </div>
   );
 }

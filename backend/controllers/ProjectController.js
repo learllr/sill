@@ -2,11 +2,17 @@ import ProjectDAO from "../dao/ProjectDAO.js";
 
 export const getAllProjects = async (req, res) => {
   try {
-    const { status } = req.query;
-    const whereClause = status ? { status } : {};
-    const projects = await ProjectDAO.getAllProjects(whereClause);
+    const { status, participantType } = req.query;
+
+    const projects = await ProjectDAO.getAllProjects({
+      status,
+      participantType:
+        participantType && participantType !== "Tous" ? participantType : null,
+    });
+
     res.status(200).json(projects);
   } catch (error) {
+    console.error("❌ Erreur Sequelize :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération des projets" });
