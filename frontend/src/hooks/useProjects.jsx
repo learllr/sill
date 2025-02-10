@@ -1,18 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../axiosConfig.js";
 
-export const useProjects = (enabled = true) => {
+export const useProjects = (selectedSubTab = "Tous") => {
   const queryClient = useQueryClient();
 
   // Récupérer les projets
-  const { data: projects = [], isLoading: isLoadingProjects } = useQuery(
-    ["projects"],
-    async () => {
-      const response = await axios.get(`/project`);
-      return response.data;
-    },
-    { enabled: !!enabled }
-  );
+  const {
+    data: projects = [],
+    isLoading: isLoadingProjects,
+    isError,
+  } = useQuery(["projects", selectedSubTab], async () => {
+    const response = await axios.get("/project", {
+      params: selectedSubTab === "Tous" ? {} : { status: selectedSubTab },
+    });
+    return response.data;
+  });
 
   // Ajouter un projet
   const addProject = useMutation({
@@ -49,6 +51,7 @@ export const useProjects = (enabled = true) => {
   return {
     projects,
     isLoadingProjects,
+    isError,
     addProject,
     updateProject,
     deleteProject,

@@ -7,11 +7,8 @@ import db from "./orm/models/index.js";
 import authentificationRoutes from "./routes/authentificationRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import employeeRoutes from "./routes/employeeRoutes.js";
-import invoiceRoutes from "./routes/invoiceRoutes.js";
 import participantRoutes from "./routes/participantRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
-import quoteRoutes from "./routes/quoteRoutes.js";
-import searchRoutes from "./routes/searchRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
@@ -48,9 +45,6 @@ app.use("/api/project", projectRoutes);
 app.use("/api/participant", participantRoutes);
 app.use("/api/document", documentRoutes);
 app.use("/api/employee", employeeRoutes);
-app.use("/api/quote", quoteRoutes);
-app.use("/api/invoice", invoiceRoutes);
-app.use("/api/search", searchRoutes);
 
 db.sequelize
   .sync()

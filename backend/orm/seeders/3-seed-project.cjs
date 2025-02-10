@@ -23,6 +23,12 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+        {
+          name: "Construction Hôtel",
+          status: "Annulé",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     );

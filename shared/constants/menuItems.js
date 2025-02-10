@@ -113,6 +113,12 @@ export const precisionArchitectMenuItems = [
   },
 ];
 
+export const projectMenuItems = [
+  {
+    subMenu: ["Tous", "Non commencés", "En cours", "Terminés", "Annulés"],
+  },
+];
+
 export const projectContactMenuItems = [
   {
     label: "Client",

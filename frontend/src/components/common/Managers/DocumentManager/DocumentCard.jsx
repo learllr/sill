@@ -7,7 +7,7 @@ export default function DocumentCard({ document, onSelectItem, employeeId }) {
     if (document.type === DocumentType.DEVIS) {
       switch (document.quoteInfos[0].status) {
         case "En attente":
-          return "border-orange-500";
+          return "border-yellow-500";
         case "Accepté":
           return "border-green-500";
         case "Rejeté":
@@ -19,12 +19,7 @@ export default function DocumentCard({ document, onSelectItem, employeeId }) {
 
     if (document.type === DocumentType.FACTURES) {
       const paidOn = document.invoiceInfos[0]?.paidOn;
-
-      if (!paidOn || paidOn === "") {
-        return "border-red-500";
-      }
-
-      return "border-green-500";
+      return !paidOn || paidOn === "" ? "border-red-500" : "border-green-500";
     }
 
     return "border-gray-300";
@@ -36,10 +31,10 @@ export default function DocumentCard({ document, onSelectItem, employeeId }) {
       onClick={() => onSelectItem(document)}
     >
       {getFileIcon(document.path)}
-      <p className="mt-2">
-        {employeeId
-          ? formatDate(document.updatedAt)
-          : `${document.year} - ${document.month}`}
+      <p className="mt-2 text-gray-800">
+        {document.updatedAt
+          ? `Mis à jour : ${formatDate(document.updatedAt)}`
+          : "Date inconnue"}
       </p>
     </div>
   );

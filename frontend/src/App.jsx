@@ -8,8 +8,8 @@ import SillStatus from "./components/navbar/aministrative-services/SillStatus.js
 import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails.jsx";
 import Employees from "./components/navbar/hr-services/Employees.jsx";
 import Memos from "./components/navbar/hr-services/Memos.jsx";
-import ParticipantDetails from "./components/navbar/project-management/ParticipantDetails.jsx";
-import Participants from "./components/navbar/project-management/Participants.jsx";
+import ParticipantDetails from "./components/navbar/participant-management/ParticipantDetails.jsx";
+import Participants from "./components/navbar/participant-management/Participants.jsx";
 import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
 import Projects from "./components/navbar/project-management/Projects.jsx";
 

@@ -21,7 +21,7 @@ export default (sequelize) => {
         },
       },
       status: {
-        type: DataTypes.ENUM("Non commencé", "En cours", "Terminé"),
+        type: DataTypes.ENUM("Non commencé", "En cours", "Terminé", "Annulé"),
         allowNull: false,
         defaultValue: "Non commencé",
       },

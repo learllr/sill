@@ -20,7 +20,7 @@ export default function ItemContainer({
 
   const filteredItems = items
     .filter((item) => {
-      if (employeeId) return true; // Si employeeId est présent, ne pas filtrer par statut
+      if (employeeId) return true;
 
       if (item.type === DocumentType.DEVIS) {
         const status = item.quoteInfos[0]?.status;

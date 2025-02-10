@@ -81,6 +81,17 @@ export const ALL_CONTACT_FIELDS = [
   { name: "website", label: "Site web", type: "text" },
 ];
 
+export const PROJECT_FIELDS = [
+  { name: "name", label: "Nom du projet", type: "text", required: true },
+  {
+    name: "status",
+    label: "Statut",
+    type: "select",
+    required: true,
+    options: ["Non commencé", "En cours", "Terminé", "Annulé"],
+  },
+];
+
 export const CONTACT_FIELDS = {
   employee: EMPLOYEE_FIELDS,
   client: ALL_CONTACT_FIELDS,

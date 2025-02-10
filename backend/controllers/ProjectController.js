@@ -31,12 +31,7 @@ export const getProjectById = async (req, res) => {
 
 export const createProject = async (req, res) => {
   try {
-    const { name, clientId } = req.body;
-
-    const project = await ProjectDAO.createProject({
-      name,
-      clientId,
-    });
+    const project = await ProjectDAO.createProject(req.body);
 
     res.status(201).json({ message: "Projet créé avec succès", project });
   } catch (error) {
