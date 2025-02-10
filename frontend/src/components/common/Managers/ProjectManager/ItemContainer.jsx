@@ -57,14 +57,6 @@ export default function ItemContainer({
         />
       )}
 
-      {subMenuItems?.length > 0 && (
-        <NavigationSubTabs
-          subMenuItems={subMenuItems}
-          selectedSubTab={selectedSubTab}
-          setSelectedSubTab={setSelectedSubTab}
-        />
-      )}
-
       <div
         className="grid gap-3 p-2"
         style={{

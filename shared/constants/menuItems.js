@@ -137,7 +137,7 @@ export const precisionProjectItems = [
 export const projectContactMenuItems = [
   {
     label: "Client",
-    subMenu: ["Devis", "Factures", "Devis validés"],
+    subMenu: ["Devis", "Factures"],
   },
   {
     label: "Fournisseur",

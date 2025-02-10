@@ -12,8 +12,34 @@ import ParticipantDetails from "./components/navbar/participant-management/Parti
 import Participants from "./components/navbar/participant-management/Participants.jsx";
 import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
 import Projects from "./components/navbar/project-management/Projects.jsx";
+import ParticipantProjectDetails from "./components/navbar/participant-management/ParticipantProjectDetails.jsx";
 
 export default function App() {
+  const participantRoutes = Object.values(ParticipantType)
+    .map((type) => {
+      const pluralType = getTypeName(type, "plural");
+
+      return [
+        {
+          path: `/${pluralType}`,
+          element: <Participants participantType={type} />,
+        },
+        {
+          path: `/${pluralType}/:id`,
+          element: <ParticipantDetails participantType={type} />,
+        },
+        {
+          path: `/chantiers/:projectId/${pluralType}`,
+          element: <Participants participantType={type} />,
+        },
+        {
+          path: `/chantiers/:projectId/${pluralType}/:id`,
+          element: <ParticipantProjectDetails participantType={type} />,
+        },
+      ];
+    })
+    .flat();
+
   const routes = [
     { path: "/", element: <Projects /> },
     { path: "/chantiers", element: <Projects /> },
@@ -24,14 +50,7 @@ export default function App() {
     { path: "/banque", element: <Bank /> },
     { path: "/statut-sill", element: <SillStatus /> },
     { path: "/compatibilité-zied", element: <ZiedAccounting /> },
-    ...Object.values(ParticipantType).map((type) => ({
-      path: `/${getTypeName(type, "plural")}`,
-      element: <Participants participantType={type} />,
-    })),
-    ...Object.values(ParticipantType).map((type) => ({
-      path: `/${getTypeName(type, "plural")}/:id`,
-      element: <ParticipantDetails participantType={type} />,
-    })),
+    ...participantRoutes,
     { path: "*", element: <h1>URL non trouvée</h1> },
   ];
 

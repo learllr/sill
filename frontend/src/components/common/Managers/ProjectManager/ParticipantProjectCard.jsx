@@ -18,12 +18,26 @@ export default function ParticipantProjectCard({
 
   const participants = project[participantKey] || [];
 
+  const participantPath =
+    mainTab === ParticipantType.CLIENT
+      ? "clients"
+      : mainTab === ParticipantType.FOURNISSEUR
+      ? "fournisseurs"
+      : mainTab === ParticipantType.SOUS_TRAITANT
+      ? "sous-traitants"
+      : "architectes";
+
   return (
     <>
       {participants.map((participant) => (
         <div
           key={participant.id}
           className="flex items-center w-full max-w-[400px] min-w-[250px] justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-100 cursor-pointer transition-all"
+          onClick={() =>
+            navigate(
+              `/chantiers/${project.id}/${participantPath}/${participant.id}`
+            )
+          }
         >
           <div className="flex items-center space-x-3">
             <User className="text-gray-500" />
