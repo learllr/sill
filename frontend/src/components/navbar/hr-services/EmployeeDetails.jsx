@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  getPrecisionContactMenuItems,
-  ParticipantType,
-} from "../../../../../shared/constants/types.js";
+import { precisionEmployeeMenuItems } from "../../../../../shared/constants/menuItems.js";
 import ContactInfo from "../../common/Managers/ContactManager/ContactInfo.jsx";
 import DocumentManager from "../../common/Managers/DocumentManager/DocumentManager.jsx";
 
 export default function EmployeeDetails() {
   const { id } = useParams();
 
-  const menuItems = getPrecisionContactMenuItems(ParticipantType.SALARIE);
+  const menuItems = precisionEmployeeMenuItems;
 
   const [selectedMainTab, setSelectedMainTab] = useState(
     menuItems[0]?.label || ""

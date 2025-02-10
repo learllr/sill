@@ -41,7 +41,7 @@ export default function DocumentCard({ document, onSelectItem, employeeId }) {
       {getFileIcon(document.path)}
       <p className="mt-2">
         {employeeId
-          ? formatDate(document.createdAt)
+          ? formatDate(document.updatedAt)
           : `${document.year} - ${document.month}`}
       </p>
     </div>

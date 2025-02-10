@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { getTypeName } from "../../../../../../shared/constants/types.js";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import NavigationSubTabs from "../../Design/Buttons/NavigationSubTabs.jsx";
 import ScrollBarSearch from "../ScrollBarSearch.jsx";
@@ -81,7 +82,10 @@ export default function ItemContainer({
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500">{`Aucun ${contactType} trouvé`}</p>
+          <p className="text-center text-gray-500">{`Aucun ${getTypeName(
+            contactType,
+            "singular"
+          )} trouvé`}</p>
         )}
       </div>
     </div>

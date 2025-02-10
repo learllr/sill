@@ -129,31 +129,35 @@ export default function NewDocumentForm({
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      <label className="block">
-        <span className="text-gray-700">Année</span>
-        <input
-          type="number"
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          min="2000"
-          className="block w-full mt-1 border rounded-md p-2"
-        />
-      </label>
+      {!employeeId && (
+        <>
+          <label className="block">
+            <span className="text-gray-700">Année</span>
+            <input
+              type="number"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              min="2000"
+              className="block w-full mt-1 border rounded-md p-2"
+            />
+          </label>
 
-      <label className="block">
-        <span className="text-gray-700">Mois</span>
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="block w-full mt-1 border rounded-md p-2"
-        >
-          {Months.map((month) => (
-            <option key={month} value={month}>
-              {month}
-            </option>
-          ))}
-        </select>
-      </label>
+          <label className="block">
+            <span className="text-gray-700">Mois</span>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="block w-full mt-1 border rounded-md p-2"
+            >
+              {Months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      )}
 
       {!employeeId && isParticipant && (
         <label className="block">

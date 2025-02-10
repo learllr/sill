@@ -18,46 +18,58 @@ export default function ItemContainer({
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredBySubTab = items.filter((item) => {
-    if (
-      item.type === DocumentType.DEVIS ||
-      item.type === DocumentType.DEVIS_VALIDES
-    ) {
-      const status = item.quoteInfos[0].status;
-      if (selectedSubTab === "En attente") return status === "En attente";
-      if (selectedSubTab === "Acceptés") return status === "Accepté";
-      if (selectedSubTab === "Rejetés") return status === "Rejeté";
-    } else if (item.type === DocumentType.FACTURES) {
-      const paidOn = item.invoiceInfos[0]?.paidOn;
+  const filteredItems = items
+    .filter((item) => {
+      if (employeeId) return true; // Si employeeId est présent, ne pas filtrer par statut
 
-      if (selectedSubTab === "Payés") {
-        return !!paidOn;
+      if (
+        item.type === DocumentType.DEVIS ||
+        item.type === DocumentType.DEVIS_VALIDES
+      ) {
+        const status = item.quoteInfos[0]?.status;
+        if (selectedSubTab === "En attente") return status === "En attente";
+        if (selectedSubTab === "Acceptés") return status === "Accepté";
+        if (selectedSubTab === "Rejetés") return status === "Rejeté";
+      } else if (item.type === DocumentType.FACTURES) {
+        const paidOn = item.invoiceInfos[0]?.paidOn;
+
+        if (selectedSubTab === "Payés") {
+          return !!paidOn;
+        }
+
+        if (selectedSubTab === "Non payés") {
+          return !paidOn;
+        }
       }
 
-      if (selectedSubTab === "Non payés") {
-        return !paidOn;
+      return selectedSubTab === "Tous" || !selectedSubTab;
+    })
+    .filter((item) => {
+      if (!searchTerm) return true;
+
+      const searchTerms = searchTerm.toLowerCase().split(" ");
+
+      if (employeeId) {
+        const createdAt = item.createdAt ? new Date(item.createdAt) : null;
+
+        if (!createdAt) return false;
+
+        const formattedDate = `${createdAt
+          .getDate()
+          .toString()
+          .padStart(2, "0")}/${(createdAt.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}/${createdAt.getFullYear()}`;
+
+        return searchTerms.every((term) => formattedDate.includes(term));
+      } else {
+        const year = item.year ? item.year.toString() : "";
+        const month = item.month ? item.month.toLowerCase() : "";
+        return searchTerms.every(
+          (term) => year.includes(term) || month.includes(term)
+        );
       }
-    }
-
-    return selectedSubTab === "Tous" || !selectedSubTab;
-  });
-
-  const filteredItems = filteredBySubTab.filter((item) => {
-    if (!searchTerm) return true;
-
-    const searchTerms = searchTerm.toLowerCase().split(" ");
-
-    if (employeeId) {
-      const createdAt = item.createdAt ? item.createdAt.toLowerCase() : "";
-      return searchTerms.every((term) => createdAt.includes(term));
-    } else {
-      const year = item.year ? item.year.toString() : "";
-      const month = item.month ? item.month.toLowerCase() : "";
-      return searchTerms.every(
-        (term) => year.includes(term) || month.includes(term)
-      );
-    }
-  });
+    });
 
   const groupedByYear = sortAndGroupDocuments(filteredItems);
 

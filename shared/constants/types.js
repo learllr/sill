@@ -28,11 +28,11 @@ export const DocumentType = {
   NOTES_DE_SERVICE: "Notes de service",
 
   // Employé
-  PIECES_D_IDENTITE: "Pièces d'identité",
+  PIECES_D_IDENTITE: "Pièce d'identité",
   PERMIS: "Permis",
-  PHOTOS_D_IDENTITE: "Photos d'identité",
-  COUVERTURES_SANTE: "Couvertures santé",
-  DECLARATIONS_URSSAF: "Déclarations URSSAF",
+  PHOTOS_D_IDENTITE: "Photo d'identité",
+  COUVERTURES_SANTE: "Couverture santé",
+  DECLARATIONS_URSSAF: "Déclaration URSSAF",
   CONTRATS: "Contrats",
   BULLETINS_DE_SALAIRE: "Bulletins de salaire",
   FRAIS: "Frais",
