@@ -94,10 +94,7 @@ export default function NewDocumentForm({
       formData.append("remarks", formFields.remarks);
     }
 
-    if (
-      documentType === DocumentType.DEVIS ||
-      documentType === DocumentType.DEVIS_VALIDES
-    ) {
+    if (documentType === DocumentType.DEVIS) {
       formData.append("quoteNumber", formFields.invoiceNumber);
       formData.append("lot", formFields.lot);
       formData.append("sentOn", formFields.sentOn);
@@ -184,8 +181,7 @@ export default function NewDocumentForm({
       )}
 
       {(documentType === DocumentType.FACTURES ||
-        documentType === DocumentType.DEVIS ||
-        documentType === DocumentType.DEVIS_VALIDES) && (
+        documentType === DocumentType.DEVIS) && (
         <>
           <label className="block">
             <span className="text-gray-700">Numéro</span>
@@ -222,8 +218,7 @@ export default function NewDocumentForm({
             </label>
           )}
 
-          {(documentType === DocumentType.DEVIS ||
-            documentType === DocumentType.DEVIS_VALIDES) && (
+          {documentType === DocumentType.DEVIS && (
             <>
               <label className="block">
                 <span className="text-gray-700">Envoyé le</span>

@@ -44,7 +44,6 @@ export const DocumentType = {
   // Participant (Client, Fournisseur, Sous-traitant, Architecte)
   FACTURES: "Factures",
   DEVIS: "Devis",
-  DEVIS_VALIDES: "Devis validés",
   FICHES_TECHNIQUES: "Fiches techniques",
   BONS_POUR_ACCORD: "Bons pour accord",
   ADMINISTRATIFS: "Administratifs",

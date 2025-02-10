@@ -4,10 +4,7 @@ import getFileIcon from "../../../../../../shared/utils/getFileIcon";
 
 export default function DocumentCard({ document, onSelectItem, employeeId }) {
   const getBorderColor = () => {
-    if (
-      document.type === DocumentType.DEVIS ||
-      document.type === DocumentType.DEVIS_VALIDES
-    ) {
+    if (document.type === DocumentType.DEVIS) {
       switch (document.quoteInfos[0].status) {
         case "En attente":
           return "border-orange-500";

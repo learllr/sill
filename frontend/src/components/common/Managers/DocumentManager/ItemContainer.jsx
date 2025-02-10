@@ -22,10 +22,7 @@ export default function ItemContainer({
     .filter((item) => {
       if (employeeId) return true; // Si employeeId est présent, ne pas filtrer par statut
 
-      if (
-        item.type === DocumentType.DEVIS ||
-        item.type === DocumentType.DEVIS_VALIDES
-      ) {
+      if (item.type === DocumentType.DEVIS) {
         const status = item.quoteInfos[0]?.status;
         if (selectedSubTab === "En attente") return status === "En attente";
         if (selectedSubTab === "Acceptés") return status === "Accepté";

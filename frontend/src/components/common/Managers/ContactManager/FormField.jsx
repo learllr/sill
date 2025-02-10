@@ -11,30 +11,38 @@ export default function FormField({
   value,
   onChange,
 }) {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(Array.isArray(value) ? value : []);
 
   useEffect(() => {
-    if (type === "contactPersons" && (!value || value.length === 0)) {
-      setContacts([{ name: "", phone: "", email: "" }]);
-      onChange({
-        target: { name, value: [{ name: "", phone: "", email: "" }] },
-      });
-    } else {
-      setContacts(value || []);
+    if (type === "contactPersons") {
+      setContacts(
+        Array.isArray(value)
+          ? value.filter((contact) => !isEmptyContact(contact))
+          : []
+      );
     }
   }, [value, type]);
+
+  const isEmptyContact = (contact) => {
+    return (
+      !contact.name?.trim() && !contact.phone?.trim() && !contact.email?.trim()
+    );
+  };
 
   const handleContactChange = (index, field, val) => {
     const updatedContacts = [...contacts];
     updatedContacts[index][field] = val;
     setContacts(updatedContacts);
-    onChange({ target: { name, value: updatedContacts } });
+    onChange({
+      target: {
+        name,
+        value: updatedContacts.filter((contact) => !isEmptyContact(contact)),
+      },
+    });
   };
 
   const addContact = () => {
-    const updatedContacts = [...contacts, { name: "", phone: "", email: "" }];
-    setContacts(updatedContacts);
-    onChange({ target: { name, value: updatedContacts } });
+    setContacts([...contacts, { name: "", phone: "", email: "" }]);
   };
 
   const removeContact = (index) => {
@@ -77,14 +85,9 @@ export default function FormField({
             <div key={index} className="border p-4 rounded-md space-y-3">
               <div className="flex justify-between items-center">
                 <span className="font-semibold">Interlocuteur {index + 1}</span>
-                {contacts.length > 1 && (
-                  <IconButton
-                    onClick={() => removeContact(index)}
-                    variant="red"
-                  >
-                    <Trash size={16} />
-                  </IconButton>
-                )}
+                <IconButton onClick={() => removeContact(index)} variant="red">
+                  <Trash size={16} />
+                </IconButton>
               </div>
               <div>
                 <label className="block text-gray-700">Nom</label>

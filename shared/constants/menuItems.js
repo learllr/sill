@@ -57,10 +57,6 @@ export const precisionClientMenuItems = [
     label: "Devis",
     subMenu: ["Tous", "En attente", "Acceptés", "Rejetés"],
   },
-  {
-    label: "Devis validés",
-    subMenu: ["Tous", "En attente", "Acceptés", "Rejetés"],
-  },
 ];
 
 export const precisionSupplierMenuItems = [

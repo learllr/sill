@@ -18,7 +18,7 @@ export default function DocumentDetails({
     projects.find((p) => p.id === document?.projectId)?.name || "Aucun";
 
   const isInvoice = document?.type === "Factures";
-  const isQuote = ["Devis", "Devis validés"].includes(document?.type);
+  const isQuote = document?.type === "Devis";
 
   const invoiceInfo = document?.invoiceInfos?.[0] || {};
   const quoteInfo = document?.quoteInfos?.[0] || {};

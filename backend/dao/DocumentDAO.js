@@ -82,8 +82,7 @@ export default class DocumentDAO {
       }
 
       if (
-        (documentData.type === DocumentType.DEVIS ||
-          documentData.type === DocumentType.DEVIS_VALIDES) &&
+        documentData.type === DocumentType.DEVIS &&
         (documentData.quoteNumber ||
           documentData.lot ||
           documentData.sentOn ||
@@ -161,10 +160,7 @@ export default class DocumentDAO {
         }
       }
 
-      if (
-        updatedData.type === DocumentType.DEVIS ||
-        updatedData.type === DocumentType.DEVIS_VALIDES
-      ) {
+      if (updatedData.type === DocumentType.DEVIS) {
         const existingQuote = await QuoteInfos.findOne({
           where: { documentId: document.id },
           transaction,
