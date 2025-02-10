@@ -24,7 +24,7 @@ export default function EditProjectForm({
       return;
     }
 
-    onUpdate(project.id, formFields);
+    onUpdate(formFields);
     onSave();
   };
 

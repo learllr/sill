@@ -10,13 +10,7 @@ export default function ProjectDetails({ project }) {
           <strong>Nom :</strong> {project?.name || "Non renseigné"}
         </p>
         <p>
-          <strong>Client :</strong> {project?.client || "Non renseigné"}
-        </p>
-        <p>
           <strong>Statut :</strong> {project?.status || "Non renseigné"}
-        </p>
-        <p>
-          <strong>Description :</strong> {project?.description || "Aucune"}
         </p>
       </div>
 

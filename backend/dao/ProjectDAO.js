@@ -9,34 +9,15 @@ export default class ProjectDAO {
   static async getProjectById(id) {
     return await Project.findOne({
       where: { id },
-      include: [
-        {
-          model: Participant,
-          as: "clients",
-          attributes: ["id", "name", "contactPerson", "email"],
-        },
-        {
-          model: Participant,
-          as: "suppliers",
-          attributes: ["id", "name", "contactPerson", "email"],
-        },
-        {
-          model: Participant,
-          as: "subcontractors",
-          attributes: ["id", "name", "contactPerson", "email"],
-        },
-        {
-          model: Participant,
-          as: "architects",
-          attributes: ["id", "name", "contactPerson", "email"],
-        },
-      ],
-      attributes: ["id", "name"],
     });
   }
 
   static async createProject(projectData) {
     return await Project.create(projectData);
+  }
+
+  static async updateProject(project, updatedData) {
+    return await project.update(updatedData);
   }
 
   static async deleteProject(project) {

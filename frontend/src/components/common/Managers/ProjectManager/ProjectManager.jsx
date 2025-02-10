@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NavigationTabs from "../../Design/Buttons/NavigationTabs.jsx";
 import Loading from "../../Design/Loading.jsx";
 import Section from "../Section.jsx";
-import DetailContainer from "./DetailContainer.jsx";
 import ItemContainer from "./ItemContainer.jsx";
+import DetailContainer from "./DetailContainer.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
 
 export default function ProjectManager({
@@ -13,33 +14,35 @@ export default function ProjectManager({
   selectedSubTab = null,
   setSelectedSubTab = null,
   menuItems,
-  projectId = null,
+  projectId,
   MarketInfoComponent = null,
+  ProjectInfoComponent = null,
 }) {
+  const navigate = useNavigate();
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
+
+  const {
+    projects,
+    addProject,
+    isLoadingProjects: isLoading,
+    isError,
+  } = useProjects(selectedSubTab);
 
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [error, setError] = useState("");
-
-  const {
-    projects,
-    isLoadingProjects: isLoading,
-    isError,
-    addProject,
-    deleteProject,
-    updateProject,
-  } = useProjects(selectedSubTab);
 
   return (
     <div className="mb-4">
       <Section title={title} />
 
-      {MarketInfoComponent && (
-        <div className="mb-6">
-          <MarketInfoComponent />
+      {projectId && (
+        <div className="mb-6 space-y-4">
+          {ProjectInfoComponent && (
+            <ProjectInfoComponent projectId={projectId} />
+          )}
+          {MarketInfoComponent && <MarketInfoComponent projectId={projectId} />}
         </div>
       )}
 
@@ -58,16 +61,15 @@ export default function ProjectManager({
         />
       )}
 
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {isError && (
+        <p className="text-red-500 text-center">
+          Erreur lors du chargement des projets.
+        </p>
+      )}
 
       <div className="flex space-x-2">
         <div className={isDetailVisible ? "w-2/3" : "w-full"}>
           {isLoading && <Loading />}
-          {isError && (
-            <p className="text-red-500 text-center">
-              Erreur lors du chargement des projets.
-            </p>
-          )}
           {!isLoading && !isError && (
             <ItemContainer
               items={projects || []}
@@ -80,9 +82,7 @@ export default function ProjectManager({
                 setSelectedProject(null);
               }}
               onSelectItem={(project) => {
-                setIsDetailVisible(true);
-                setIsAddingNew(false);
-                setSelectedProject(project);
+                navigate(`/chantiers/${project.id}`);
               }}
               projectId={projectId}
             />
@@ -99,9 +99,6 @@ export default function ProjectManager({
               isNew={isAddingNew}
               project={selectedProject}
               addMutation={addProject}
-              deleteMutation={deleteProject}
-              updateMutation={updateProject}
-              projectId={projectId}
             />
           </div>
         )}

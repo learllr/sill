@@ -40,6 +40,24 @@ export const createProject = async (req, res) => {
   }
 };
 
+export const updateProject = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    const project = await ProjectDAO.getProjectById(id);
+    if (!project) {
+      return res.status(404).json({ error: "Projet non trouvé" });
+    }
+
+    const updatedProject = await ProjectDAO.updateProject(project, updatedData);
+    res.status(200).json(updatedProject);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du projet :", error);
+    res.status(500).json({ error: "Erreur lors de la mise à jour du projet" });
+  }
+};
+
 export const deleteProject = async (req, res) => {
   try {
     const { id } = req.params;

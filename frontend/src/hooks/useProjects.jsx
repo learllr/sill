@@ -30,6 +30,7 @@ export const useProjects = (selectedSubTab = "Tous") => {
   // Modifier un projet
   const updateProject = useMutation({
     mutationFn: async ({ projectId, updatedData }) => {
+      console.log(projectId, updatedData);
       const response = await axios.put(`/project/${projectId}`, updatedData);
       return response.data;
     },

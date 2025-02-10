@@ -119,6 +119,21 @@ export const projectMenuItems = [
   },
 ];
 
+export const precisionProjectItems = [
+  {
+    label: "Client",
+  },
+  {
+    label: "Fournisseur",
+  },
+  {
+    label: "Sous-traitant",
+  },
+  {
+    label: "Architecte",
+  },
+];
+
 export const projectContactMenuItems = [
   {
     label: "Client",

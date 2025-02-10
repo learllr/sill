@@ -17,7 +17,7 @@ export default function App() {
   const routes = [
     { path: "/", element: <Projects /> },
     { path: "/chantiers", element: <Projects /> },
-    { path: "/chantier/:id", element: <ProjectDetails /> },
+    { path: "/chantiers/:id", element: <ProjectDetails /> },
     { path: "/salariés", element: <Employees /> },
     { path: "/salariés/:id", element: <EmployeeDetails /> },
     { path: "/notes", element: <Memos /> },
