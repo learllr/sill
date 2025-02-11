@@ -35,25 +35,6 @@ export default (sequelize) => {
         },
         onDelete: "SET NULL",
       },
-      architecteId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-          model: "Participants",
-          key: "id",
-        },
-        onDelete: "SET NULL",
-      },
-      RG: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
-      prorata: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
     },
     {
       sequelize,
@@ -67,12 +48,6 @@ export default (sequelize) => {
     Project.belongsTo(models.Participant, {
       foreignKey: "clientId",
       as: "client",
-      onDelete: "SET NULL",
-    });
-
-    Project.belongsTo(models.Participant, {
-      foreignKey: "architecteId",
-      as: "architecte",
       onDelete: "SET NULL",
     });
 

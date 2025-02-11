@@ -30,6 +30,9 @@ export default function NewDocumentForm({
     remarks: "",
     sentOn: "",
     status: "En attente",
+    RG: false,
+    prorata: false,
+    finalCompletion: false,
   });
 
   const { participants, isLoadingParticipants } = useParticipants(
@@ -56,10 +59,10 @@ export default function NewDocumentForm({
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormFields((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -92,6 +95,9 @@ export default function NewDocumentForm({
       formData.append("lot", formFields.lot);
       formData.append("paidOn", formFields.paidOn);
       formData.append("remarks", formFields.remarks);
+      formData.append("RG", formFields.RG);
+      formData.append("prorata", formFields.prorata);
+      formData.append("finalCompletion", formFields.finalCompletion);
     }
 
     if (documentType === DocumentType.DEVIS) {
@@ -206,56 +212,61 @@ export default function NewDocumentForm({
           </label>
 
           {documentType === DocumentType.FACTURES && (
-            <label className="block">
-              <span className="text-gray-700">Payé le</span>
-              <input
-                type="date"
-                name="paidOn"
-                value={formFields.paidOn}
-                onChange={handleChange}
-                className="block w-full mt-1 border rounded-md p-2"
-              />
-            </label>
-          )}
-
-          {documentType === DocumentType.DEVIS && (
             <>
               <label className="block">
-                <span className="text-gray-700">Envoyé le</span>
+                <span className="text-gray-700">Payé le</span>
                 <input
                   type="date"
-                  name="sentOn"
-                  value={formFields.sentOn}
+                  name="paidOn"
+                  value={formFields.paidOn}
                   onChange={handleChange}
                   className="block w-full mt-1 border rounded-md p-2"
                 />
               </label>
 
-              <label className="block">
-                <span className="text-gray-700">Statut</span>
-                <select
-                  name="status"
-                  value={formFields.status}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                >
-                  <option value="En attente">En attente</option>
-                  <option value="Accepté">Accepté</option>
-                  <option value="Rejeté">Rejeté</option>
-                </select>
+              <label className="block space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="RG"
+                    checked={formFields.RG}
+                    onChange={handleChange}
+                    className="w-4 h-4"
+                  />
+                  <label className="text-gray-700">RG (5%)</label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="prorata"
+                    checked={formFields.prorata}
+                    onChange={handleChange}
+                    className="w-4 h-4"
+                  />
+                  <label className="text-gray-700">Prorata (2%)</label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="finalCompletion"
+                    checked={formFields.finalCompletion}
+                    onChange={handleChange}
+                    className="w-4 h-4"
+                  />
+                  <label className="text-gray-700">
+                    Bonne fin de chantier (5%)
+                  </label>
+                </div>
               </label>
             </>
           )}
         </>
       )}
 
-      <IconButton
-        onClick={handleSubmit}
-        className="w-full"
-        variant="green"
-        disabled={addMutation.isLoading}
-      >
-        {addMutation.isLoading ? "Ajout en cours..." : "Ajouter"}
+      <IconButton onClick={handleSubmit} className="w-full" variant="green">
+        Ajouter
       </IconButton>
     </div>
   );

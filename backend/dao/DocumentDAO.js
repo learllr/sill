@@ -67,6 +67,9 @@ export default class DocumentDAO {
         (documentData.invoiceNumber ||
           documentData.lot ||
           documentData.paidOn ||
+          documentData.RG ||
+          documentData.prorata ||
+          documentData.finalCompletion ||
           documentData.remarks)
       ) {
         await InvoiceInfos.create(
@@ -75,6 +78,9 @@ export default class DocumentDAO {
             invoiceNumber: documentData.invoiceNumber || null,
             lot: documentData.lot || null,
             paidOn: documentData.paidOn || null,
+            RG: documentData.RG || null,
+            prorata: documentData.prorata || null,
+            finalCompletion: documentData.finalCompletion || null,
             remarks: documentData.remarks || null,
           },
           { transaction }

@@ -13,9 +13,6 @@ export default function EditProjectForm({
     name: project?.name || "",
     status: project?.status || "Non commencé",
     clientId: project?.clientId || null,
-    architecteId: project?.architecteId || null,
-    RG: project?.RG || false,
-    prorata: project?.prorata || false,
   });
 
   const handleChange = (e) => {
@@ -79,40 +76,6 @@ export default function EditProjectForm({
           defaultValue={formFields.clientId}
         />
       </label>
-
-      <label className="block">
-        <span className="text-gray-700">Architecte</span>
-        <Combobox
-          subjects={project?.architects || []}
-          onSelect={(value) =>
-            setFormFields((prev) => ({ ...prev, architecteId: value }))
-          }
-          placeholder="Sélectionnez un architecte..."
-          defaultValue={formFields.architecteId}
-        />
-      </label>
-
-      <div className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          name="RG"
-          checked={formFields.RG}
-          onChange={handleChange}
-          className="w-4 h-4"
-        />
-        <label className="text-gray-700">RG (5%)</label>
-      </div>
-
-      <div className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          name="prorata"
-          checked={formFields.prorata}
-          onChange={handleChange}
-          className="w-4 h-4"
-        />
-        <label className="text-gray-700">Prorata (2%)</label>
-      </div>
 
       <IconButton
         onClick={handleSubmit}

@@ -67,6 +67,18 @@ export default function DocumentDetails({
               : "Non renseignée"}
           </p>
           <p>
+            <strong>RG (5%) :</strong>{" "}
+            {invoiceInfo.RG ? "Appliqué" : "Non appliqué"}
+          </p>
+          <p>
+            <strong>Prorata (2%) :</strong>{" "}
+            {invoiceInfo.prorata ? "Appliqué" : "Non appliqué"}
+          </p>
+          <p>
+            <strong>Bonne fin de chantier (5%) :</strong>{" "}
+            {invoiceInfo.finalCompletion ? "Appliqué" : "Non appliqué"}
+          </p>
+          <p>
             <strong>Remarques :</strong> {invoiceInfo.remarks || "Aucune"}
           </p>
         </div>

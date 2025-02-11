@@ -51,6 +51,21 @@ export default (sequelize) => {
         type: DataTypes.DATEONLY,
         allowNull: true,
       },
+      RG: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      prorata: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      finalCompletion: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       remarks: {
         type: DataTypes.TEXT,
         allowNull: true,

@@ -73,18 +73,6 @@ export default function ProjectInfo({ projectId }) {
             <strong>Client :</strong>{" "}
             {project.clientId ? `Client ${project.clientId}` : "Aucun"}
           </p>
-          <p>
-            <strong>Architecte :</strong>{" "}
-            {project.architecteId
-              ? `Architecte ${project.architecteId}`
-              : "Aucun"}
-          </p>
-          <p>
-            <strong>RG (5%) :</strong> {project.RG ? "Oui" : "Non"}
-          </p>
-          <p>
-            <strong>Prorata (2%) :</strong> {project.prorata ? "Oui" : "Non"}
-          </p>
         </>
       )}
     </div>
