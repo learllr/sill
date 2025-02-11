@@ -27,8 +27,8 @@ export default function NewDocumentForm({
     invoiceNumber: "",
     lot: "",
     paidOn: "",
-    remarks: "",
     sentOn: "",
+    remarks: "",
     status: "En attente",
     RG: false,
     prorata: false,
@@ -262,6 +262,16 @@ export default function NewDocumentForm({
               </label>
             </>
           )}
+
+          <label className="block">
+            <span className="text-gray-700">Remarques</span>
+            <textarea
+              name="remarks"
+              value={formFields.remarks}
+              onChange={handleChange}
+              className="block w-full mt-1 border rounded-md p-2"
+            />
+          </label>
         </>
       )}
 

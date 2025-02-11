@@ -265,6 +265,15 @@ export default function EditDocumentForm({
               </div>
             </>
           )}
+          <label className="block">
+            <span className="text-gray-700">Remarques</span>
+            <textarea
+              name="remarks"
+              value={formFields.remarks}
+              onChange={handleChange}
+              className="block w-full mt-1 border rounded-md p-2"
+            />
+          </label>
         </>
       )}
 
