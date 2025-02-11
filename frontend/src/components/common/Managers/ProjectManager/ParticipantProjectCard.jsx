@@ -1,14 +1,12 @@
-import { User, FileText, Trash2 } from "lucide-react";
+import { FileText, Trash2, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ParticipantType } from "../../../../../../shared/constants/types.js";
+import { useProjects } from "../../../../hooks/useProjects.jsx";
 
-export default function ParticipantProjectCard({
-  project,
-  onSelectItem,
-  onDelete,
-  mainTab,
-}) {
+export default function ParticipantProjectCard({ project, mainTab }) {
   const navigate = useNavigate();
+  const { deleteParticipantProject } = useProjects();
+
   const participantKey = {
     [ParticipantType.CLIENT]: "clients",
     [ParticipantType.FOURNISSEUR]: "suppliers",
@@ -46,14 +44,23 @@ export default function ParticipantProjectCard({
 
           <div className="flex space-x-2">
             <button
-              onClick={() => navigate(`/${mainTab}s/${participant.id}`)}
+              onClick={(event) => {
+                event.stopPropagation();
+                navigate(`/${participantPath}/${participant.id}`);
+              }}
               className="bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-full p-2 transition"
             >
               <FileText size={16} />
             </button>
 
             <button
-              onClick={() => onDelete(participant.id)}
+              onClick={(event) => {
+                event.stopPropagation();
+                deleteParticipantProject.mutate({
+                  projectId: project.id,
+                  participantId: participant.id,
+                });
+              }}
               className="bg-gray-100 hover:bg-red-100 text-red-600 rounded-full p-2 transition"
             >
               <Trash2 size={16} />

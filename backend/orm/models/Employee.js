@@ -135,10 +135,6 @@ export default (sequelize) => {
   );
 
   Employee.associate = (models) => {
-    Employee.hasMany(models.LeaveRequest, {
-      foreignKey: "employeeId",
-      as: "leaveRequests",
-    });
     Employee.hasMany(models.Document, {
       foreignKey: "employeeId",
       as: "documents",

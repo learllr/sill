@@ -52,6 +52,16 @@ export const useProjects = (selectedSubTab = "Tous", projectId = null) => {
     },
   });
 
+  // Supprimer un participant d'un projet
+  const deleteParticipantProject = useMutation({
+    mutationFn: async ({ projectId, participantId }) => {
+      await axios.delete(`/project/${projectId}/participants/${participantId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["projects"]);
+    },
+  });
+
   return {
     projects,
     isLoadingProjects,
@@ -59,5 +69,6 @@ export const useProjects = (selectedSubTab = "Tous", projectId = null) => {
     addProject,
     updateProject,
     deleteProject,
+    deleteParticipantProject,
   };
 };
