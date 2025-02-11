@@ -32,9 +32,9 @@ export default function DocumentCard({ document, onSelectItem, employeeId }) {
     >
       {getFileIcon(document.path)}
       <p className="mt-2 text-gray-800">
-        {document.updatedAt
-          ? `Mis à jour : ${formatDate(document.updatedAt)}`
-          : "Date inconnue"}
+        {employeeId
+          ? formatDate(document.updatedAt)
+          : `${document.year} - ${document.month}`}
       </p>
     </div>
   );

@@ -3,7 +3,6 @@ import { Months } from "../../../../../../shared/constants/general.js";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { useParticipants } from "../../../../hooks/useParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
-import Combobox from "../../Design/Buttons/Combobox.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
@@ -15,8 +14,6 @@ export default function EditDocumentForm({
   documentType,
   onUpdate,
   isUpdating,
-  isParticipant,
-  isProject,
   employeeId,
 }) {
   const [selectedYear, setSelectedYear] = useState(document.year);
@@ -44,9 +41,8 @@ export default function EditDocumentForm({
     finalCompletion: document.invoiceInfos[0]?.finalCompletion || false,
   });
 
-  const { participants, isLoadingParticipants } =
-    useParticipants(isParticipant);
-  const { projects, isLoadingProjects } = useProjects(isProject);
+  const { participants, isLoadingParticipants } = useParticipants();
+  const { projects, isLoadingProjects } = useProjects();
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -85,14 +81,6 @@ export default function EditDocumentForm({
 
     if (file) {
       formData.append("file", file);
-    }
-
-    if (isParticipant) {
-      formData.append("participantId", selectedParticipant ?? "");
-    }
-
-    if (isProject) {
-      formData.append("projectId", selectedProject ?? "");
     }
 
     if (documentType === DocumentType.FACTURES) {
@@ -163,32 +151,6 @@ export default function EditDocumentForm({
             </select>
           </label>
         </>
-      )}
-
-      {isParticipant && (
-        <label className="block">
-          <span className="text-gray-700">Intervenant</span>
-          <Combobox
-            subjects={participants}
-            onSelect={(value) => setSelectedParticipant(value)}
-            placeholder="Sélectionnez un intervenant..."
-            defaultValue={selectedParticipant}
-            isLoading={isLoadingParticipants}
-          />
-        </label>
-      )}
-
-      {isProject && (
-        <label className="block">
-          <span className="text-gray-700">Chantier</span>
-          <Combobox
-            subjects={projects}
-            onSelect={(value) => setSelectedProject(value)}
-            placeholder="Sélectionnez un chantier..."
-            defaultValue={selectedProject}
-            isLoading={isLoadingProjects}
-          />
-        </label>
       )}
 
       {(documentType === DocumentType.FACTURES ||

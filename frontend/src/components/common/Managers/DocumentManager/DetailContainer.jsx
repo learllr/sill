@@ -13,9 +13,8 @@ export default function DetailContainer({
   addMutation,
   deleteMutation,
   updateMutation,
-  isParticipant,
-  isProject,
   employeeId,
+  participantId,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -56,9 +55,8 @@ export default function DetailContainer({
             onSave={onClose}
             documentType={documentType}
             addMutation={addMutation}
-            isParticipant={isParticipant}
-            isProject={isProject}
             employeeId={employeeId}
+            participantId={participantId}
           />
         ) : isEditing ? (
           <EditDocumentForm
@@ -70,17 +68,10 @@ export default function DetailContainer({
               onClose();
             }}
             isUpdating={updateMutation.isLoading}
-            isParticipant={isParticipant}
-            isProject={isProject}
             employeeId={employeeId}
           />
         ) : (
-          <DocumentDetails
-            document={document}
-            isParticipant={isParticipant}
-            isProject={isProject}
-            employeeId={employeeId}
-          />
+          <DocumentDetails document={document} employeeId={employeeId} />
         )}
       </div>
     </div>

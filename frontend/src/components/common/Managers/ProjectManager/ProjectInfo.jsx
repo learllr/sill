@@ -71,7 +71,11 @@ export default function ProjectInfo({ projectId }) {
           <h2 className="text-lg font-semibold py-4 mt-2">Marché</h2>
           <p>
             <strong>Client :</strong>{" "}
-            {project.clientId ? `Client ${project.clientId}` : "Aucun"}
+            {project.clientId
+              ? project.clients?.find(
+                  (client) => client.id === project.clientId
+                )?.name
+              : "Aucun"}
           </p>
         </>
       )}

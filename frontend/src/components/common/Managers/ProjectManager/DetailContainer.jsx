@@ -26,9 +26,6 @@ export default function DetailContainer({
               projectId={projectId}
               participantType={selectedMainTab}
               onClose={onClose}
-              onAssign={(selectedIds) =>
-                console.log("Participants sélectionnés:", selectedIds)
-              }
               project={projects.find((p) => p.id === Number(projectId))}
             />
           ) : (

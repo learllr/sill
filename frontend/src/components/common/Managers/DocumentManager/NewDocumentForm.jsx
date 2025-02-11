@@ -3,7 +3,6 @@ import { Months } from "../../../../../../shared/constants/general.js";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { useParticipants } from "../../../../hooks/useParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
-import Combobox from "../../Design/Buttons/Combobox.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
@@ -13,9 +12,8 @@ export default function NewDocumentForm({
   onSave,
   documentType,
   addMutation,
-  isParticipant,
-  isProject,
   employeeId,
+  participantId,
 }) {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(Months[0]);
@@ -35,11 +33,8 @@ export default function NewDocumentForm({
     finalCompletion: false,
   });
 
-  const { participants, isLoadingParticipants } = useParticipants(
-    documentType,
-    isParticipant
-  );
-  const { projects, isLoadingProjects } = useProjects(documentType, isProject);
+  const { participants, isLoadingParticipants } = useParticipants(documentType);
+  const { projects, isLoadingProjects } = useProjects(documentType);
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -80,14 +75,10 @@ export default function NewDocumentForm({
 
     if (employeeId) {
       formData.append("employeeId", employeeId);
-    } else {
-      if (isParticipant && selectedParticipant) {
-        formData.append("participantId", selectedParticipant);
-      }
+    }
 
-      if (isProject && selectedProject) {
-        formData.append("projectId", selectedProject);
-      }
+    if (participantId) {
+      formData.append("participantId", participantId);
     }
 
     if (documentType === DocumentType.FACTURES) {
@@ -160,30 +151,6 @@ export default function NewDocumentForm({
             </select>
           </label>
         </>
-      )}
-
-      {!employeeId && isParticipant && (
-        <label className="block">
-          <span className="text-gray-700">Intervenant</span>
-          <Combobox
-            subjects={participants}
-            onSelect={(value) => setSelectedParticipant(value)}
-            placeholder="Sélectionnez un intervenant..."
-            isLoading={isLoadingParticipants}
-          />
-        </label>
-      )}
-
-      {!employeeId && isProject && (
-        <label className="block">
-          <span className="text-gray-700">Chantier</span>
-          <Combobox
-            subjects={projects}
-            onSelect={(value) => setSelectedProject(value)}
-            placeholder="Sélectionnez un chantier..."
-            isLoading={isLoadingProjects}
-          />
-        </label>
       )}
 
       {(documentType === DocumentType.FACTURES ||

@@ -6,7 +6,6 @@ import IconButton from "../../Design/Buttons/IconButton.jsx";
 export default function ParticipantSelector({
   participantType,
   onClose,
-  onAssign,
   project,
 }) {
   const { participants, isLoading, isError } = useParticipants();
@@ -77,7 +76,6 @@ export default function ParticipantSelector({
       deleteParticipantProject.mutate({ projectId: project.id, participantId });
     });
 
-    onAssign(selectedParticipants);
     onClose();
   };
 

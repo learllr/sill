@@ -13,11 +13,10 @@ export default function DocumentManager({
   selectedSubTab = null,
   setSelectedSubTab = null,
   menuItems,
-  isParticipant = false,
-  isProject = false,
   employeeId = null,
   documentScope = "main",
   ContactInfoComponent = null,
+  participantId = null,
 }) {
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
@@ -40,6 +39,10 @@ export default function DocumentManager({
     deleteMutation,
     updateMutation,
   } = useDocuments(documentType);
+
+  const filteredDocuments = participantId
+    ? documents?.filter((doc) => doc.participantId === Number(participantId))
+    : documents;
 
   return (
     <div className="mb-4">
@@ -74,7 +77,7 @@ export default function DocumentManager({
           {isError && <p>Erreur lors du chargement des documents.</p>}
           {!isLoading && !isError && (
             <ItemContainer
-              items={documents || []}
+              items={filteredDocuments || []}
               subMenuItems={currentSubMenu}
               selectedSubTab={selectedSubTab}
               setSelectedSubTab={setSelectedSubTab}
@@ -106,9 +109,8 @@ export default function DocumentManager({
               addMutation={addMutation}
               deleteMutation={deleteMutation}
               updateMutation={updateMutation}
-              isParticipant={isParticipant}
-              isProject={isProject}
               employeeId={employeeId}
+              participantId={participantId}
             />
           </div>
         )}

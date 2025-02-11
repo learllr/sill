@@ -3,12 +3,7 @@ import { useParticipants } from "../../../../hooks/useParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
-export default function DocumentDetails({
-  document,
-  isParticipant,
-  isProject,
-  employeeId,
-}) {
+export default function DocumentDetails({ document, employeeId }) {
   const { participants } = useParticipants(!!document?.participantId);
   const { projects } = useProjects(!!document?.projectId);
 
@@ -37,16 +32,6 @@ export default function DocumentDetails({
               <strong>Mois :</strong> {document?.month || "Non renseigné"}
             </p>
           </>
-        )}
-        {isParticipant && (
-          <p>
-            <strong>Intervenant :</strong> {participantName}
-          </p>
-        )}
-        {isProject && (
-          <p>
-            <strong>Chantier :</strong> {projectName}
-          </p>
         )}
       </div>
 
