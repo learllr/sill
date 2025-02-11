@@ -5,15 +5,6 @@ import { ParticipantType } from "../../../../../../shared/constants/types.js";
 export default function ParticipantProjectCard({ project, mainTab }) {
   const navigate = useNavigate();
 
-  const participantKey = {
-    [ParticipantType.CLIENT]: "clients",
-    [ParticipantType.FOURNISSEUR]: "suppliers",
-    [ParticipantType.SOUS_TRAITANT]: "subcontractors",
-    [ParticipantType.ARCHITECTE]: "architects",
-  }[mainTab];
-
-  const participants = project[participantKey] || [];
-
   const participantPath =
     mainTab === ParticipantType.CLIENT
       ? "clients"
@@ -25,7 +16,7 @@ export default function ParticipantProjectCard({ project, mainTab }) {
 
   return (
     <>
-      {participants.map((participant) => (
+      {project.participants.map((participant) => (
         <div
           key={participant.id}
           className="flex items-center w-full max-w-[400px] min-w-[250px] justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-100 cursor-pointer transition-all"

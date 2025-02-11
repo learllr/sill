@@ -28,12 +28,27 @@ export default function ItemContainer({
   });
 
   const filteredItems = projectId
-    ? items.filter((project) => project.id === parseInt(projectId, 10))
+    ? items
+        .filter((project) => project.id === parseInt(projectId, 10))
+        .map((project) => ({
+          ...project,
+          filteredParticipants: (
+            project[
+              {
+                Client: "clients",
+                Fournisseur: "suppliers",
+                "Sous-traitant": "subcontractors",
+                Architecte: "architects",
+              }[mainTab]
+            ] || []
+          ).filter((participant) =>
+            participant.name.toLowerCase().includes(searchTerm.toLowerCase())
+          ),
+        }))
+        .filter((project) => project.filteredParticipants.length > 0)
     : filteredBySubTab.filter((project) => {
         if (!searchTerm) return true;
-
-        const name = project.name?.toLowerCase() || "";
-        return name.includes(searchTerm.toLowerCase());
+        return project.name.toLowerCase().includes(searchTerm.toLowerCase());
       });
 
   return (
@@ -68,7 +83,10 @@ export default function ItemContainer({
             projectId ? (
               <ParticipantProjectCard
                 key={project.id}
-                project={project}
+                project={{
+                  ...project,
+                  participants: project.filteredParticipants,
+                }}
                 onSelectItem={onSelectItem}
                 mainTab={mainTab}
               />
@@ -82,7 +100,7 @@ export default function ItemContainer({
           )
         ) : (
           <p className="text-center text-gray-500 col-span-full">
-            Aucun projet trouvé
+            Aucun résultat trouvé
           </p>
         )}
       </div>

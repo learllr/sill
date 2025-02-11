@@ -4,7 +4,7 @@ export default function ProjectCard({ project, onSelectItem }) {
   const getStatusColor = () => {
     switch (project.status) {
       case "Non commencé":
-        return "border-gray-500";
+        return "border-gray-300";
       case "En cours":
         return "border-yellow-500";
       case "Terminé":
