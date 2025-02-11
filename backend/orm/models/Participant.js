@@ -48,7 +48,7 @@ export default (sequelize) => {
       foreignKey: "participantId",
       otherKey: "projectId",
       as: "projects",
-      onDelete: "SET NULL",
+      onDelete: "CASCADE",
     });
 
     Participant.hasMany(models.ContactPerson, {

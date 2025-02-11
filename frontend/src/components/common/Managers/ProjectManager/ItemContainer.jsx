@@ -1,11 +1,10 @@
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { useState } from "react";
-import { getTypeName } from "../../../../../../shared/constants/types.js";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import NavigationSubTabs from "../../Design/Buttons/NavigationSubTabs.jsx";
 import ScrollBarSearch from "../ScrollBarSearch.jsx";
-import ProjectCard from "./ProjectCard.jsx";
 import ParticipantProjectCard from "./ParticipantProjectCard.jsx";
+import ProjectCard from "./ProjectCard.jsx";
 
 export default function ItemContainer({
   items,
@@ -44,8 +43,9 @@ export default function ItemContainer({
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
-        <IconButton onClick={onAdd} variant="green">
-          <Plus />
+
+        <IconButton onClick={onAdd} variant={projectId ? "blue" : "green"}>
+          {projectId ? <Pencil /> : <Plus />}
         </IconButton>
       </div>
 

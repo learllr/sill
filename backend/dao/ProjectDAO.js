@@ -5,29 +5,31 @@ export default class ProjectDAO {
   static async getAllProjects({ status, participantType }) {
     const whereClause = status && status !== "Tous" ? { status } : {};
 
-    const includeParticipants = participantType
-      ? [
-          {
-            model: Participant,
-            as:
-              participantType === "Client"
-                ? "clients"
-                : participantType === "Fournisseur"
-                ? "suppliers"
-                : participantType === "Sous-traitant"
-                ? "subcontractors"
-                : participantType === "Architecte"
-                ? "architects"
-                : null,
-            required: true,
-          },
-        ]
-      : [
-          { model: Participant, as: "clients" },
-          { model: Participant, as: "suppliers" },
-          { model: Participant, as: "subcontractors" },
-          { model: Participant, as: "architects" },
-        ];
+    let includeParticipants = [];
+
+    if (participantType) {
+      const participantAlias = {
+        Client: "clients",
+        Fournisseur: "suppliers",
+        "Sous-traitant": "subcontractors",
+        Architecte: "architects",
+      }[participantType];
+
+      if (participantAlias) {
+        includeParticipants.push({
+          model: Participant,
+          as: participantAlias,
+          required: true,
+        });
+      }
+    } else {
+      includeParticipants = [
+        { model: Participant, as: "clients" },
+        { model: Participant, as: "suppliers" },
+        { model: Participant, as: "subcontractors" },
+        { model: Participant, as: "architects" },
+      ];
+    }
 
     return await Project.findAll({
       where: whereClause,

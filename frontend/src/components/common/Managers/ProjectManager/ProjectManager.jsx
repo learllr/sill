@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useProjects } from "../../../../hooks/useProjects.jsx";
 import NavigationTabs from "../../Design/Buttons/NavigationTabs.jsx";
 import Loading from "../../Design/Loading.jsx";
 import Section from "../Section.jsx";
-import ItemContainer from "./ItemContainer.jsx";
 import DetailContainer from "./DetailContainer.jsx";
-import { useProjects } from "../../../../hooks/useProjects.jsx";
+import ItemContainer from "./ItemContainer.jsx";
 
 export default function ProjectManager({
   title,
@@ -28,7 +28,6 @@ export default function ProjectManager({
     isLoadingProjects: isLoading,
     isError,
   } = useProjects(selectedMainTab, projectId);
-
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -100,6 +99,9 @@ export default function ProjectManager({
               isNew={isAddingNew}
               project={selectedProject}
               addMutation={addProject}
+              projectId={projectId}
+              selectedMainTab={selectedMainTab}
+              projects={projects}
             />
           </div>
         )}

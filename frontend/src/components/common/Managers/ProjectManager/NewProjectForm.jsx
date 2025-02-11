@@ -1,6 +1,6 @@
 import { useState } from "react";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
 import { PROJECT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
+import IconButton from "../../Design/Buttons/IconButton.jsx";
 
 export default function NewProjectForm({ onSave, addMutation }) {
   const [formFields, setFormFields] = useState({
@@ -82,7 +82,7 @@ export default function NewProjectForm({ onSave, addMutation }) {
       ))}
 
       <IconButton onClick={handleSubmit} variant="green" className="w-full">
-        Ajouter
+        Modifier
       </IconButton>
     </div>
   );

@@ -42,7 +42,7 @@ export default (sequelize) => {
       otherKey: "participantId",
       as: "clients",
       scope: { type: ParticipantType.CLIENT },
-      onDelete: "SET NULL",
+      onDelete: "CASCADE",
     });
 
     Project.belongsToMany(models.Participant, {
@@ -51,7 +51,7 @@ export default (sequelize) => {
       otherKey: "participantId",
       as: "suppliers",
       scope: { type: ParticipantType.FOURNISSEUR },
-      onDelete: "SET NULL",
+      onDelete: "CASCADE",
     });
 
     Project.belongsToMany(models.Participant, {
@@ -60,7 +60,7 @@ export default (sequelize) => {
       otherKey: "participantId",
       as: "subcontractors",
       scope: { type: ParticipantType.SOUS_TRAITANT },
-      onDelete: "SET NULL",
+      onDelete: "CASCADE",
     });
 
     Project.belongsToMany(models.Participant, {
@@ -69,7 +69,7 @@ export default (sequelize) => {
       otherKey: "participantId",
       as: "architects",
       scope: { type: ParticipantType.ARCHITECTE },
-      onDelete: "SET NULL",
+      onDelete: "CASCADE",
     });
   };
 

@@ -14,21 +14,19 @@ export default (sequelize) => {
       },
       projectId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
           model: "Projects",
           key: "id",
         },
-        onDelete: "CASCADE",
       },
       participantId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
           model: "Participants",
           key: "id",
         },
-        onDelete: "CASCADE",
       },
     },
     {
@@ -44,6 +42,18 @@ export default (sequelize) => {
       ],
     }
   );
+
+  ProjectParticipant.associate = (models) => {
+    ProjectParticipant.belongsTo(models.Project, {
+      foreignKey: "projectId",
+      onDelete: "CASCADE",
+    });
+
+    ProjectParticipant.belongsTo(models.Participant, {
+      foreignKey: "participantId",
+      onDelete: "CASCADE",
+    });
+  };
 
   return ProjectParticipant;
 };

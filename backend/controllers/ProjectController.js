@@ -12,7 +12,7 @@ export const getAllProjects = async (req, res) => {
 
     res.status(200).json(projects);
   } catch (error) {
-    console.error("❌ Erreur Sequelize :", error);
+    console.error("Erreur lors de la récupération du projet :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération des projets" });
