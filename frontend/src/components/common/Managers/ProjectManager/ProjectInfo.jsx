@@ -1,6 +1,6 @@
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil, Trash2, X } from "lucide-react";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import Loading from "../../Design/Loading.jsx";
@@ -47,15 +47,9 @@ export default function ProjectInfo({ projectId }) {
           >
             {deleteProject.isLoading ? "Suppression..." : <Trash2 />}
           </IconButton>
-          {!isEditing ? (
-            <IconButton onClick={() => setIsEditing(true)} variant="blue">
-              <Pencil />
-            </IconButton>
-          ) : (
-            <IconButton onClick={() => setIsEditing(false)} variant="gray">
-              <X />
-            </IconButton>
-          )}
+          <IconButton onClick={() => setIsEditing(!isEditing)} variant="blue">
+            <Pencil />
+          </IconButton>
         </div>
       </div>
 
@@ -73,6 +67,23 @@ export default function ProjectInfo({ projectId }) {
           </p>
           <p>
             <strong>Statut :</strong> {project.status}
+          </p>
+          <h2 className="text-lg font-semibold py-4 mt-2">Marché</h2>
+          <p>
+            <strong>Client :</strong>{" "}
+            {project.clientId ? `Client ${project.clientId}` : "Aucun"}
+          </p>
+          <p>
+            <strong>Architecte :</strong>{" "}
+            {project.architecteId
+              ? `Architecte ${project.architecteId}`
+              : "Aucun"}
+          </p>
+          <p>
+            <strong>RG (5%) :</strong> {project.RG ? "Oui" : "Non"}
+          </p>
+          <p>
+            <strong>Prorata (2%) :</strong> {project.prorata ? "Oui" : "Non"}
           </p>
         </>
       )}

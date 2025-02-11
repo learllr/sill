@@ -1,6 +1,7 @@
 import { useState } from "react";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
 import { PROJECT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
+import Combobox from "../../Design/Buttons/Combobox.jsx";
+import IconButton from "../../Design/Buttons/IconButton.jsx";
 
 export default function EditProjectForm({
   project,
@@ -11,11 +12,18 @@ export default function EditProjectForm({
   const [formFields, setFormFields] = useState({
     name: project?.name || "",
     status: project?.status || "Non commencé",
+    clientId: project?.clientId || null,
+    architecteId: project?.architecteId || null,
+    RG: project?.RG || false,
+    prorata: project?.prorata || false,
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormFields((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormFields((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSubmit = () => {
@@ -29,11 +37,7 @@ export default function EditProjectForm({
   };
 
   return (
-    <div className="p-2 space-y-3">
-      <h1 className="text-lg font-semibold text-center mb-5">
-        Modifier le projet
-      </h1>
-
+    <div className="space-y-3">
       {PROJECT_FIELDS.map((field) => (
         <label key={field.name} className="block">
           <span className="text-gray-700">{field.label}</span>
@@ -61,6 +65,54 @@ export default function EditProjectForm({
           )}
         </label>
       ))}
+
+      <h2 className="text-lg font-semibold">Marché</h2>
+
+      <label className="block">
+        <span className="text-gray-700">Client</span>
+        <Combobox
+          subjects={project?.clients || []}
+          onSelect={(value) =>
+            setFormFields((prev) => ({ ...prev, clientId: value }))
+          }
+          placeholder="Sélectionnez un client..."
+          defaultValue={formFields.clientId}
+        />
+      </label>
+
+      <label className="block">
+        <span className="text-gray-700">Architecte</span>
+        <Combobox
+          subjects={project?.architects || []}
+          onSelect={(value) =>
+            setFormFields((prev) => ({ ...prev, architecteId: value }))
+          }
+          placeholder="Sélectionnez un architecte..."
+          defaultValue={formFields.architecteId}
+        />
+      </label>
+
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          name="RG"
+          checked={formFields.RG}
+          onChange={handleChange}
+          className="w-4 h-4"
+        />
+        <label className="text-gray-700">RG (5%)</label>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          name="prorata"
+          checked={formFields.prorata}
+          onChange={handleChange}
+          className="w-4 h-4"
+        />
+        <label className="text-gray-700">Prorata (2%)</label>
+      </div>
 
       <IconButton
         onClick={handleSubmit}

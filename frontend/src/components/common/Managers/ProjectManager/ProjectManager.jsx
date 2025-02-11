@@ -15,7 +15,6 @@ export default function ProjectManager({
   setSelectedSubTab = null,
   menuItems,
   projectId,
-  MarketInfoComponent = null,
   ProjectInfoComponent = null,
 }) {
   const navigate = useNavigate();
@@ -41,7 +40,6 @@ export default function ProjectManager({
           {ProjectInfoComponent && (
             <ProjectInfoComponent projectId={projectId} />
           )}
-          {MarketInfoComponent && <MarketInfoComponent projectId={projectId} />}
         </div>
       )}
 
