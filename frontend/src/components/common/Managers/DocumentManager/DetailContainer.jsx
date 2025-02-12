@@ -15,6 +15,7 @@ export default function DetailContainer({
   updateMutation,
   employeeId,
   participantId,
+  projectId,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -57,6 +58,7 @@ export default function DetailContainer({
             addMutation={addMutation}
             employeeId={employeeId}
             participantId={participantId}
+            projectId={projectId}
           />
         ) : isEditing ? (
           <EditDocumentForm

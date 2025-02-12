@@ -1,5 +1,5 @@
 import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
@@ -15,8 +15,12 @@ export default function ProjectInfo({ projectId }) {
   const [isEditing, setIsEditing] = useState(false);
 
   if (isLoading) return <Loading />;
-  if (isError || !project)
-    return <p className="text-red-500 text-center">Projet introuvable.</p>;
+
+  useEffect(() => {
+    if (isError || !project) {
+      navigate("/chantiers");
+    }
+  }, [isError, project, navigate]);
 
   const handleDelete = () => {
     if (window.confirm("Voulez-vous vraiment supprimer ce projet ?")) {
@@ -63,18 +67,18 @@ export default function ProjectInfo({ projectId }) {
       ) : (
         <>
           <p>
-            <strong>Nom :</strong> {project.name}
+            <strong>Nom :</strong> {project?.name}
           </p>
           <p>
-            <strong>Statut :</strong> {project.status}
+            <strong>Statut :</strong> {project?.status}
           </p>
           <h2 className="text-lg font-semibold py-4 mt-2">Marché</h2>
           <p>
             <strong>Client :</strong>{" "}
-            {project.clientId
+            {project && project.clientId
               ? project.clients?.find(
                   (client) => client.id === project.clientId
-                )?.name
+                )?.name || "Client inconnu"
               : "Aucun"}
           </p>
         </>

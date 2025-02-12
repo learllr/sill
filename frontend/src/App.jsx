@@ -9,10 +9,10 @@ import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails.jsx
 import Employees from "./components/navbar/hr-services/Employees.jsx";
 import Memos from "./components/navbar/hr-services/Memos.jsx";
 import ParticipantDetails from "./components/navbar/participant-management/ParticipantDetails.jsx";
+import ParticipantProjectDetails from "./components/navbar/participant-management/ParticipantProjectDetails.jsx";
 import Participants from "./components/navbar/participant-management/Participants.jsx";
 import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
 import Projects from "./components/navbar/project-management/Projects.jsx";
-import ParticipantProjectDetails from "./components/navbar/participant-management/ParticipantProjectDetails.jsx";
 
 export default function App() {
   const participantRoutes = Object.values(ParticipantType)
@@ -33,7 +33,7 @@ export default function App() {
           element: <Participants participantType={type} />,
         },
         {
-          path: `/chantiers/:projectId/${pluralType}/:id`,
+          path: `/chantiers/:projectId/${pluralType}/:participantId`,
           element: <ParticipantProjectDetails participantType={type} />,
         },
       ];

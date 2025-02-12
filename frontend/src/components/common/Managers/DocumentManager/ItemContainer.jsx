@@ -15,11 +15,21 @@ export default function ItemContainer({
   onAdd,
   onSelectItem,
   employeeId,
+  participantId,
+  projectId,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = items
     .filter((item) => {
+      if (participantId && item.participantId !== Number(participantId)) {
+        return false;
+      }
+
+      if (projectId && item.projectId !== Number(projectId)) {
+        return false;
+      }
+
       if (employeeId) return true;
 
       if (item.type === DocumentType.DEVIS) {

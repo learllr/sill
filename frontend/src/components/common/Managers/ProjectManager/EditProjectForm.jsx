@@ -65,8 +65,8 @@ export default function EditProjectForm({
 
       <h2 className="text-lg font-semibold">Marché</h2>
 
-      <label className="block">
-        <span className="text-gray-700">Client</span>
+      <label className="flex flex-col">
+        <span className="text-gray-700 mb-1">Client</span>
         <Combobox
           subjects={project?.clients || []}
           onSelect={(value) =>

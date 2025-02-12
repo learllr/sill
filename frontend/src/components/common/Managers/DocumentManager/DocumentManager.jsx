@@ -17,6 +17,7 @@ export default function DocumentManager({
   documentScope = "main",
   ContactInfoComponent = null,
   participantId = null,
+  projectId = null,
 }) {
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
@@ -92,6 +93,8 @@ export default function DocumentManager({
                 setSelectedDocument(document);
               }}
               employeeId={employeeId}
+              participantId={participantId}
+              projectId={projectId}
             />
           )}
         </div>
@@ -111,6 +114,7 @@ export default function DocumentManager({
               updateMutation={updateMutation}
               employeeId={employeeId}
               participantId={participantId}
+              projectId={projectId}
             />
           </div>
         )}

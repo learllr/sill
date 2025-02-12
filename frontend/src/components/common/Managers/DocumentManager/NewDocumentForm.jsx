@@ -14,6 +14,7 @@ export default function NewDocumentForm({
   addMutation,
   employeeId,
   participantId,
+  projectId,
 }) {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(Months[0]);
@@ -79,6 +80,10 @@ export default function NewDocumentForm({
 
     if (participantId) {
       formData.append("participantId", participantId);
+    }
+
+    if (projectId) {
+      formData.append("projectId", projectId);
     }
 
     if (documentType === DocumentType.FACTURES) {
