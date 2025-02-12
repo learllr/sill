@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDocuments } from "../../../../hooks/useDocuments.jsx";
+import { useParticipants } from "../../../../hooks/useParticipants.jsx";
 import NavigationTabs from "../../Design/Buttons/NavigationTabs.jsx";
 import Loading from "../../Design/Loading.jsx";
 import Section from "../Section.jsx";
@@ -39,11 +40,26 @@ export default function DocumentManager({
     addMutation,
     deleteMutation,
     updateMutation,
-  } = useDocuments(documentType);
+  } = useDocuments();
 
-  const filteredDocuments = participantId
-    ? documents?.filter((doc) => doc.participantId === Number(participantId))
-    : documents;
+  const { participants } = useParticipants();
+
+  const filteredDocuments = documents?.filter((doc) => {
+    if (selectedMainTab === "CEDIG") {
+      const allowedParticipants = participants
+        ?.filter((p) => ["Client", "Fournisseur"].includes(p.type))
+        .map((p) => p.id);
+      if (!allowedParticipants.includes(doc.participantId)) return false;
+    } else {
+      if (participantId && doc.participantId !== Number(participantId))
+        return false;
+      if (documentScope === "sub" && doc.type !== selectedSubTab) return false;
+      if (documentScope === "main" && doc.type !== selectedMainTab)
+        return false;
+    }
+
+    return true;
+  });
 
   return (
     <div className="mb-4">
@@ -95,6 +111,8 @@ export default function DocumentManager({
               employeeId={employeeId}
               participantId={participantId}
               projectId={projectId}
+              participants={participants}
+              isCEDIG={selectedMainTab === "CEDIG"}
             />
           )}
         </div>
@@ -115,6 +133,7 @@ export default function DocumentManager({
               employeeId={employeeId}
               participantId={participantId}
               projectId={projectId}
+              isCEDIG={selectedMainTab === "CEDIG"}
             />
           </div>
         )}

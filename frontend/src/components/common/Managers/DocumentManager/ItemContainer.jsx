@@ -17,41 +17,44 @@ export default function ItemContainer({
   employeeId,
   participantId,
   projectId,
+  participants,
+  isCEDIG,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = items
     .filter((item) => {
-      if (participantId && item.participantId !== Number(participantId)) {
-        return false;
-      }
-
-      if (projectId && item.projectId !== Number(projectId)) {
-        return false;
-      }
-
-      if (employeeId) return true;
-
-      if (item.type === DocumentType.DEVIS) {
-        const status = item.quoteInfos[0]?.status;
-        if (selectedSubTab === "En attente") return status === "En attente";
-        if (selectedSubTab === "Acceptés") return status === "Accepté";
-        if (selectedSubTab === "Rejetés") return status === "Rejeté";
-      } else if (item.type === DocumentType.FACTURES) {
-        const paidOn = item.invoiceInfos[0]?.paidOn;
-
-        if (selectedSubTab === "Payés") {
-          return !!paidOn;
+      if (isCEDIG) {
+        if (selectedSubTab === "Fournisseurs") {
+          return participants?.some(
+            (p) => p.id === item.participantId && p.type === "Fournisseur"
+          );
         }
-
-        if (selectedSubTab === "Non payés") {
-          return !paidOn;
+        if (selectedSubTab === "Clients") {
+          return participants?.some(
+            (p) => p.id === item.participantId && p.type === "Client"
+          );
         }
-      } else if (item.type === DocumentType.PV) {
-        if (selectedSubTab === "Avec réserves")
-          return item.pvType === "Avec réserves";
-        if (selectedSubTab === "Sans réserves")
-          return item.pvType === "Sans réserves";
+      } else {
+        if (participantId && item.participantId !== Number(participantId))
+          return false;
+        if (projectId && item.projectId !== Number(projectId)) return false;
+        if (employeeId) return true;
+        if (item.type === DocumentType.DEVIS) {
+          const status = item.quoteInfos[0]?.status;
+          if (selectedSubTab === "En attente") return status === "En attente";
+          if (selectedSubTab === "Acceptés") return status === "Accepté";
+          if (selectedSubTab === "Rejetés") return status === "Rejeté";
+        } else if (item.type === DocumentType.FACTURES) {
+          const paidOn = item.invoiceInfos[0]?.paidOn;
+          if (selectedSubTab === "Payés") return !!paidOn;
+          if (selectedSubTab === "Non payés") return !paidOn;
+        } else if (item.type === DocumentType.PV) {
+          if (selectedSubTab === "Avec réserves")
+            return item.pvType === "Avec réserves";
+          if (selectedSubTab === "Sans réserves")
+            return item.pvType === "Sans réserves";
+        }
       }
 
       return selectedSubTab === "Tous" || !selectedSubTab;
@@ -63,7 +66,6 @@ export default function ItemContainer({
 
       if (employeeId) {
         const createdAt = item.createdAt ? new Date(item.createdAt) : null;
-
         if (!createdAt) return false;
 
         const formattedDate = `${createdAt
@@ -92,9 +94,11 @@ export default function ItemContainer({
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
-        <IconButton onClick={onAdd} variant="green">
-          <Plus />
-        </IconButton>
+        {!isCEDIG && (
+          <IconButton onClick={onAdd} variant="green">
+            <Plus />
+          </IconButton>
+        )}
       </div>
 
       {setSelectedSubTab && subMenuItems.length > 0 && (

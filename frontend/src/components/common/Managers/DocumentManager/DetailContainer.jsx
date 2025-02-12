@@ -16,6 +16,7 @@ export default function DetailContainer({
   employeeId,
   participantId,
   projectId,
+  isCEDIG,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -29,7 +30,7 @@ export default function DetailContainer({
   return (
     <div className="border p-4 flex flex-col space-y-3 h-[80vh] overflow-auto">
       <div className="flex justify-end space-x-2">
-        {!isNew && !isEditing && (
+        {!isNew && !isEditing && !isCEDIG && (
           <IconButton
             onClick={handleDelete}
             variant="red"
@@ -39,7 +40,7 @@ export default function DetailContainer({
           </IconButton>
         )}
 
-        {!isNew && !isEditing && (
+        {!isNew && !isEditing && !isCEDIG && (
           <IconButton onClick={() => setIsEditing(true)} variant="blue">
             <Pencil />
           </IconButton>

@@ -27,27 +27,6 @@ export const getDocumentById = async (req, res) => {
   }
 };
 
-export const getDocumentsByTypeName = async (req, res) => {
-  try {
-    const { typeName } = req.params;
-    const decodedTypeName = decodeURIComponent(typeName);
-    const documents = await DocumentDAO.getDocumentsByType(decodedTypeName);
-
-    if (!documents.length) {
-      return res
-        .status(200)
-        .json({ message: "Aucun document trouvé", documents: [] });
-    }
-
-    res.status(200).json({ documents });
-  } catch (error) {
-    console.error("Erreur :", error);
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la récupération des documents" });
-  }
-};
-
 export const createDocument = async (req, res) => {
   try {
     let documentData = sanitizeNullValues({ ...req.body });

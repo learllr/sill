@@ -12,7 +12,6 @@ export default class DocumentDAO {
         {
           model: Project,
           as: "project",
-          attributes: ["name"],
         },
         {
           model: InvoiceInfos,
@@ -29,22 +28,6 @@ export default class DocumentDAO {
   static async getDocumentById(id) {
     return await Document.findOne({
       where: { id },
-      include: [
-        {
-          model: InvoiceInfos,
-          as: "invoiceInfos",
-        },
-        {
-          model: QuoteInfos,
-          as: "quoteInfos",
-        },
-      ],
-    });
-  }
-
-  static async getDocumentsByType(typeName) {
-    return await Document.findAll({
-      where: { type: typeName },
       include: [
         {
           model: InvoiceInfos,

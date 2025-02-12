@@ -16,6 +16,7 @@ export default function ProjectManager({
   menuItems,
   projectId,
   ProjectInfoComponent = null,
+  isZied = false,
 }) {
   const navigate = useNavigate();
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
@@ -79,10 +80,11 @@ export default function ProjectManager({
                 setSelectedProject(null);
               }}
               onSelectItem={(project) => {
-                navigate(`/chantiers/${project.id}`);
+                navigate(`/chantiers/${project.id}${isZied ? "/zied" : ""}`);
               }}
               projectId={projectId}
               mainTab={selectedMainTab}
+              isZied={isZied}
             />
           )}
         </div>

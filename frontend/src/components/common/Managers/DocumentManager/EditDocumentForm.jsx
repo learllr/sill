@@ -20,12 +20,7 @@ export default function EditDocumentForm({
   const [selectedMonth, setSelectedMonth] = useState(document.month);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
-  const [selectedParticipant, setSelectedParticipant] = useState(
-    document.participantId || null
-  );
-  const [selectedProject, setSelectedProject] = useState(
-    document.projectId || null
-  );
+
   const [formFields, setFormFields] = useState({
     invoiceNumber: document.invoiceInfos[0]?.invoiceNumber || "",
     lot: document.invoiceInfos[0]?.lot || document.quoteInfos[0]?.lot || "",

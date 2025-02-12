@@ -21,9 +21,6 @@ export const DocumentType = {
   BILANS: "Bilans",
   STATUTS: "Statuts",
 
-  // CEDIG
-  CEDIG: "CEDIG",
-
   // Notes
   NOTES_DE_SERVICE: "Notes de service",
 

@@ -4,14 +4,6 @@ import { useProjects } from "../../../../hooks/useProjects.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
 export default function DocumentDetails({ document, employeeId }) {
-  const { participants } = useParticipants(!!document?.participantId);
-  const { projects } = useProjects(!!document?.projectId);
-
-  const participantName =
-    participants.find((p) => p.id === document?.participantId)?.name || "Aucun";
-  const projectName =
-    projects.find((p) => p.id === document?.projectId)?.name || "Aucun";
-
   const isInvoice = document?.type === "Factures";
   const isQuote = document?.type === "Devis";
   const isPV = document?.type === "PV";
@@ -19,11 +11,20 @@ export default function DocumentDetails({ document, employeeId }) {
   const invoiceInfo = document?.invoiceInfos?.[0] || {};
   const quoteInfo = document?.quoteInfos?.[0] || {};
 
+  const { participants } = useParticipants();
+  const { projects } = useProjects();
+
+  const participant = participants?.find(
+    (p) => p.id === document.participantId
+  );
+  const project = projects?.find((p) => p.id === document.projectId);
+
   return (
     <div className="p-2 space-y-4">
       <h2 className="text-lg text-center font-semibold">Détails du document</h2>
       <DocumentPreview file={document} />
-      <div className="flex flex-col space-y-1">
+
+      <div className="flex flex-col">
         {!employeeId && (
           <>
             <p>
@@ -33,6 +34,20 @@ export default function DocumentDetails({ document, employeeId }) {
               <strong>Mois :</strong> {document?.month || "Non renseigné"}
             </p>
           </>
+        )}
+      </div>
+
+      <div>
+        {document.participantId && participant && (
+          <p>
+            <strong>{participant.type} :</strong>{" "}
+            {participant.name || "Nom non renseigné"}
+          </p>
+        )}
+        {document.projectId && project && (
+          <p>
+            <strong>Chantier :</strong> {project.name || "Nom non renseigné"}
+          </p>
         )}
       </div>
 

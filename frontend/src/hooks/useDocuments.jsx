@@ -1,23 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../axiosConfig.js";
 
-export const useDocuments = (selectedMainTab, selectedSubTab) => {
+export const useDocuments = () => {
   const queryClient = useQueryClient();
 
-  // Récupérer les documents
+  // Récupérer tous les documents
   const {
     data: documents,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["documents", selectedMainTab, selectedSubTab],
+    queryKey: ["documents"],
     queryFn: async () => {
-      const response = await axios.get(
-        `/document/type/${encodeURIComponent(selectedMainTab)}`
-      );
-      return response.data.documents;
+      const response = await axios.get("/document");
+      return response.data;
     },
-    enabled: !!selectedMainTab,
   });
 
   // Ajouter un document
@@ -29,11 +26,7 @@ export const useDocuments = (selectedMainTab, selectedSubTab) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        "documents",
-        selectedMainTab,
-        selectedSubTab,
-      ]);
+      queryClient.invalidateQueries(["documents"]);
     },
   });
 
@@ -43,11 +36,7 @@ export const useDocuments = (selectedMainTab, selectedSubTab) => {
       await axios.delete(`/document/${documentId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        "documents",
-        selectedMainTab,
-        selectedSubTab,
-      ]);
+      queryClient.invalidateQueries(["documents"]);
     },
   });
 
@@ -60,11 +49,7 @@ export const useDocuments = (selectedMainTab, selectedSubTab) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        "documents",
-        selectedMainTab,
-        selectedSubTab,
-      ]);
+      queryClient.invalidateQueries(["documents"]);
     },
   });
 

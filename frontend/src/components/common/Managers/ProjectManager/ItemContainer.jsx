@@ -15,6 +15,7 @@ export default function ItemContainer({
   onSelectItem,
   projectId = null,
   mainTab,
+  isZied,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -59,9 +60,11 @@ export default function ItemContainer({
           onSearchChange={setSearchTerm}
         />
 
-        <IconButton onClick={onAdd} variant={projectId ? "blue" : "green"}>
-          {projectId ? <Pencil /> : <Plus />}
-        </IconButton>
+        {!isZied && (
+          <IconButton onClick={onAdd} variant={projectId ? "blue" : "green"}>
+            {projectId ? <Pencil /> : <Plus />}
+          </IconButton>
+        )}
       </div>
 
       {subMenuItems?.length > 0 && (
