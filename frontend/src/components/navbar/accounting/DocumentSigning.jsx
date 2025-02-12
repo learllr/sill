@@ -130,7 +130,12 @@ const DocumentSigning = () => {
           onCanvasClick={handleCanvasClick}
           previewLogo={
             previewLogo
-              ? { ...previewLogo, updatePosition: updatePreviewPosition }
+              ? {
+                  ...previewLogo,
+                  width: BASE_LOGO_WIDTH * scale,
+                  height: BASE_LOGO_HEIGHT * scale,
+                  updatePosition: updatePreviewPosition,
+                }
               : null
           }
         />

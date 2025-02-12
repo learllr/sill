@@ -60,7 +60,13 @@ export default class DocumentDAO {
 
   static async createDocument(documentData) {
     return await db.sequelize.transaction(async (transaction) => {
-      const document = await Document.create(documentData, { transaction });
+      const document = await Document.create(
+        {
+          ...documentData,
+          pvType: documentData.type === "PV" ? documentData.pvType : null,
+        },
+        { transaction }
+      );
 
       if (
         documentData.type === DocumentType.FACTURES &&
@@ -124,9 +130,13 @@ export default class DocumentDAO {
     }
 
     return await db.sequelize.transaction(async (transaction) => {
-      const updatedDocument = await document.update(updatedData, {
-        transaction,
-      });
+      const updatedDocument = await document.update(
+        {
+          ...updatedData,
+          pvType: updatedData.type === "PV" ? updatedData.pvType : null,
+        },
+        { transaction }
+      );
 
       if (updatedData.type === DocumentType.FACTURES) {
         const existingInvoice = await InvoiceInfos.findOne({

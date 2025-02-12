@@ -47,6 +47,11 @@ export default function ItemContainer({
         if (selectedSubTab === "Non payés") {
           return !paidOn;
         }
+      } else if (item.type === DocumentType.PV) {
+        if (selectedSubTab === "Avec réserves")
+          return item.pvType === "Avec réserves";
+        if (selectedSubTab === "Sans réserves")
+          return item.pvType === "Sans réserves";
       }
 
       return selectedSubTab === "Tous" || !selectedSubTab;
@@ -94,7 +99,11 @@ export default function ItemContainer({
 
       {setSelectedSubTab && subMenuItems.length > 0 && (
         <NavigationSubTabs
-          subMenuItems={subMenuItems}
+          subMenuItems={
+            items.some((item) => item.type === DocumentType.PV)
+              ? ["Tous", "Avec réserves", "Sans réserves"]
+              : subMenuItems
+          }
           selectedSubTab={selectedSubTab}
           setSelectedSubTab={setSelectedSubTab}
         />

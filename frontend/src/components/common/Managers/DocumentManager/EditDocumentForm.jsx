@@ -40,6 +40,7 @@ export default function EditDocumentForm({
     RG: document.invoiceInfos[0]?.RG || false,
     prorata: document.invoiceInfos[0]?.prorata || false,
     finalCompletion: document.invoiceInfos[0]?.finalCompletion || false,
+    pvType: document.pvType || "Avec réserves",
   });
 
   const { participants, isLoadingParticipants } = useParticipants();
@@ -101,6 +102,10 @@ export default function EditDocumentForm({
       formData.append("sentOn", formFields.sentOn);
       formData.append("remarks", formFields.remarks);
       formData.append("status", formFields.status);
+    }
+
+    if (documentType === "PV") {
+      formData.append("pvType", formFields.pvType);
     }
 
     onUpdate(document.id, formData);
@@ -179,84 +184,30 @@ export default function EditDocumentForm({
               className="block w-full mt-1 border rounded-md p-2"
             />
           </label>
-
-          {documentType === DocumentType.FACTURES && (
-            <>
-              <label className="block">
-                <span className="text-gray-700">Payé le</span>
-                <input
-                  type="date"
-                  name="paidOn"
-                  value={formFields.paidOn}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                />
-              </label>
-
-              <label className="block">
-                <span className="text-gray-700">Méthode de paiement</span>
-                <select
-                  name="paymentMethod"
-                  value={formFields.paymentMethod}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                >
-                  <option value="">Sélectionner une méthode</option>
-                  <option value="Virement">Virement</option>
-                  <option value="Chèque">Chèque</option>
-                </select>
-              </label>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="RG"
-                  checked={formFields.RG}
-                  onChange={handleChange}
-                  className="w-4 h-4"
-                />
-                <label className="text-gray-700">RG (5%)</label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="prorata"
-                  checked={formFields.prorata}
-                  onChange={handleChange}
-                  className="w-4 h-4"
-                />
-                <label className="text-gray-700">Prorata (2%)</label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="finalCompletion"
-                  checked={formFields.finalCompletion}
-                  onChange={handleChange}
-                  className="w-4 h-4"
-                />
-                <label className="text-gray-700">
-                  Bonne fin de chantier (5%)
-                </label>
-              </div>
-            </>
-          )}
-
-          <label className="block">
-            <span className="text-gray-700">Remarques</span>
-            <textarea
-              name="remarks"
-              value={formFields.remarks}
-              onChange={handleChange}
-              className="block w-full mt-1 border rounded-md p-2"
-            />
-          </label>
         </>
       )}
 
-      <IconButton onClick={handleSubmit} disabled={isUpdating} variant="blue">
+      {documentType === "PV" && (
+        <label className="block">
+          <span className="text-gray-700">Type de PV</span>
+          <select
+            name="pvType"
+            value={formFields.pvType}
+            onChange={handleChange}
+            className="block w-full mt-1 border rounded-md p-2"
+          >
+            <option value="Avec réserves">Avec réserves</option>
+            <option value="Sans réserves">Sans réserves</option>
+          </select>
+        </label>
+      )}
+
+      <IconButton
+        onClick={handleSubmit}
+        disabled={isUpdating}
+        variant="blue"
+        className="w-full"
+      >
         Modifier
       </IconButton>
     </div>

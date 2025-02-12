@@ -49,7 +49,7 @@ export const DocumentType = {
   ADMINISTRATIFS: "Administratifs",
   PLANS: "Plans",
   BONS_DE_COMMANDE: "Bons de commande",
-  PROCES_VERBAUX: "Procès-verbaux",
+  PV: "PV",
   ORDRES_DE_REGLEMENT: "Ordres de règlement",
   RESERVES: "Réserves",
   MARCHES: "Marchés",

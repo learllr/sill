@@ -14,6 +14,7 @@ export default function DocumentDetails({ document, employeeId }) {
 
   const isInvoice = document?.type === "Factures";
   const isQuote = document?.type === "Devis";
+  const isPV = document?.type === "PV";
 
   const invoiceInfo = document?.invoiceInfos?.[0] || {};
   const quoteInfo = document?.quoteInfos?.[0] || {};
@@ -35,7 +36,6 @@ export default function DocumentDetails({ document, employeeId }) {
         )}
       </div>
 
-      {/* Affichage spécifique pour les factures */}
       {isInvoice && (
         <div className="mt-2">
           <p>
@@ -73,7 +73,6 @@ export default function DocumentDetails({ document, employeeId }) {
         </div>
       )}
 
-      {/* Affichage spécifique pour les devis */}
       {isQuote && (
         <div className="mt-2">
           <p>
@@ -94,6 +93,14 @@ export default function DocumentDetails({ document, employeeId }) {
           </p>
           <p>
             <strong>En attente :</strong> {quoteInfo.status || "En attente"}
+          </p>
+        </div>
+      )}
+
+      {isPV && (
+        <div className="mt-2">
+          <p>
+            <strong>Type de PV :</strong> {document.pvType || "Non renseigné"}
           </p>
         </div>
       )}

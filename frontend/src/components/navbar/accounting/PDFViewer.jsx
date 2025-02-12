@@ -45,7 +45,11 @@ const PDFViewer = ({ pdfDoc, onCanvasClick, previewLogo }) => {
 
   useEffect(() => {
     if (previewLogo) {
-      setLogoPosition(previewLogo);
+      setLogoPosition({
+        ...previewLogo,
+        width: previewLogo.width,
+        height: previewLogo.height,
+      });
     }
   }, [previewLogo]);
 

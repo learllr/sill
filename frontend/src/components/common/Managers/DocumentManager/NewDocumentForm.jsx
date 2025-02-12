@@ -20,8 +20,6 @@ export default function NewDocumentForm({
   const [selectedMonth, setSelectedMonth] = useState(Months[0]);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
-  const [selectedParticipant, setSelectedParticipant] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
   const [formFields, setFormFields] = useState({
     invoiceNumber: "",
     lot: "",
@@ -33,6 +31,7 @@ export default function NewDocumentForm({
     prorata: false,
     finalCompletion: false,
     paymentMethod: "Virement",
+    pvType: "Réserve",
   });
 
   const { participants, isLoadingParticipants } = useParticipants(documentType);
@@ -104,6 +103,10 @@ export default function NewDocumentForm({
       formData.append("sentOn", formFields.sentOn);
       formData.append("remarks", formFields.remarks);
       formData.append("status", formFields.status);
+    }
+
+    if (documentType === "PV") {
+      formData.append("pvType", formFields.pvType);
     }
 
     addMutation.mutate(formData, {
@@ -184,83 +187,22 @@ export default function NewDocumentForm({
               className="block w-full mt-1 border rounded-md p-2"
             />
           </label>
-
-          {documentType === DocumentType.FACTURES && (
-            <>
-              <label className="block">
-                <span className="text-gray-700">Payé le</span>
-                <input
-                  type="date"
-                  name="paidOn"
-                  value={formFields.paidOn}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                />
-              </label>
-
-              <label className="block">
-                <span className="text-gray-700">Méthode de paiement</span>
-                <select
-                  name="paymentMethod"
-                  value={formFields.paymentMethod}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                >
-                  <option value="">Sélectionner une méthode</option>
-                  <option value="Virement">Virement</option>
-                  <option value="Chèque">Chèque</option>
-                </select>
-              </label>
-
-              <label className="block space-y-2">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    name="RG"
-                    checked={formFields.RG}
-                    onChange={handleChange}
-                    className="w-4 h-4"
-                  />
-                  <label className="text-gray-700">RG (5%)</label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    name="prorata"
-                    checked={formFields.prorata}
-                    onChange={handleChange}
-                    className="w-4 h-4"
-                  />
-                  <label className="text-gray-700">Prorata (2%)</label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    name="finalCompletion"
-                    checked={formFields.finalCompletion}
-                    onChange={handleChange}
-                    className="w-4 h-4"
-                  />
-                  <label className="text-gray-700">
-                    Bonne fin de chantier (5%)
-                  </label>
-                </div>
-              </label>
-            </>
-          )}
-
-          <label className="block">
-            <span className="text-gray-700">Remarques</span>
-            <textarea
-              name="remarks"
-              value={formFields.remarks}
-              onChange={handleChange}
-              className="block w-full mt-1 border rounded-md p-2"
-            />
-          </label>
         </>
+      )}
+
+      {documentType === "PV" && (
+        <label className="block">
+          <span className="text-gray-700">Type de PV</span>
+          <select
+            name="pvType"
+            value={formFields.pvType}
+            onChange={handleChange}
+            className="block w-full mt-1 border rounded-md p-2"
+          >
+            <option value="Avec réserves">Avec réserves</option>
+            <option value="Sans réserves">Sans réserves</option>
+          </select>
+        </label>
       )}
 
       <IconButton onClick={handleSubmit} className="w-full" variant="green">

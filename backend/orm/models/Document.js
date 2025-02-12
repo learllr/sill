@@ -67,6 +67,11 @@ export default (sequelize) => {
           notEmpty: true,
         },
       },
+      pvType: {
+        type: DataTypes.ENUM("Avec réserves", "Sans réserves"),
+        allowNull: true,
+        defaultValue: null,
+      },
     },
     {
       sequelize,
