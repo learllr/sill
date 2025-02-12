@@ -2,6 +2,7 @@ import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ParticipantType, getTypeName } from "../../shared/constants/types.js";
 import GlobalBody from "./components/common/GlobalBody.jsx";
+import DocumentSigning from "./components/navbar/accounting/DocumentSigning.jsx";
 import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting.jsx";
 import Bank from "./components/navbar/aministrative-services/Bank.jsx";
 import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
@@ -50,6 +51,7 @@ export default function App() {
     { path: "/banque", element: <Bank /> },
     { path: "/statut-sill", element: <SillStatus /> },
     { path: "/compatibilité-zied", element: <ZiedAccounting /> },
+    { path: "/document-signing", element: <DocumentSigning /> },
     ...participantRoutes,
     { path: "*", element: <h1>URL non trouvée</h1> },
   ];

@@ -47,7 +47,10 @@ const data = {
     },
     {
       title: "Comptabilité",
-      items: [{ title: "Comptabilité ZIED", url: "/compatibilité-zied" }],
+      items: [
+        { title: "Comptabilité ZIED", url: "/compatibilité-zied" },
+        { title: "Signature de document", url: "/document-signing" },
+      ],
     },
   ],
 };
