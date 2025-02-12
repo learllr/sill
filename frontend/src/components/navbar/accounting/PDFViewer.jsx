@@ -1,54 +1,104 @@
-import pdfWorker from "pdfjs-dist/build/pdf.worker?url";
-import { useState } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
+import React, { useEffect, useRef, useState } from "react";
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
+const PDFViewer = ({ pdfDoc, onCanvasClick, previewLogo }) => {
+  const pdfCanvasRef = useRef(null);
+  const overlayCanvasRef = useRef(null);
+  const imgRef = useRef(null);
 
-export default function PDFViewer({ pdfFile }) {
-  const [numPages, setNumPages] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [logoPosition, setLogoPosition] = useState(null);
 
-  if (!pdfFile) return null;
+  useEffect(() => {
+    if (!pdfDoc) return;
+
+    const renderPdf = async () => {
+      const page = await pdfDoc.getPage(1);
+      const viewport = page.getViewport({ scale: 1 });
+      const pdfCanvas = pdfCanvasRef.current;
+      const pdfContext = pdfCanvas.getContext("2d");
+
+      pdfCanvas.width = viewport.width;
+      pdfCanvas.height = viewport.height;
+
+      const renderContext = {
+        canvasContext: pdfContext,
+        viewport: viewport,
+      };
+      await page.render(renderContext);
+
+      const overlayCanvas = overlayCanvasRef.current;
+      overlayCanvas.width = pdfCanvas.width;
+      overlayCanvas.height = pdfCanvas.height;
+    };
+
+    renderPdf();
+  }, [pdfDoc]);
+
+  useEffect(() => {
+    if (previewLogo && previewLogo.src) {
+      const img = new Image();
+      img.src = previewLogo.src;
+      img.onload = () => {
+        imgRef.current = img;
+      };
+    }
+  }, [previewLogo]);
+
+  useEffect(() => {
+    if (previewLogo) {
+      setLogoPosition(previewLogo);
+    }
+  }, [previewLogo]);
+
+  const handleMouseMove = (e) => {
+    if (!previewLogo || !imgRef.current) return;
+
+    const overlayCanvas = overlayCanvasRef.current;
+    const context = overlayCanvas.getContext("2d");
+    const rect = overlayCanvas.getBoundingClientRect();
+
+    const x = e.clientX - rect.left - previewLogo.width / 2;
+    const y = e.clientY - rect.top - previewLogo.height / 2;
+
+    setLogoPosition({
+      ...previewLogo,
+      x,
+      y,
+    });
+
+    context.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    context.globalAlpha = 0.5;
+    context.drawImage(
+      imgRef.current,
+      x,
+      y,
+      previewLogo.width,
+      previewLogo.height
+    );
+    context.globalAlpha = 1.0;
+  };
+
+  const handleClick = (e) => {
+    if (!onCanvasClick) return;
+    onCanvasClick(e);
+  };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      {/* Conteneur avec affichage de 1 seule page */}
-      <div
-        className="border border-gray-300 flex justify-center"
+    <div style={{ position: "relative", display: "inline-block" }}>
+      <canvas ref={pdfCanvasRef} style={{ border: "1px solid black" }} />
+      <canvas
+        ref={overlayCanvasRef}
+        onMouseMove={handleMouseMove}
+        onClick={handleClick}
         style={{
-          overflowY: "auto",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          cursor: "crosshair",
+          pointerEvents: "auto",
         }}
-      >
-        <Document
-          file={pdfFile}
-          onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-        >
-          <Page pageNumber={currentPage} />
-        </Document>
-      </div>
-
-      {/* Contrôles de navigation (invisibles si 1 seule page) */}
-      <div className="flex space-x-4">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-300 disabled:opacity-50"
-        >
-          Précédent
-        </button>
-        <span>
-          Page {currentPage} / {numPages}
-        </span>
-        <button
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, numPages))}
-          disabled={currentPage === numPages}
-          className="px-4 py-2 bg-gray-300 disabled:opacity-50"
-        >
-          Suivant
-        </button>
-      </div>
+      />
     </div>
   );
-}
+};
+
+export default PDFViewer;
