@@ -32,6 +32,7 @@ export default function NewDocumentForm({
     RG: false,
     prorata: false,
     finalCompletion: false,
+    paymentMethod: "Virement",
   });
 
   const { participants, isLoadingParticipants } = useParticipants(documentType);
@@ -94,6 +95,7 @@ export default function NewDocumentForm({
       formData.append("RG", formFields.RG);
       formData.append("prorata", formFields.prorata);
       formData.append("finalCompletion", formFields.finalCompletion);
+      formData.append("paymentMethod", formFields.paymentMethod);
     }
 
     if (documentType === DocumentType.DEVIS) {
@@ -194,6 +196,20 @@ export default function NewDocumentForm({
                   onChange={handleChange}
                   className="block w-full mt-1 border rounded-md p-2"
                 />
+              </label>
+
+              <label className="block">
+                <span className="text-gray-700">Méthode de paiement</span>
+                <select
+                  name="paymentMethod"
+                  value={formFields.paymentMethod}
+                  onChange={handleChange}
+                  className="block w-full mt-1 border rounded-md p-2"
+                >
+                  <option value="">Sélectionner une méthode</option>
+                  <option value="Virement">Virement</option>
+                  <option value="Chèque">Chèque</option>
+                </select>
               </label>
 
               <label className="block space-y-2">

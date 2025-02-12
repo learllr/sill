@@ -67,6 +67,7 @@ export default class DocumentDAO {
         (documentData.invoiceNumber ||
           documentData.lot ||
           documentData.paidOn ||
+          documentData.paymentMethod ||
           documentData.RG ||
           documentData.prorata ||
           documentData.finalCompletion ||
@@ -78,6 +79,7 @@ export default class DocumentDAO {
             invoiceNumber: documentData.invoiceNumber || null,
             lot: documentData.lot || null,
             paidOn: documentData.paidOn || null,
+            paymentMethod: documentData.paymentMethod || null,
             RG: documentData.RG || null,
             prorata: documentData.prorata || null,
             finalCompletion: documentData.finalCompletion || null,
@@ -136,6 +138,7 @@ export default class DocumentDAO {
           !updatedData.invoiceNumber &&
           !updatedData.lot &&
           !updatedData.paidOn &&
+          !updatedData.paymentMethod &&
           !updatedData.remarks;
 
         if (existingInvoice) {
@@ -147,6 +150,7 @@ export default class DocumentDAO {
                 invoiceNumber: updatedData.invoiceNumber,
                 lot: updatedData.lot,
                 paidOn: updatedData.paidOn,
+                paymentMethod: updatedData.paymentMethod,
                 remarks: updatedData.remarks,
               },
               { transaction }
@@ -159,6 +163,7 @@ export default class DocumentDAO {
               invoiceNumber: updatedData.invoiceNumber,
               lot: updatedData.lot,
               paidOn: updatedData.paidOn,
+              paymentMethod: updatedData.paymentMethod,
               remarks: updatedData.remarks,
             },
             { transaction }

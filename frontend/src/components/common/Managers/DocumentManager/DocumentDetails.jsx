@@ -52,6 +52,10 @@ export default function DocumentDetails({ document, employeeId }) {
               : "Non renseignée"}
           </p>
           <p>
+            <strong>Méthode de paiement :</strong>{" "}
+            {invoiceInfo.paymentMethod || "Non renseigné"}
+          </p>
+          <p>
             <strong>RG (5%) :</strong>{" "}
             {invoiceInfo.RG ? "Appliqué" : "Non appliqué"}
           </p>

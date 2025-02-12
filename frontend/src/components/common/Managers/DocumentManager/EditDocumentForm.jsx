@@ -30,6 +30,7 @@ export default function EditDocumentForm({
     invoiceNumber: document.invoiceInfos[0]?.invoiceNumber || "",
     lot: document.invoiceInfos[0]?.lot || document.quoteInfos[0]?.lot || "",
     paidOn: document.invoiceInfos[0]?.paidOn || "",
+    paymentMethod: document.invoiceInfos[0]?.paymentMethod || "",
     remarks:
       document.invoiceInfos[0]?.remarks ||
       document.quoteInfos[0]?.remarks ||
@@ -87,6 +88,7 @@ export default function EditDocumentForm({
       formData.append("invoiceNumber", formFields.invoiceNumber);
       formData.append("lot", formFields.lot);
       formData.append("paidOn", formFields.paidOn);
+      formData.append("paymentMethod", formFields.paymentMethod);
       formData.append("remarks", formFields.remarks);
       formData.append("RG", formFields.RG);
       formData.append("prorata", formFields.prorata);
@@ -191,6 +193,20 @@ export default function EditDocumentForm({
                 />
               </label>
 
+              <label className="block">
+                <span className="text-gray-700">Méthode de paiement</span>
+                <select
+                  name="paymentMethod"
+                  value={formFields.paymentMethod}
+                  onChange={handleChange}
+                  className="block w-full mt-1 border rounded-md p-2"
+                >
+                  <option value="">Sélectionner une méthode</option>
+                  <option value="Virement">Virement</option>
+                  <option value="Chèque">Chèque</option>
+                </select>
+              </label>
+
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -227,6 +243,7 @@ export default function EditDocumentForm({
               </div>
             </>
           )}
+
           <label className="block">
             <span className="text-gray-700">Remarques</span>
             <textarea

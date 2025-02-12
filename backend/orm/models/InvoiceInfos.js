@@ -51,6 +51,12 @@ export default (sequelize) => {
         type: DataTypes.DATEONLY,
         allowNull: true,
       },
+      paymentMethod: {
+        type: DataTypes.ENUM,
+        values: ["Virement", "Chèque"],
+        allowNull: false,
+        defaultValue: "Virement",
+      },
       RG: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
