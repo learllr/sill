@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
+import { formatDate } from "../../../../../../shared/utils/formatUtils.js";
 import { useDocuments } from "../../../../hooks/useDocuments.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import NavigationSubTabs from "../../Design/Buttons/NavigationSubTabs.jsx";
@@ -81,34 +82,20 @@ export default function ItemContainer({
 
       const searchTerms = searchTerm.toLowerCase().split(" ");
 
-      if (employeeId) {
-        const createdAt = item.createdAt ? new Date(item.createdAt) : null;
-        if (!createdAt) return false;
+      const formattedDate = formatDate(employeeId ? item.createdAt : item.date);
+      const quoteNumber =
+        item.quoteInfos?.[0]?.quoteNumber?.toLowerCase() || "";
+      const invoiceNumber =
+        item.invoiceInfos?.[0]?.invoiceNumber?.toLowerCase() || "";
 
-        const formattedDate = `${createdAt
-          .getDate()
-          .toString()
-          .padStart(2, "0")}/${(createdAt.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}/${createdAt.getFullYear()}`;
-
-        return searchTerms.every((term) => formattedDate.includes(term));
-      } else {
-        const documentDate = item.date ? new Date(item.date) : null;
-        const formattedDate = documentDate
-          ? `${documentDate.getFullYear()}-${(documentDate.getMonth() + 1)
-              .toString()
-              .padStart(2, "0")}-${documentDate
-              .getDate()
-              .toString()
-              .padStart(2, "0")}`
-          : "";
-
-        return searchTerms.every((term) => formattedDate.includes(term));
-      }
+      return searchTerms.every(
+        (term) =>
+          formattedDate.includes(term) ||
+          quoteNumber.includes(term) ||
+          invoiceNumber.includes(term)
+      );
     });
 
-  // Regrouper les documents par année
   const groupedByYear = filteredItems.reduce((acc, item) => {
     const documentDate = item.date ? new Date(item.date) : null;
     if (documentDate) {
@@ -118,6 +105,10 @@ export default function ItemContainer({
     }
     return acc;
   }, {});
+
+  const sortedYears = Object.keys(groupedByYear)
+    .map(Number)
+    .sort((a, b) => b - a);
 
   return (
     <div className="border p-4 flex flex-col space-y-3 h-[80vh]">
@@ -146,49 +137,46 @@ export default function ItemContainer({
       )}
 
       <div className="space-y-4 p-2 overflow-auto">
-        {Object.keys(groupedByYear).length > 0 &&
-          Object.entries(groupedByYear).map(([year, docs]) => (
-            <div key={year}>
-              {!employeeId && (
-                <h3 className="text-base font-bold text-gray-700 mb-1">
-                  {year}
-                </h3>
-              )}
-              <div
-                className="grid gap-3"
-                style={{
-                  gridTemplateColumns: `repeat(auto-fit, minmax(${
-                    isSending ? "230px" : "180px"
-                  }, min-content))`,
-                }}
-              >
-                {docs.map((item) => (
-                  <div key={item.id}>
-                    {isSending ? (
-                      <SendingCard
-                        document={item}
-                        onDocumentIdClick={onDocumentIdClick}
-                        onDelete={onDelete}
-                        participants={participants}
-                        documents={documents}
-                      />
-                    ) : (
-                      <DocumentCard
-                        document={item}
-                        onSelectItem={onSelectItem}
-                        employeeId={employeeId}
-                        onToggleSelect={handleToggleSelect}
-                        selectedDocuments={selectedDocuments}
-                        checkboxVisible={checkboxVisible}
-                        isCEDIG={isCEDIG}
-                        participants={participants}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
+        {sortedYears.map((year) => (
+          <div key={year}>
+            {!employeeId && (
+              <h3 className="text-base font-bold text-gray-700 mb-1">{year}</h3>
+            )}
+            <div
+              className="grid gap-3"
+              style={{
+                gridTemplateColumns: `repeat(auto-fit, minmax(${
+                  isSending ? "230px" : "180px"
+                }, min-content))`,
+              }}
+            >
+              {groupedByYear[year].map((item) => (
+                <div key={item.id}>
+                  {isSending ? (
+                    <SendingCard
+                      document={item}
+                      onDocumentIdClick={onDocumentIdClick}
+                      onDelete={onDelete}
+                      participants={participants}
+                      documents={documents}
+                    />
+                  ) : (
+                    <DocumentCard
+                      document={item}
+                      onSelectItem={onSelectItem}
+                      employeeId={employeeId}
+                      onToggleSelect={handleToggleSelect}
+                      selectedDocuments={selectedDocuments}
+                      checkboxVisible={checkboxVisible}
+                      isCEDIG={isCEDIG}
+                      participants={participants}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     </div>
   );

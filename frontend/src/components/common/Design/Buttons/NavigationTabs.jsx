@@ -17,7 +17,7 @@ export default function NavigationTabs({
           <NavigationMenuItem key={item}>
             <NavigationMenuLink
               onClick={() => onTabChange(item)}
-              className={`px-3 py-1 text-sm font-medium cursor-pointer 
+              className={`px-3 py-1 text-sm font-medium cursor-pointer uppercase
                 ${
                   selectedTab === item
                     ? "text-black font-bold"

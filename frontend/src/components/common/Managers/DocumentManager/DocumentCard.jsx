@@ -14,6 +14,9 @@ export default function DocumentCard({
 }) {
   const isChecked = selectedDocuments.includes(document.id);
 
+  const isInvoice = document.type === DocumentType.FACTURES;
+  const isQuote = document.type === DocumentType.DEVIS;
+
   const getBorderColor = () => {
     if (isCEDIG) {
       const participant = participants?.find(
@@ -27,7 +30,7 @@ export default function DocumentCard({
       }
     }
 
-    if (document.type === DocumentType.DEVIS) {
+    if (isQuote) {
       switch (document.quoteInfos[0]?.status) {
         case "En attente":
           return "border-yellow-500";
@@ -40,7 +43,7 @@ export default function DocumentCard({
       }
     }
 
-    if (document.type === DocumentType.FACTURES) {
+    if (isInvoice) {
       const paidOn = document.invoiceInfos[0]?.paidOn;
       return !paidOn ? "border-red-500" : "border-green-500";
     }
@@ -65,9 +68,27 @@ export default function DocumentCard({
 
       {getFileIcon(document.path)}
       <p className="mt-2 text-gray-800">
-        {employeeId
-          ? formatDate(document.updatedAt)
-          : formatDate(document.date)}
+        {employeeId ? (
+          formatDate(document.updatedAt)
+        ) : isInvoice && document.invoiceInfos[0]?.invoiceNumber ? (
+          <>
+            {formatDate(document.date)}
+            <br />
+            <span className="text-gray-400 text-sm">
+              {document.invoiceInfos[0]?.invoiceNumber}
+            </span>
+          </>
+        ) : isQuote && document.quoteInfos[0]?.quoteNumber ? (
+          <>
+            {formatDate(document.date)}
+            <br />
+            <span className="text-gray-400 text-sm">
+              {document.quoteInfos[0]?.quoteNumber}
+            </span>
+          </>
+        ) : (
+          formatDate(document.date)
+        )}
       </p>
     </div>
   );
