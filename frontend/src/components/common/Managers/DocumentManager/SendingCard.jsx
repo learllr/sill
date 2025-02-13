@@ -1,4 +1,5 @@
 import { FileText, Trash2 } from "lucide-react";
+import { formatDate } from "../../../../../../shared/utils/formatUtils";
 
 export default function SendingCard({
   document,
@@ -55,7 +56,7 @@ export default function SendingCard({
         </button>
       </div>
       <p className="mt-2 text-gray-800 font-semibold">
-        {document.year} - {document.month}
+        {formatDate(document.date)}
       </p>
       <p className="text-gray-600">
         {documentIds.length}{" "}
@@ -89,9 +90,7 @@ export default function SendingCard({
                           onDocumentIdClick(docId);
                         }}
                       >
-                        {docDetails
-                          ? `${docDetails.month} - ${docDetails.year}`
-                          : "Inconnu"}
+                        {docDetails ? formatDate(docDetails.date) : "Inconnu"}
                       </span>
                     </p>
                   );

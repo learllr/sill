@@ -72,10 +72,6 @@ export default (sequelize) => {
         allowNull: false,
         defaultValue: false,
       },
-      remarks: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
     },
     {
       sequelize,

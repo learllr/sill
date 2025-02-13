@@ -1,4 +1,7 @@
-import { formatDateTime } from "../../../../../../shared/utils/formatUtils.js";
+import {
+  formatDate,
+  formatDateTime,
+} from "../../../../../../shared/utils/formatUtils.js";
 import { useParticipants } from "../../../../hooks/useParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
@@ -28,10 +31,11 @@ export default function DocumentDetails({ document, employeeId }) {
         {!employeeId && (
           <>
             <p>
-              <strong>Année :</strong> {document?.year || "Non renseigné"}
+              <strong>Nom :</strong> {document?.name || "Non renseigné"}
             </p>
             <p>
-              <strong>Mois :</strong> {document?.month || "Non renseigné"}
+              <strong>Date :</strong>{" "}
+              {formatDate(document?.date) || "Non renseigné"}
             </p>
           </>
         )}
@@ -82,9 +86,6 @@ export default function DocumentDetails({ document, employeeId }) {
             <strong>Bonne fin de chantier (5%) :</strong>{" "}
             {invoiceInfo.finalCompletion ? "Appliqué" : "Non appliqué"}
           </p>
-          <p>
-            <strong>Remarques :</strong> {invoiceInfo.remarks || "Aucune"}
-          </p>
         </div>
       )}
 
@@ -104,9 +105,6 @@ export default function DocumentDetails({ document, employeeId }) {
               : "Non renseignée"}
           </p>
           <p>
-            <strong>Remarques :</strong> {quoteInfo.remarks || "Aucune"}
-          </p>
-          <p>
             <strong>En attente :</strong> {quoteInfo.status || "En attente"}
           </p>
         </div>
@@ -119,6 +117,10 @@ export default function DocumentDetails({ document, employeeId }) {
           </p>
         </div>
       )}
+
+      <p>
+        <strong>Remarques :</strong> {document.remarks || "Aucune"}
+      </p>
 
       <div className="text-gray-600 text-center">
         <p>

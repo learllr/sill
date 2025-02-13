@@ -59,8 +59,7 @@ export default class DocumentDAO {
           documentData.paymentMethod ||
           documentData.RG ||
           documentData.prorata ||
-          documentData.finalCompletion ||
-          documentData.remarks)
+          documentData.finalCompletion)
       ) {
         await InvoiceInfos.create(
           {
@@ -72,7 +71,6 @@ export default class DocumentDAO {
             RG: documentData.RG || null,
             prorata: documentData.prorata || null,
             finalCompletion: documentData.finalCompletion || null,
-            remarks: documentData.remarks || null,
           },
           { transaction }
         );
@@ -83,7 +81,6 @@ export default class DocumentDAO {
         (documentData.quoteNumber ||
           documentData.lot ||
           documentData.sentOn ||
-          documentData.remarks ||
           documentData.status)
       ) {
         await QuoteInfos.create(
@@ -92,7 +89,6 @@ export default class DocumentDAO {
             quoteNumber: documentData.quoteNumber || null,
             lot: documentData.lot || null,
             sentOn: documentData.sentOn || null,
-            remarks: documentData.remarks || null,
             status: documentData.status || "En attente",
           },
           { transaction }
@@ -103,11 +99,10 @@ export default class DocumentDAO {
     });
   }
 
-  static async createSending({ projectId, year, month, documentIds }) {
+  static async createSending({ projectId, date, documentIds }) {
     return await Sending.create({
       projectId,
-      year,
-      month,
+      date,
       documentIds: JSON.stringify(documentIds),
     });
   }
@@ -140,8 +135,7 @@ export default class DocumentDAO {
           !updatedData.invoiceNumber &&
           !updatedData.lot &&
           !updatedData.paidOn &&
-          !updatedData.paymentMethod &&
-          !updatedData.remarks;
+          !updatedData.paymentMethod;
 
         if (existingInvoice) {
           if (isInvoiceEmpty) {
@@ -153,7 +147,6 @@ export default class DocumentDAO {
                 lot: updatedData.lot,
                 paidOn: updatedData.paidOn,
                 paymentMethod: updatedData.paymentMethod,
-                remarks: updatedData.remarks,
               },
               { transaction }
             );
@@ -166,7 +159,6 @@ export default class DocumentDAO {
               lot: updatedData.lot,
               paidOn: updatedData.paidOn,
               paymentMethod: updatedData.paymentMethod,
-              remarks: updatedData.remarks,
             },
             { transaction }
           );
@@ -183,7 +175,6 @@ export default class DocumentDAO {
           !updatedData.quoteNumber &&
           !updatedData.lot &&
           !updatedData.sentOn &&
-          !updatedData.remarks &&
           !updatedData.status;
 
         if (existingQuote) {
@@ -195,7 +186,6 @@ export default class DocumentDAO {
                 quoteNumber: updatedData.quoteNumber,
                 lot: updatedData.lot,
                 sentOn: updatedData.sentOn,
-                remarks: updatedData.remarks,
                 status: updatedData.status,
               },
               { transaction }
@@ -208,7 +198,6 @@ export default class DocumentDAO {
               quoteNumber: updatedData.quoteNumber,
               lot: updatedData.lot,
               sentOn: updatedData.sentOn,
-              remarks: updatedData.remarks,
               status: updatedData.status,
             },
             { transaction }

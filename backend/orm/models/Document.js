@@ -1,6 +1,5 @@
 "use strict";
 import { DataTypes, Model } from "sequelize";
-import { Months } from "../../../shared/constants/general.js";
 import { DocumentType } from "../../../shared/constants/types.js";
 
 export default (sequelize) => {
@@ -13,6 +12,10 @@ export default (sequelize) => {
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       type: {
         type: DataTypes.ENUM(...Object.values(DocumentType)),
@@ -48,17 +51,12 @@ export default (sequelize) => {
         onDelete: "SET NULL",
         defaultValue: null,
       },
-      year: {
-        type: DataTypes.INTEGER,
+      date: {
+        type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-          isInt: true,
-          min: 2000,
+          isDate: true,
         },
-      },
-      month: {
-        type: DataTypes.ENUM(...Object.values(Months)),
-        allowNull: false,
       },
       path: {
         type: DataTypes.STRING,
@@ -71,6 +69,10 @@ export default (sequelize) => {
         type: DataTypes.ENUM("Avec réserves", "Sans réserves"),
         allowNull: true,
         defaultValue: null,
+      },
+      remarks: {
+        type: DataTypes.TEXT,
+        allowNull: true,
       },
     },
     {

@@ -47,17 +47,7 @@ export const getQuotesByProjectAndParticipant = async (req, res) => {
 
 export const createQuote = async (req, res) => {
   try {
-    const { title, typeId, projectId, status, quoteNumber, sentOn, remarks } =
-      req.body;
-    const quote = await QuoteDAO.createQuote({
-      title,
-      typeId,
-      projectId,
-      status,
-      quoteNumber,
-      sentOn,
-      remarks,
-    });
+    const quote = await QuoteDAO.createQuote(req.body);
     res.status(201).json({ message: "Devis créé avec succès", quote });
   } catch (error) {
     res.status(500).json({ error: "Erreur lors de la création du devis" });

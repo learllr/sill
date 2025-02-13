@@ -56,10 +56,6 @@ export default (sequelize) => {
         type: DataTypes.DATEONLY,
         allowNull: true,
       },
-      remarks: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
     },
     {
       sequelize,

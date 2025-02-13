@@ -21,13 +21,12 @@ export default (sequelize) => {
         },
         onDelete: "CASCADE",
       },
-      year: {
-        type: DataTypes.INTEGER,
+      date: {
+        type: DataTypes.DATEONLY,
         allowNull: false,
-      },
-      month: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        validate: {
+          isDate: true,
+        },
       },
       documentIds: {
         type: DataTypes.JSON,

@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { Months } from "../../../../../../shared/constants/general.js";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
-import { useParticipants } from "../../../../hooks/useParticipants.jsx";
-import { useProjects } from "../../../../hooks/useProjects.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
@@ -16,20 +13,17 @@ export default function EditDocumentForm({
   isUpdating,
   employeeId,
 }) {
-  const [selectedYear, setSelectedYear] = useState(document.year);
-  const [selectedMonth, setSelectedMonth] = useState(document.month);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
 
   const [formFields, setFormFields] = useState({
+    name: document.name || "",
+    date: document.date || "",
     invoiceNumber: document.invoiceInfos[0]?.invoiceNumber || "",
     lot: document.invoiceInfos[0]?.lot || document.quoteInfos[0]?.lot || "",
     paidOn: document.invoiceInfos[0]?.paidOn || "",
     paymentMethod: document.invoiceInfos[0]?.paymentMethod || "",
-    remarks:
-      document.invoiceInfos[0]?.remarks ||
-      document.quoteInfos[0]?.remarks ||
-      "",
+    remarks: document.remarks || "",
     sentOn: document.quoteInfos[0]?.sentOn || "",
     status: document.quoteInfos[0]?.status || "En attente",
     RG: document.invoiceInfos[0]?.RG || false,
@@ -37,9 +31,6 @@ export default function EditDocumentForm({
     finalCompletion: document.invoiceInfos[0]?.finalCompletion || false,
     pvType: document.pvType || "Avec réserves",
   });
-
-  const { participants, isLoadingParticipants } = useParticipants();
-  const { projects, isLoadingProjects } = useProjects();
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -69,11 +60,11 @@ export default function EditDocumentForm({
   const handleSubmit = () => {
     const formData = new FormData();
 
+    formData.append("name", formFields.name);
     formData.append("type", documentType);
 
     if (!employeeId) {
-      formData.append("year", selectedYear);
-      formData.append("month", selectedMonth);
+      formData.append("date", formFields.date);
     }
 
     if (file) {
@@ -85,7 +76,6 @@ export default function EditDocumentForm({
       formData.append("lot", formFields.lot);
       formData.append("paidOn", formFields.paidOn);
       formData.append("paymentMethod", formFields.paymentMethod);
-      formData.append("remarks", formFields.remarks);
       formData.append("RG", formFields.RG);
       formData.append("prorata", formFields.prorata);
       formData.append("finalCompletion", formFields.finalCompletion);
@@ -95,13 +85,14 @@ export default function EditDocumentForm({
       formData.append("quoteNumber", formFields.invoiceNumber);
       formData.append("lot", formFields.lot);
       formData.append("sentOn", formFields.sentOn);
-      formData.append("remarks", formFields.remarks);
       formData.append("status", formFields.status);
     }
 
     if (documentType === "PV") {
       formData.append("pvType", formFields.pvType);
     }
+
+    formData.append("remarks", formFields.remarks);
 
     onUpdate(document.id, formData);
   };
@@ -128,29 +119,25 @@ export default function EditDocumentForm({
       {!employeeId && (
         <>
           <label className="block">
-            <span className="text-gray-700">Année</span>
+            <span className="text-gray-700">Nom</span>
             <input
-              type="number"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
-              min="2000"
+              type="text"
+              name="name"
+              value={formFields.name}
+              onChange={handleChange}
               className="block w-full mt-1 border rounded-md p-2"
             />
           </label>
 
           <label className="block">
-            <span className="text-gray-700">Mois</span>
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
+            <span className="text-gray-700">Date</span>
+            <input
+              type="date"
+              name="date"
+              value={formFields.date}
+              onChange={handleChange}
               className="block w-full mt-1 border rounded-md p-2"
-            >
-              {Months.map((month) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
+            />
           </label>
         </>
       )}
@@ -272,16 +259,6 @@ export default function EditDocumentForm({
               </label>
             </>
           )}
-
-          <label className="block">
-            <span className="text-gray-700">Remarques</span>
-            <textarea
-              name="remarks"
-              value={formFields.remarks}
-              onChange={handleChange}
-              className="block w-full mt-1 border rounded-md p-2"
-            />
-          </label>
         </>
       )}
 
@@ -299,6 +276,16 @@ export default function EditDocumentForm({
           </select>
         </label>
       )}
+
+      <label className="block">
+        <span className="text-gray-700">Remarques</span>
+        <textarea
+          name="remarks"
+          value={formFields.remarks}
+          onChange={handleChange}
+          className="block w-full mt-1 border rounded-md p-2"
+        />
+      </label>
 
       <IconButton
         onClick={handleSubmit}

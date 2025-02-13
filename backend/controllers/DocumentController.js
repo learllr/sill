@@ -34,20 +34,9 @@ export const createDocument = async (req, res) => {
     if (documentData.documentIds) {
       const documentIds = JSON.parse(documentData.documentIds);
 
-      if (!Array.isArray(documentIds) || documentIds.length === 0) {
-        return res.status(400).json({ error: "Liste des documents invalide." });
-      }
-
-      if (!documentData.year || !documentData.month) {
-        return res
-          .status(400)
-          .json({ error: "Année et mois requis pour un envoi." });
-      }
-
       const sending = await DocumentDAO.createSending({
         projectId: documentData.projectId,
-        year: documentData.year,
-        month: documentData.month,
+        date: documentData.date,
         documentIds,
       });
 

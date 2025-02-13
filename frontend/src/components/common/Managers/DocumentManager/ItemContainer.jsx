@@ -1,7 +1,6 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
-import { sortAndGroupDocuments } from "../../../../../../shared/utils/organizeDocuments.js";
 import { useDocuments } from "../../../../hooks/useDocuments.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import NavigationSubTabs from "../../Design/Buttons/NavigationSubTabs.jsx";
@@ -95,15 +94,30 @@ export default function ItemContainer({
 
         return searchTerms.every((term) => formattedDate.includes(term));
       } else {
-        const year = item.year ? item.year.toString() : "";
-        const month = item.month ? item.month.toLowerCase() : "";
-        return searchTerms.every(
-          (term) => year.includes(term) || month.includes(term)
-        );
+        const documentDate = item.date ? new Date(item.date) : null;
+        const formattedDate = documentDate
+          ? `${documentDate.getFullYear()}-${(documentDate.getMonth() + 1)
+              .toString()
+              .padStart(2, "0")}-${documentDate
+              .getDate()
+              .toString()
+              .padStart(2, "0")}`
+          : "";
+
+        return searchTerms.every((term) => formattedDate.includes(term));
       }
     });
 
-  const groupedByYear = sortAndGroupDocuments(filteredItems);
+  // Regrouper les documents par année
+  const groupedByYear = filteredItems.reduce((acc, item) => {
+    const documentDate = item.date ? new Date(item.date) : null;
+    if (documentDate) {
+      const year = documentDate.getFullYear();
+      if (!acc[year]) acc[year] = [];
+      acc[year].push(item);
+    }
+    return acc;
+  }, {});
 
   return (
     <div className="border p-4 flex flex-col space-y-3 h-[80vh]">

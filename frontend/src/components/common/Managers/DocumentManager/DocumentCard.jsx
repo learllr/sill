@@ -67,7 +67,7 @@ export default function DocumentCard({
       <p className="mt-2 text-gray-800">
         {employeeId
           ? formatDate(document.updatedAt)
-          : `${document.year} - ${document.month}`}
+          : formatDate(document.date)}
       </p>
     </div>
   );

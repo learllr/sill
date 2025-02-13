@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Months } from "../../../../../../shared/constants/general.js";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
@@ -16,11 +15,11 @@ export default function NewDocumentForm({
   isCEDIG,
   selectedDocuments,
 }) {
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(Months[0]);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [formFields, setFormFields] = useState({
+    name: "",
+    date: "",
     invoiceNumber: "",
     lot: "",
     paidOn: "",
@@ -65,13 +64,19 @@ export default function NewDocumentForm({
       return;
     }
 
+    if (!formFields.date) {
+      setError("La date est obligatoire.");
+      return;
+    }
+
     const formData = new FormData();
 
     if (!isCEDIG) {
       formData.append("file", file);
     }
-    formData.append("year", selectedYear);
-    formData.append("month", selectedMonth);
+
+    formData.append("name", formFields.name);
+    formData.append("date", formFields.date);
     formData.append("type", documentType);
 
     if (isCEDIG) {
@@ -94,7 +99,6 @@ export default function NewDocumentForm({
       formData.append("invoiceNumber", formFields.invoiceNumber);
       formData.append("lot", formFields.lot);
       formData.append("paidOn", formFields.paidOn);
-      formData.append("remarks", formFields.remarks);
       formData.append("RG", formFields.RG);
       formData.append("prorata", formFields.prorata);
       formData.append("finalCompletion", formFields.finalCompletion);
@@ -105,13 +109,14 @@ export default function NewDocumentForm({
       formData.append("quoteNumber", formFields.invoiceNumber);
       formData.append("lot", formFields.lot);
       formData.append("sentOn", formFields.sentOn);
-      formData.append("remarks", formFields.remarks);
       formData.append("status", formFields.status);
     }
 
     if (documentType === "PV") {
       formData.append("pvType", formFields.pvType);
     }
+
+    formData.append("remarks", formFields.remarks);
 
     addMutation.mutate(formData, {
       onSuccess: onSave,
@@ -146,35 +151,29 @@ export default function NewDocumentForm({
         </p>
       )}
 
-      {!employeeId && (
-        <>
-          <label className="block">
-            <span className="text-gray-700">Année</span>
-            <input
-              type="number"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
-              min="2000"
-              className="block w-full mt-1 border rounded-md p-2"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-gray-700">Mois</span>
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="block w-full mt-1 border rounded-md p-2"
-            >
-              {Months.map((month) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
-          </label>
-        </>
-      )}
+      <label className="block">
+        <span className="text-gray-700">Nom</span>
+        <input
+          type="text"
+          name="name"
+          value={formFields.name}
+          onChange={handleChange}
+          className="block w-full mt-1 border rounded-md p-2"
+        />
+      </label>
+      <label className="block">
+        <span className="text-gray-700">
+          Date <span className="text-red-500">*</span>
+        </span>
+        <input
+          type="date"
+          name="date"
+          value={formFields.date}
+          onChange={handleChange}
+          className="block w-full mt-1 border rounded-md p-2"
+          required
+        />
+      </label>
 
       {(documentType === DocumentType.FACTURES ||
         documentType === DocumentType.DEVIS) && (
@@ -224,7 +223,6 @@ export default function NewDocumentForm({
                 >
                   <option value="Virement">Virement</option>
                   <option value="Chèque">Chèque</option>
-                  <option value="Espèces">Espèces</option>
                 </select>
               </label>
 
@@ -293,16 +291,6 @@ export default function NewDocumentForm({
               </label>
             </>
           )}
-
-          <label className="block">
-            <span className="text-gray-700">Remarques</span>
-            <textarea
-              name="remarks"
-              value={formFields.remarks}
-              onChange={handleChange}
-              className="block w-full mt-1 border rounded-md p-2"
-            />
-          </label>
         </>
       )}
 
@@ -320,6 +308,16 @@ export default function NewDocumentForm({
           </select>
         </label>
       )}
+
+      <label className="block">
+        <span className="text-gray-700">Remarques</span>
+        <textarea
+          name="remarks"
+          value={formFields.remarks}
+          onChange={handleChange}
+          className="block w-full mt-1 border rounded-md p-2"
+        />
+      </label>
 
       <IconButton onClick={handleSubmit} className="w-full" variant="green">
         Ajouter
