@@ -47,13 +47,17 @@ export default function DocumentManager({
   } = useDocuments(selectedMainTab);
 
   const { participants } = useParticipants();
+  const isSending = selectedMainTab === "Les envois";
+  const isCEDIG = selectedMainTab === "CEDIG";
 
   const filteredDocuments = documents?.filter((doc) => {
-    if (selectedMainTab === "CEDIG") {
+    if (isCEDIG) {
       const allowedParticipants = participants
         ?.filter((p) => ["Client", "Fournisseur"].includes(p.type))
         .map((p) => p.id);
       if (!allowedParticipants.includes(doc.participantId)) return false;
+
+      if (doc.projectId !== Number(projectId)) return false;
     } else {
       if (participantId && doc.participantId !== Number(participantId))
         return false;
@@ -64,9 +68,6 @@ export default function DocumentManager({
     return true;
   });
 
-  const isSending = selectedMainTab === "Les envois";
-  const isCEDIG = selectedMainTab === "CEDIG";
-
   const handleSelectItem = (document) => {
     setIsDetailVisible(true);
     setIsAddingNew(false);
@@ -74,7 +75,6 @@ export default function DocumentManager({
   };
 
   const handleDocumentIdClick = (docId) => {
-    setSelectedMainTab("CEDIG");
     const selectedDoc = documents.find((doc) => doc.id === docId);
     if (selectedDoc) handleSelectItem(selectedDoc);
   };

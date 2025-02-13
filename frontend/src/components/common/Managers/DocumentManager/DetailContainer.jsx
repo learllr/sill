@@ -32,7 +32,7 @@ export default function DetailContainer({
   return (
     <div className="border p-4 flex flex-col space-y-3 h-[80vh] overflow-auto">
       <div className="flex justify-end space-x-2">
-        {!isNew && !isEditing && !isCEDIG && (
+        {!isNew && !isEditing && !isCEDIG && !isSending && (
           <IconButton
             onClick={handleDelete}
             variant="red"
@@ -42,7 +42,7 @@ export default function DetailContainer({
           </IconButton>
         )}
 
-        {!isNew && !isEditing && !isCEDIG && (
+        {!isNew && !isEditing && !isCEDIG && !isSending && (
           <IconButton onClick={() => setIsEditing(true)} variant="blue">
             <Pencil />
           </IconButton>

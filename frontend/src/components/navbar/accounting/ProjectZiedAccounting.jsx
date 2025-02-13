@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { ziedMenuItems } from "../../../../../shared/constants/menuItems.js";
 import DocumentManager from "../../common/Managers/DocumentManager/DocumentManager.jsx";
 
 export default function ZiedAccounting() {
+  const { id } = useParams();
+
   const [selectedMainTab, setSelectedMainTab] = useState(
     ziedMenuItems[0].label
   );
@@ -18,6 +21,7 @@ export default function ZiedAccounting() {
       selectedSubTab={selectedSubTab}
       setSelectedSubTab={setSelectedSubTab}
       menuItems={ziedMenuItems}
+      projectId={id}
     />
   );
 }

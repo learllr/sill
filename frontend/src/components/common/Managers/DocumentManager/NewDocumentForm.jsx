@@ -76,6 +76,7 @@ export default function NewDocumentForm({
 
     if (isCEDIG) {
       formData.append("documentIds", JSON.stringify(selectedDocuments));
+      formData.append("projectId", projectId);
     }
 
     if (employeeId) {

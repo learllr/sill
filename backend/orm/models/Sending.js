@@ -12,6 +12,15 @@ export default (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
+      projectId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Projects",
+          key: "id",
+        },
+        onDelete: "CASCADE",
+      },
       year: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -32,6 +41,14 @@ export default (sequelize) => {
       timestamps: true,
     }
   );
+
+  Sending.associate = (models) => {
+    Sending.belongsTo(models.Project, {
+      foreignKey: "projectId",
+      as: "project",
+      onDelete: "CASCADE",
+    });
+  };
 
   return Sending;
 };

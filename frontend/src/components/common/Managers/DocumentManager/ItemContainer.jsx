@@ -53,9 +53,6 @@ export default function ItemContainer({
           );
         }
       } else {
-        if (participantId && item.participantId !== Number(participantId))
-          return false;
-        if (projectId && item.projectId !== Number(projectId)) return false;
         if (employeeId) return true;
         if (item.type === DocumentType.DEVIS) {
           const status = item.quoteInfos[0]?.status;
@@ -73,6 +70,9 @@ export default function ItemContainer({
             return item.pvType === "Sans réserves";
         }
       }
+      if (participantId && item.participantId !== Number(participantId))
+        return false;
+      if (projectId && item.projectId !== Number(projectId)) return false;
 
       return selectedSubTab === "Tous" || !selectedSubTab;
     })
@@ -111,7 +111,7 @@ export default function ItemContainer({
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
-        {!isSending && (
+        {!isSending && !isCEDIG && (
           <IconButton onClick={onAdd} variant="green">
             <Plus />
           </IconButton>
@@ -167,6 +167,7 @@ export default function ItemContainer({
                         onToggleSelect={handleToggleSelect}
                         selectedDocuments={selectedDocuments}
                         checkboxVisible={checkboxVisible}
+                        isSending={isSending}
                       />
                     )}
                   </>

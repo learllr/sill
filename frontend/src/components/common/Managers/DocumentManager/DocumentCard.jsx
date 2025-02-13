@@ -9,6 +9,7 @@ export default function DocumentCard({
   onToggleSelect,
   selectedDocuments,
   checkboxVisible,
+  isSending,
 }) {
   const isChecked = selectedDocuments.includes(document.id);
 
@@ -39,7 +40,7 @@ export default function DocumentCard({
       className={`relative border ${getBorderColor()} p-3 rounded-lg text-center w-[180px] flex-shrink-0 hover:bg-gray-50 transition-colors duration-200 ease-in-out cursor-pointer`}
       onClick={() => onSelectItem(document)}
     >
-      {checkboxVisible && (
+      {checkboxVisible && isSending && (
         <input
           type="checkbox"
           className="absolute top-2 right-2 w-5 h-5 cursor-pointer"
