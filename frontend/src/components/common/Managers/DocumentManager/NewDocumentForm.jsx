@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
+import { useParticipants } from "../../../../hooks/useParticipants.jsx";
+import { useProjects } from "../../../../hooks/useProjects.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
@@ -19,7 +21,7 @@ export default function NewDocumentForm({
   const [error, setError] = useState("");
   const [formFields, setFormFields] = useState({
     name: "",
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     invoiceNumber: "",
     lot: "",
     paidOn: "",
@@ -32,6 +34,9 @@ export default function NewDocumentForm({
     paymentMethod: "Virement",
     pvType: "Avec réserves",
   });
+
+  const { projects } = useProjects();
+  const { participants } = useParticipants();
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -71,13 +76,11 @@ export default function NewDocumentForm({
 
     const formData = new FormData();
 
-    if (!isCEDIG) {
-      formData.append("file", file);
-    }
+    formData.append("file", file);
 
     formData.append("name", formFields.name);
     formData.append("date", formFields.date);
-    formData.append("type", documentType);
+    formData.append("type", isCEDIG ? DocumentType.FACTURES : documentType);
 
     if (isCEDIG) {
       formData.append("documentIds", JSON.stringify(selectedDocuments));
@@ -93,6 +96,11 @@ export default function NewDocumentForm({
 
     if (projectId) {
       formData.append("projectId", projectId);
+    }
+
+    if (isCEDIG) {
+      formData.append("projectId", formFields.projectId);
+      formData.append("participantId", formFields.participantId);
     }
 
     if (documentType === DocumentType.FACTURES) {
@@ -127,29 +135,22 @@ export default function NewDocumentForm({
   return (
     <div className="p-2 space-y-3">
       <h1 className="text-lg font-semibold text-center mb-5">
-        {!isCEDIG ? "Ajouter un nouveau document" : "Ajouter un nouvel envoi"}
+        Ajouter un nouveau document
       </h1>
 
-      {!isCEDIG && (
-        <>
-          <DocumentPreview file={file} />
-          <label className="block">
-            <input
-              type="file"
-              accept="image/*,.pdf,.doc,.docx"
-              onChange={handleFileChange}
-              className="block w-full mt-1 border rounded-md p-2"
-            />
-          </label>
-        </>
-      )}
+      <>
+        <DocumentPreview file={file} />
+        <label className="block">
+          <input
+            type="file"
+            accept="image/*,.pdf,.doc,.docx"
+            onChange={handleFileChange}
+            className="block w-full mt-1 border rounded-md p-2"
+          />
+        </label>
+      </>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
-      {isCEDIG && (
-        <p className="text-center">
-          Coche les documents à insérer dans l'envoi{" "}
-        </p>
-      )}
 
       <label className="block">
         <span className="text-gray-700">Nom</span>
@@ -175,8 +176,49 @@ export default function NewDocumentForm({
         />
       </label>
 
+      {isCEDIG && (
+        <>
+          <label className="block">
+            <span className="text-gray-700">Chantier</span>
+            <select
+              name="projectId"
+              value={formFields.projectId}
+              onChange={handleChange}
+              className="block w-full mt-1 border rounded-md p-2"
+            >
+              <option value="">Sélectionner un chantier</option>
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="block">
+            <span className="text-gray-700">Intervenant</span>
+            <select
+              name="participantId"
+              value={formFields.participantId}
+              onChange={handleChange}
+              className="block w-full mt-1 border rounded-md p-2"
+            >
+              <option value="">Sélectionner un intervenant</option>
+              {participants
+                .filter((p) => ["Client", "Fournisseur"].includes(p.type))
+                .map((participant) => (
+                  <option key={participant.id} value={participant.id}>
+                    {participant.name}
+                  </option>
+                ))}
+            </select>
+          </label>
+        </>
+      )}
+
       {(documentType === DocumentType.FACTURES ||
-        documentType === DocumentType.DEVIS) && (
+        documentType === DocumentType.DEVIS ||
+        isCEDIG) && (
         <>
           <label className="block">
             <span className="text-gray-700">Numéro</span>
@@ -200,68 +242,69 @@ export default function NewDocumentForm({
             />
           </label>
 
-          {documentType === DocumentType.FACTURES && (
-            <>
-              <label className="block">
-                <span className="text-gray-700">Date de paiement</span>
-                <input
-                  type="date"
-                  name="paidOn"
-                  value={formFields.paidOn}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                />
-              </label>
+          {documentType === DocumentType.FACTURES ||
+            (isCEDIG && (
+              <>
+                <label className="block">
+                  <span className="text-gray-700">Date de paiement</span>
+                  <input
+                    type="date"
+                    name="paidOn"
+                    value={formFields.paidOn}
+                    onChange={handleChange}
+                    className="block w-full mt-1 border rounded-md p-2"
+                  />
+                </label>
 
-              <label className="block">
-                <span className="text-gray-700">Méthode de paiement</span>
-                <select
-                  name="paymentMethod"
-                  value={formFields.paymentMethod}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                >
-                  <option value="Virement">Virement</option>
-                  <option value="Chèque">Chèque</option>
-                </select>
-              </label>
+                <label className="block">
+                  <span className="text-gray-700">Méthode de paiement</span>
+                  <select
+                    name="paymentMethod"
+                    value={formFields.paymentMethod}
+                    onChange={handleChange}
+                    className="block w-full mt-1 border rounded-md p-2"
+                  >
+                    <option value="Virement">Virement</option>
+                    <option value="Chèque">Chèque</option>
+                  </select>
+                </label>
 
-              <label className="block">
-                <input
-                  type="checkbox"
-                  name="RG"
-                  checked={formFields.RG}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                <span className="text-gray-700">RG (5%)</span>
-              </label>
+                <label className="block">
+                  <input
+                    type="checkbox"
+                    name="RG"
+                    checked={formFields.RG}
+                    onChange={handleChange}
+                    className="mr-2"
+                  />
+                  <span className="text-gray-700">RG (5%)</span>
+                </label>
 
-              <label className="block">
-                <input
-                  type="checkbox"
-                  name="prorata"
-                  checked={formFields.prorata}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                <span className="text-gray-700">Prorata (2%)</span>
-              </label>
+                <label className="block">
+                  <input
+                    type="checkbox"
+                    name="prorata"
+                    checked={formFields.prorata}
+                    onChange={handleChange}
+                    className="mr-2"
+                  />
+                  <span className="text-gray-700">Prorata (2%)</span>
+                </label>
 
-              <label className="block">
-                <input
-                  type="checkbox"
-                  name="finalCompletion"
-                  checked={formFields.finalCompletion}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                <span className="text-gray-700">
-                  Bonne fin de chantier (5%)
-                </span>
-              </label>
-            </>
-          )}
+                <label className="block">
+                  <input
+                    type="checkbox"
+                    name="finalCompletion"
+                    checked={formFields.finalCompletion}
+                    onChange={handleChange}
+                    className="mr-2"
+                  />
+                  <span className="text-gray-700">
+                    Bonne fin de chantier (5%)
+                  </span>
+                </label>
+              </>
+            ))}
 
           {documentType === DocumentType.DEVIS && (
             <>

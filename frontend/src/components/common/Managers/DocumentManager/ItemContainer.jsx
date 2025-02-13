@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, Send } from "lucide-react";
 import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { formatDate } from "../../../../../../shared/utils/formatUtils.js";
@@ -28,6 +28,7 @@ export default function ItemContainer({
   onDocumentIdClick,
   onDelete,
   inParticipantSection,
+  onAddSending,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { documents } = useDocuments();
@@ -120,6 +121,11 @@ export default function ItemContainer({
         {!isSending && !inParticipantSection && (
           <IconButton onClick={onAdd} variant="green">
             <Plus />
+          </IconButton>
+        )}
+        {isCEDIG && (
+          <IconButton onClick={onAddSending} variant="blue">
+            <Send />
           </IconButton>
         )}
       </div>

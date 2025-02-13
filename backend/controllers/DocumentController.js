@@ -31,21 +31,6 @@ export const createDocument = async (req, res) => {
   try {
     let documentData = sanitizeNullValues({ ...req.body });
 
-    if (documentData.documentIds) {
-      const documentIds = JSON.parse(documentData.documentIds);
-
-      const sending = await DocumentDAO.createSending({
-        projectId: documentData.projectId,
-        date: documentData.date,
-        documentIds,
-      });
-
-      return res.status(201).json({
-        message: "Envoi créé avec succès",
-        sending,
-      });
-    }
-
     if (req.file) {
       documentData.path = req.file.filename;
     }

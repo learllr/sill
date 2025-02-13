@@ -28,6 +28,7 @@ export default function DocumentManager({
   const [selectedDocuments, setSelectedDocuments] = useState([]);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
+  const [isAddingSending, setIsAddingSending] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [error, setError] = useState("");
 
@@ -53,12 +54,11 @@ export default function DocumentManager({
 
   const filteredDocuments = documents?.filter((doc) => {
     if (isCEDIG) {
-      const allowedParticipants = participants
-        ?.filter((p) => ["Client", "Fournisseur"].includes(p.type))
-        .map((p) => p.id);
-      if (!allowedParticipants.includes(doc.participantId)) return false;
-
-      if (doc.projectId !== Number(projectId)) return false;
+      // const allowedParticipants = participants
+      //   ?.filter((p) => ["Client", "Fournisseur"].includes(p.type))
+      //   .map((p) => p.id);
+      // if (!allowedParticipants.includes(doc.participantId)) return false;
+      if (doc.type !== "Factures") return false;
     } else {
       if (participantId && doc.participantId !== Number(participantId))
         return false;
@@ -120,6 +120,13 @@ export default function DocumentManager({
               onAdd={() => {
                 setIsDetailVisible(true);
                 setIsAddingNew(true);
+                setIsAddingSending(false);
+                setSelectedDocument(null);
+              }}
+              onAddSending={() => {
+                setIsDetailVisible(true);
+                setIsAddingNew(true);
+                setIsAddingSending(true);
                 setSelectedDocument(null);
                 setCheckboxVisible(true);
               }}
@@ -162,6 +169,7 @@ export default function DocumentManager({
               selectedDocuments={selectedDocuments}
               isSending={isSending}
               inParticipantSection={inParticipantSection}
+              isAddingSending={isAddingSending}
             />
           </div>
         )}

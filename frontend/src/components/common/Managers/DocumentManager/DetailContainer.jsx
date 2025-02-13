@@ -4,6 +4,7 @@ import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentDetails from "./DocumentDetails.jsx";
 import EditDocumentForm from "./EditDocumentForm.jsx";
 import NewDocumentForm from "./NewDocumentForm.jsx";
+import NewSendingForm from "./NewSendingForm.jsx";
 
 export default function DetailContainer({
   onClose,
@@ -20,6 +21,7 @@ export default function DetailContainer({
   selectedDocuments,
   isSending,
   inParticipantSection,
+  isAddingSending,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -64,17 +66,26 @@ export default function DetailContainer({
 
       <div className="w-72 mx-auto">
         {isNew ? (
-          <NewDocumentForm
-            onSave={onClose}
-            documentType={documentType}
-            addMutation={addMutation}
-            employeeId={employeeId}
-            participantId={participantId}
-            projectId={projectId}
-            isCEDIG={isCEDIG}
-            selectedDocuments={selectedDocuments}
-            isSending={isSending}
-          />
+          isAddingSending ? (
+            <NewSendingForm
+              onSave={onClose}
+              addMutation={addMutation}
+              selectedDocuments={selectedDocuments}
+              isCEDIG={isCEDIG}
+            />
+          ) : (
+            <NewDocumentForm
+              onSave={onClose}
+              documentType={documentType}
+              addMutation={addMutation}
+              employeeId={employeeId}
+              participantId={participantId}
+              projectId={projectId}
+              isCEDIG={isCEDIG}
+              selectedDocuments={selectedDocuments}
+              isSending={isSending}
+            />
+          )
         ) : isEditing ? (
           <EditDocumentForm
             document={document}

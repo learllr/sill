@@ -1,17 +1,23 @@
 import { useState } from "react";
-import { projectMenuItems } from "../../../../../shared/constants/menuItems";
-import ProjectManager from "../../common/Managers/ProjectManager/ProjectManager";
+import { ziedMenuItems } from "../../../../../shared/constants/menuItems.js";
+import DocumentManager from "../../common/Managers/DocumentManager/DocumentManager.jsx";
 
-export default function Projects() {
-  const [selectedSubTab, setSelectedSubTab] = useState("En cours");
+export default function ZiedAccounting() {
+  const [selectedMainTab, setSelectedMainTab] = useState(
+    ziedMenuItems[0].label
+  );
+  const [selectedSubTab, setSelectedSubTab] = useState(
+    ziedMenuItems[0].subMenu?.[0] || ""
+  );
 
   return (
-    <ProjectManager
-      title="Comptabilité ZIED des chantiers"
-      menuItems={projectMenuItems}
+    <DocumentManager
+      title="Comptabilité ZIED"
+      selectedMainTab={selectedMainTab}
+      setSelectedMainTab={setSelectedMainTab}
       selectedSubTab={selectedSubTab}
       setSelectedSubTab={setSelectedSubTab}
-      isZied={true}
+      menuItems={ziedMenuItems}
     />
   );
 }

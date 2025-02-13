@@ -12,14 +12,9 @@ export default (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      projectId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Projects",
-          key: "id",
-        },
-        onDelete: "CASCADE",
+      name: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       date: {
         type: DataTypes.DATEONLY,
@@ -31,6 +26,10 @@ export default (sequelize) => {
       documentIds: {
         type: DataTypes.JSON,
         allowNull: false,
+      },
+      remarks: {
+        type: DataTypes.TEXT,
+        allowNull: true,
       },
     },
     {
