@@ -57,6 +57,9 @@ export const precisionClientMenuItems = [
     label: "Devis",
     subMenu: ["Tous", "En attente", "Acceptés", "Rejetés"],
   },
+  {
+    label: "Marchés",
+  },
 ];
 
 export const precisionSupplierMenuItems = [
@@ -101,12 +104,6 @@ export const precisionArchitectMenuItems = [
   },
   {
     label: "Ordres de règlement",
-  },
-  {
-    label: "Réserves",
-  },
-  {
-    label: "Marchés",
   },
   {
     label: "DOE",

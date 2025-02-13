@@ -31,7 +31,7 @@ export default function NewDocumentForm({
     prorata: false,
     finalCompletion: false,
     paymentMethod: "Virement",
-    pvType: "Réserve",
+    pvType: "Avec réserves",
   });
 
   const handleFileChange = (event) => {

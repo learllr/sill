@@ -82,7 +82,7 @@ export default function NewProjectForm({ onSave, addMutation }) {
       ))}
 
       <IconButton onClick={handleSubmit} variant="green" className="w-full">
-        Modifier
+        Ajouter
       </IconButton>
     </div>
   );
