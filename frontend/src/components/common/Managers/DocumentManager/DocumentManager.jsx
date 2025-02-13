@@ -161,6 +161,7 @@ export default function DocumentManager({
               isCEDIG={isCEDIG}
               selectedDocuments={selectedDocuments}
               isSending={isSending}
+              inParticipantSection={inParticipantSection}
             />
           </div>
         )}

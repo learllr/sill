@@ -200,6 +200,109 @@ export default function NewDocumentForm({
               className="block w-full mt-1 border rounded-md p-2"
             />
           </label>
+
+          {documentType === DocumentType.FACTURES && (
+            <>
+              <label className="block">
+                <span className="text-gray-700">Date de paiement</span>
+                <input
+                  type="date"
+                  name="paidOn"
+                  value={formFields.paidOn}
+                  onChange={handleChange}
+                  className="block w-full mt-1 border rounded-md p-2"
+                />
+              </label>
+
+              <label className="block">
+                <span className="text-gray-700">Méthode de paiement</span>
+                <select
+                  name="paymentMethod"
+                  value={formFields.paymentMethod}
+                  onChange={handleChange}
+                  className="block w-full mt-1 border rounded-md p-2"
+                >
+                  <option value="Virement">Virement</option>
+                  <option value="Chèque">Chèque</option>
+                  <option value="Espèces">Espèces</option>
+                </select>
+              </label>
+
+              <label className="block">
+                <input
+                  type="checkbox"
+                  name="RG"
+                  checked={formFields.RG}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="text-gray-700">RG (5%)</span>
+              </label>
+
+              <label className="block">
+                <input
+                  type="checkbox"
+                  name="prorata"
+                  checked={formFields.prorata}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="text-gray-700">Prorata (2%)</span>
+              </label>
+
+              <label className="block">
+                <input
+                  type="checkbox"
+                  name="finalCompletion"
+                  checked={formFields.finalCompletion}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="text-gray-700">
+                  Bonne fin de chantier (5%)
+                </span>
+              </label>
+            </>
+          )}
+
+          {documentType === DocumentType.DEVIS && (
+            <>
+              <label className="block">
+                <span className="text-gray-700">Date d'envoi</span>
+                <input
+                  type="date"
+                  name="sentOn"
+                  value={formFields.sentOn}
+                  onChange={handleChange}
+                  className="block w-full mt-1 border rounded-md p-2"
+                />
+              </label>
+
+              <label className="block">
+                <span className="text-gray-700">Statut</span>
+                <select
+                  name="status"
+                  value={formFields.status}
+                  onChange={handleChange}
+                  className="block w-full mt-1 border rounded-md p-2"
+                >
+                  <option value="En attente">En attente</option>
+                  <option value="Accepté">Accepté</option>
+                  <option value="Rejeté">Rejeté</option>
+                </select>
+              </label>
+            </>
+          )}
+
+          <label className="block">
+            <span className="text-gray-700">Remarques</span>
+            <textarea
+              name="remarks"
+              value={formFields.remarks}
+              onChange={handleChange}
+              className="block w-full mt-1 border rounded-md p-2"
+            />
+          </label>
         </>
       )}
 

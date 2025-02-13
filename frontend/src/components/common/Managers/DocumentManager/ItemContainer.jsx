@@ -149,10 +149,9 @@ export default function ItemContainer({
                 }}
               >
                 {docs.map((item) => (
-                  <>
+                  <div key={item.id}>
                     {isSending ? (
                       <SendingCard
-                        key={item.id}
                         document={item}
                         onDocumentIdClick={onDocumentIdClick}
                         onDelete={onDelete}
@@ -161,7 +160,6 @@ export default function ItemContainer({
                       />
                     ) : (
                       <DocumentCard
-                        key={item.id}
                         document={item}
                         onSelectItem={onSelectItem}
                         employeeId={employeeId}
@@ -172,7 +170,7 @@ export default function ItemContainer({
                         participants={participants}
                       />
                     )}
-                  </>
+                  </div>
                 ))}
               </div>
             </div>
