@@ -41,16 +41,11 @@ const DocumentSigning = () => {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const logoWidth = BASE_LOGO_WIDTH * scale;
-    const logoHeight = BASE_LOGO_HEIGHT * scale;
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
     setPreviewLogo({
-      x,
-      y,
-      width: logoWidth,
-      height: logoHeight,
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+      width: BASE_LOGO_WIDTH * scale,
+      height: BASE_LOGO_HEIGHT * scale,
       src: LOGO_PATH,
     });
   };
@@ -60,90 +55,107 @@ const DocumentSigning = () => {
 
     const canvas = event.target;
     const rect = canvas.getBoundingClientRect();
-    const logoWidth = BASE_LOGO_WIDTH * scale;
-    const logoHeight = BASE_LOGO_HEIGHT * scale;
-    const x = event.clientX - rect.left - logoWidth / 2;
-    const y = rect.height - (event.clientY - rect.top) - logoHeight / 2;
+    const x = event.clientX - rect.left - (BASE_LOGO_WIDTH * scale) / 2;
+    const y =
+      rect.height - (event.clientY - rect.top) - (BASE_LOGO_HEIGHT * scale) / 2;
 
     const modifiedPdfBytes = await modifyPdf(
       file,
       x,
       y,
       rect.width,
-      rect.height,
-      logoWidth,
-      logoHeight
+      rect.height
     );
+    if (!modifiedPdfBytes) return;
+
     setModifiedPdfBytes(modifiedPdfBytes);
-    setPreviewLogo(null);
-    loadPdf(file, modifiedPdfBytes);
+
+    const pdfBlob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+    loadPdfFromUrl(URL.createObjectURL(pdfBlob));
   };
 
-  const modifyPdf = async (
-    file,
-    x,
-    y,
-    canvasWidth,
-    canvasHeight,
-    logoWidth,
-    logoHeight
-  ) => {
-    const pdfBytes = await file.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-    const firstPage = pdfDoc.getPages()[0];
-    const { width, height } = firstPage.getSize();
+  const modifyPdf = async (file, x, y, canvasWidth, canvasHeight) => {
+    try {
+      const pdfBytes = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(pdfBytes);
+      const firstPage = pdfDoc.getPages()[0];
+      if (!firstPage) return null;
 
-    const pdfX = (x / canvasWidth) * width;
-    const pdfY = (y / canvasHeight) * height;
+      const { width, height } = firstPage.getSize();
+      const pdfX = (x / canvasWidth) * width;
+      const pdfY = (y / canvasHeight) * height;
 
-    const logoImageBytes = await fetch(LOGO_PATH).then((res) =>
-      res.arrayBuffer()
-    );
-    const logoImage = await pdfDoc.embedJpg(logoImageBytes);
+      const response = await fetch(LOGO_PATH);
+      if (!response.ok) return null;
 
-    firstPage.drawImage(logoImage, {
-      x: pdfX,
-      y: pdfY,
-      width: logoWidth,
-      height: logoHeight,
-    });
+      const logoImage = await pdfDoc.embedJpg(await response.arrayBuffer());
+      firstPage.drawImage(logoImage, {
+        x: pdfX,
+        y: pdfY,
+        width: BASE_LOGO_WIDTH * scale,
+        height: BASE_LOGO_HEIGHT * scale,
+      });
 
-    return await pdfDoc.save();
+      return await pdfDoc.save();
+    } catch {
+      return null;
+    }
+  };
+
+  const loadPdfFromUrl = async (pdfUrl) => {
+    const loadingTask = pdfjsLib.getDocument(pdfUrl);
+    setPdfDoc(await loadingTask.promise);
   };
 
   const handleDownload = () => {
-    if (!modifiedPdfBytes) return;
-    const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
-    saveAs(blob, "signed.pdf");
+    if (!modifiedPdfBytes || !file) return;
+
+    const fileName = file.name.replace(/\.pdf$/, "") + "_signé.pdf";
+    saveAs(new Blob([modifiedPdfBytes], { type: "application/pdf" }), fileName);
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h2>Signer un PDF</h2>
-      <input type="file" accept="application/pdf" onChange={handleFileChange} />
+    <div className="flex flex-col items-center justify-center min-h-screen p-6">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+        ✍️ Signer un PDF
+      </h2>
+
+      <label className="cursor-pointer flex flex-col items-center bg-white border-2 border-dashed border-gray-300 rounded-lg p-5 w-80 hover:border-blue-500 transition">
+        <span className="text-gray-600 font-medium">
+          Sélectionner un fichier PDF
+        </span>
+        <input
+          type="file"
+          accept="application/pdf"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </label>
 
       <ToolBar scale={scale} setScale={setScale} />
 
       {pdfDoc && (
-        <PDFViewer
-          pdfDoc={pdfDoc}
-          onCanvasClick={handleCanvasClick}
-          previewLogo={
-            previewLogo
-              ? {
-                  ...previewLogo,
-                  width: BASE_LOGO_WIDTH * scale,
-                  height: BASE_LOGO_HEIGHT * scale,
-                  updatePosition: updatePreviewPosition,
-                }
-              : null
-          }
-        />
-      )}
-
-      <p>Cliquez sur le PDF pour ajouter le logo</p>
-      {modifiedPdfBytes && (
-        <button onClick={handleDownload}>Télécharger le PDF signé</button>
+        <div className="flex flex-col items-center space-y-6 w-full mt-6">
+          <PDFViewer
+            pdfDoc={pdfDoc}
+            scale={scale}
+            onCanvasClick={handleCanvasClick}
+            previewLogo={
+              previewLogo && {
+                ...previewLogo,
+                updatePosition: updatePreviewPosition,
+              }
+            }
+          />
+          {modifiedPdfBytes && (
+            <button
+              onClick={handleDownload}
+              className="mt-4 px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition transform hover:scale-105"
+            >
+              📄 Télécharger le PDF signé
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

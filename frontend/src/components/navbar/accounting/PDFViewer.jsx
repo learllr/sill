@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const PDFViewer = ({ pdfDoc, onCanvasClick, previewLogo }) => {
+const PDFViewer = ({ pdfDoc, onCanvasClick, previewLogo, scale }) => {
   const pdfCanvasRef = useRef(null);
   const overlayCanvasRef = useRef(null);
   const imgRef = useRef(null);
@@ -47,11 +47,11 @@ const PDFViewer = ({ pdfDoc, onCanvasClick, previewLogo }) => {
     if (previewLogo) {
       setLogoPosition({
         ...previewLogo,
-        width: previewLogo.width,
-        height: previewLogo.height,
+        width: previewLogo.width * scale, // Appliquer l'échelle
+        height: previewLogo.height * scale, // Appliquer l'échelle
       });
     }
-  }, [previewLogo]);
+  }, [previewLogo, scale]); // Ajout de `scale` dans les dépendances
 
   const handleMouseMove = (e) => {
     if (!previewLogo || !imgRef.current) return;
@@ -60,8 +60,8 @@ const PDFViewer = ({ pdfDoc, onCanvasClick, previewLogo }) => {
     const context = overlayCanvas.getContext("2d");
     const rect = overlayCanvas.getBoundingClientRect();
 
-    const x = e.clientX - rect.left - previewLogo.width / 2;
-    const y = e.clientY - rect.top - previewLogo.height / 2;
+    const x = e.clientX - rect.left - (previewLogo.width * scale) / 2;
+    const y = e.clientY - rect.top - (previewLogo.height * scale) / 2;
 
     setLogoPosition({
       ...previewLogo,
@@ -75,8 +75,8 @@ const PDFViewer = ({ pdfDoc, onCanvasClick, previewLogo }) => {
       imgRef.current,
       x,
       y,
-      previewLogo.width,
-      previewLogo.height
+      previewLogo.width * scale, // Appliquer l'échelle ici
+      previewLogo.height * scale // Appliquer l'échelle ici
     );
     context.globalAlpha = 1.0;
   };
@@ -87,19 +87,16 @@ const PDFViewer = ({ pdfDoc, onCanvasClick, previewLogo }) => {
   };
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
-      <canvas ref={pdfCanvasRef} style={{ border: "1px solid black" }} />
+    <div className="relative flex flex-col items-center">
+      <canvas
+        ref={pdfCanvasRef}
+        className="border border-gray-300 shadow-md rounded-md"
+      />
       <canvas
         ref={overlayCanvasRef}
         onMouseMove={handleMouseMove}
         onClick={handleClick}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          cursor: "crosshair",
-          pointerEvents: "auto",
-        }}
+        className="absolute top-0 left-0 cursor-crosshair"
       />
     </div>
   );
