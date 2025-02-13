@@ -31,6 +31,31 @@ export const createDocument = async (req, res) => {
   try {
     let documentData = sanitizeNullValues({ ...req.body });
 
+    if (documentData.documentIds) {
+      const documentIds = JSON.parse(documentData.documentIds);
+
+      if (!Array.isArray(documentIds) || documentIds.length === 0) {
+        return res.status(400).json({ error: "Liste des documents invalide." });
+      }
+
+      if (!documentData.year || !documentData.month) {
+        return res
+          .status(400)
+          .json({ error: "Année et mois requis pour un envoi." });
+      }
+
+      const sending = await DocumentDAO.createSending({
+        year: documentData.year,
+        month: documentData.month,
+        documentIds,
+      });
+
+      return res.status(201).json({
+        message: "Envoi créé avec succès",
+        sending,
+      });
+    }
+
     if (req.file) {
       documentData.path = req.file.filename;
     }
@@ -93,5 +118,29 @@ export const deleteDocument = async (req, res) => {
     res
       .status(500)
       .json({ error: "Erreur lors de la suppression du document" });
+  }
+};
+
+export const getAllSendings = async (req, res) => {
+  try {
+    const sendings = await DocumentDAO.getAllSendings();
+    res.status(200).json(sendings);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des envois :", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des envois" });
+  }
+};
+
+export const deleteSending = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await DocumentDAO.deleteSending(id);
+    res.status(200).json({ message: "Envoi supprimé avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'envoi :", error);
+    res.status(500).json({ error: "Erreur lors de la suppression de l'envoi" });
   }
 };

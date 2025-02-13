@@ -2,10 +2,12 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { sortAndGroupDocuments } from "../../../../../../shared/utils/organizeDocuments.js";
+import { useDocuments } from "../../../../hooks/useDocuments.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import NavigationSubTabs from "../../Design/Buttons/NavigationSubTabs.jsx";
 import ScrollBarSearch from "../ScrollBarSearch.jsx";
 import DocumentCard from "./DocumentCard.jsx";
+import SendingCard from "./SendingCard.jsx";
 
 export default function ItemContainer({
   items,
@@ -19,8 +21,23 @@ export default function ItemContainer({
   projectId,
   participants,
   isCEDIG,
+  selectedDocuments,
+  setSelectedDocuments,
+  checkboxVisible,
+  isSending,
+  onDocumentIdClick,
+  onDelete,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const { documents } = useDocuments();
+
+  const handleToggleSelect = (documentId) => {
+    setSelectedDocuments((prevSelected) =>
+      prevSelected.includes(documentId)
+        ? prevSelected.filter((id) => id !== documentId)
+        : [...prevSelected, documentId]
+    );
+  };
 
   const filteredItems = items
     .filter((item) => {
@@ -94,7 +111,7 @@ export default function ItemContainer({
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
-        {!isCEDIG && (
+        {!isSending && (
           <IconButton onClick={onAdd} variant="green">
             <Plus />
           </IconButton>
@@ -125,17 +142,34 @@ export default function ItemContainer({
               <div
                 className="grid gap-3"
                 style={{
-                  gridTemplateColumns:
-                    "repeat(auto-fit, minmax(180px, max-content))",
+                  gridTemplateColumns: `repeat(auto-fit, minmax(${
+                    isSending ? "230px" : "180px"
+                  }, max-content))`,
                 }}
               >
                 {docs.map((item) => (
-                  <DocumentCard
-                    key={item.id}
-                    document={item}
-                    onSelectItem={onSelectItem}
-                    employeeId={employeeId}
-                  />
+                  <>
+                    {isSending ? (
+                      <SendingCard
+                        key={item.id}
+                        document={item}
+                        onDocumentIdClick={onDocumentIdClick}
+                        onDelete={onDelete}
+                        participants={participants}
+                        documents={documents}
+                      />
+                    ) : (
+                      <DocumentCard
+                        key={item.id}
+                        document={item}
+                        onSelectItem={onSelectItem}
+                        employeeId={employeeId}
+                        onToggleSelect={handleToggleSelect}
+                        selectedDocuments={selectedDocuments}
+                        checkboxVisible={checkboxVisible}
+                      />
+                    )}
+                  </>
                 ))}
               </div>
             </div>

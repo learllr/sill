@@ -3,7 +3,7 @@ import path from "path";
 import { DocumentType } from "../../shared/constants/types.js";
 import db from "../orm/models/index.js";
 
-const { Document, Project, InvoiceInfos, QuoteInfos } = db;
+const { Document, Project, InvoiceInfos, QuoteInfos, Sending } = db;
 
 export default class DocumentDAO {
   static async getAllDocuments() {
@@ -100,6 +100,14 @@ export default class DocumentDAO {
       }
 
       return document;
+    });
+  }
+
+  static async createSending({ year, month, documentIds }) {
+    return await Sending.create({
+      year,
+      month,
+      documentIds: JSON.stringify(documentIds),
     });
   }
 
@@ -221,6 +229,18 @@ export default class DocumentDAO {
 
     return await Document.destroy({
       where: { id: document.id },
+    });
+  }
+
+  static async getAllSendings() {
+    return await Sending.findAll({
+      order: [["createdAt", "DESC"]],
+    });
+  }
+
+  static async deleteSending(sendingId) {
+    return await Sending.destroy({
+      where: { id: sendingId },
     });
   }
 }

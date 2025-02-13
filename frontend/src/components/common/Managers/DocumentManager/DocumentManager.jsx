@@ -23,6 +23,8 @@ export default function DocumentManager({
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
 
+  const [checkboxVisible, setCheckboxVisible] = useState(false);
+  const [selectedDocuments, setSelectedDocuments] = useState([]);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -35,12 +37,14 @@ export default function DocumentManager({
 
   const {
     documents,
+    sendings,
     isLoading,
     isError,
-    addMutation,
-    deleteMutation,
-    updateMutation,
-  } = useDocuments();
+    addDocument,
+    deleteDocument,
+    updateDocument,
+    deleteSending,
+  } = useDocuments(selectedMainTab);
 
   const { participants } = useParticipants();
 
@@ -57,9 +61,23 @@ export default function DocumentManager({
       if (documentScope === "main" && doc.type !== selectedMainTab)
         return false;
     }
-
     return true;
   });
+
+  const isSending = selectedMainTab === "Les envois";
+  const isCEDIG = selectedMainTab === "CEDIG";
+
+  const handleSelectItem = (document) => {
+    setIsDetailVisible(true);
+    setIsAddingNew(false);
+    setSelectedDocument(document);
+  };
+
+  const handleDocumentIdClick = (docId) => {
+    setSelectedMainTab("CEDIG");
+    const selectedDoc = documents.find((doc) => doc.id === docId);
+    if (selectedDoc) handleSelectItem(selectedDoc);
+  };
 
   return (
     <div className="mb-4">
@@ -94,7 +112,7 @@ export default function DocumentManager({
           {isError && <p>Erreur lors du chargement des documents.</p>}
           {!isLoading && !isError && (
             <ItemContainer
-              items={filteredDocuments || []}
+              items={isSending && sendings ? sendings : filteredDocuments}
               subMenuItems={currentSubMenu}
               selectedSubTab={selectedSubTab}
               setSelectedSubTab={setSelectedSubTab}
@@ -102,17 +120,20 @@ export default function DocumentManager({
                 setIsDetailVisible(true);
                 setIsAddingNew(true);
                 setSelectedDocument(null);
+                setCheckboxVisible(true);
               }}
-              onSelectItem={(document) => {
-                setIsDetailVisible(true);
-                setIsAddingNew(false);
-                setSelectedDocument(document);
-              }}
+              onSelectItem={handleSelectItem}
               employeeId={employeeId}
               participantId={participantId}
               projectId={projectId}
               participants={participants}
-              isCEDIG={selectedMainTab === "CEDIG"}
+              isCEDIG={isCEDIG}
+              selectedDocuments={selectedDocuments}
+              setSelectedDocuments={setSelectedDocuments}
+              checkboxVisible={checkboxVisible}
+              isSending={isSending}
+              onDocumentIdClick={handleDocumentIdClick}
+              onDelete={deleteSending.mutate}
             />
           )}
         </div>
@@ -123,17 +144,21 @@ export default function DocumentManager({
               onClose={() => {
                 setIsDetailVisible(false);
                 setSelectedDocument(null);
+                setCheckboxVisible(false);
+                setSelectedDocuments([]);
               }}
               isNew={isAddingNew}
               documentType={documentType}
               document={selectedDocument}
-              addMutation={addMutation}
-              deleteMutation={deleteMutation}
-              updateMutation={updateMutation}
+              addMutation={addDocument}
+              deleteMutation={deleteDocument}
+              updateMutation={updateDocument}
               employeeId={employeeId}
               participantId={participantId}
               projectId={projectId}
-              isCEDIG={selectedMainTab === "CEDIG"}
+              isCEDIG={isCEDIG}
+              selectedDocuments={selectedDocuments}
+              isSending={isSending}
             />
           </div>
         )}

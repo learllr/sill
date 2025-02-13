@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Months } from "../../../../../../shared/constants/general.js";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
-import { useParticipants } from "../../../../hooks/useParticipants.jsx";
-import { useProjects } from "../../../../hooks/useProjects.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
@@ -15,6 +13,8 @@ export default function NewDocumentForm({
   employeeId,
   participantId,
   projectId,
+  isCEDIG,
+  selectedDocuments,
 }) {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(Months[0]);
@@ -33,9 +33,6 @@ export default function NewDocumentForm({
     paymentMethod: "Virement",
     pvType: "Réserve",
   });
-
-  const { participants, isLoadingParticipants } = useParticipants(documentType);
-  const { projects, isLoadingProjects } = useProjects(documentType);
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -63,16 +60,23 @@ export default function NewDocumentForm({
   };
 
   const handleSubmit = () => {
-    if (!file) {
+    if (!isCEDIG && !file) {
       setError("Veuillez sélectionner un fichier.");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+
+    if (!isCEDIG) {
+      formData.append("file", file);
+    }
     formData.append("year", selectedYear);
     formData.append("month", selectedMonth);
     formData.append("type", documentType);
+
+    if (isCEDIG) {
+      formData.append("documentIds", JSON.stringify(selectedDocuments));
+    }
 
     if (employeeId) {
       formData.append("employeeId", employeeId);
@@ -118,18 +122,22 @@ export default function NewDocumentForm({
   return (
     <div className="p-2 space-y-3">
       <h1 className="text-lg font-semibold text-center mb-5">
-        Ajouter un nouveau document
+        {!isCEDIG ? "Ajouter un nouveau document" : "Ajouter un nouvel envoi"}
       </h1>
 
-      <DocumentPreview file={file} />
-      <label className="block">
-        <input
-          type="file"
-          accept="image/*,.pdf,.doc,.docx"
-          onChange={handleFileChange}
-          className="block w-full mt-1 border rounded-md p-2"
-        />
-      </label>
+      {!isCEDIG && (
+        <>
+          <DocumentPreview file={file} />
+          <label className="block">
+            <input
+              type="file"
+              accept="image/*,.pdf,.doc,.docx"
+              onChange={handleFileChange}
+              className="block w-full mt-1 border rounded-md p-2"
+            />
+          </label>
+        </>
+      )}
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 

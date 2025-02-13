@@ -17,6 +17,8 @@ export default function DetailContainer({
   participantId,
   projectId,
   isCEDIG,
+  selectedDocuments,
+  isSending,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -60,6 +62,9 @@ export default function DetailContainer({
             employeeId={employeeId}
             participantId={participantId}
             projectId={projectId}
+            isCEDIG={isCEDIG}
+            selectedDocuments={selectedDocuments}
+            isSending={isSending}
           />
         ) : isEditing ? (
           <EditDocumentForm

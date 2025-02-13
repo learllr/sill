@@ -1,14 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../axiosConfig.js";
 
-export const useDocuments = () => {
+export const useDocuments = (selectedMainTab) => {
   const queryClient = useQueryClient();
 
-  // Récupérer tous les documents
   const {
     data: documents,
-    isLoading,
-    isError,
+    isLoading: isLoading,
+    isError: isError,
   } = useQuery({
     queryKey: ["documents"],
     queryFn: async () => {
@@ -17,8 +16,20 @@ export const useDocuments = () => {
     },
   });
 
-  // Ajouter un document
-  const addMutation = useMutation({
+  const {
+    data: sendings,
+    isLoading: isLoadingSendings,
+    isError: isErrorSendings,
+  } = useQuery({
+    queryKey: ["sendings"],
+    queryFn: async () => {
+      const response = await axios.get("/document/sendings");
+      return response.data;
+    },
+    enabled: selectedMainTab === "Les envois",
+  });
+
+  const addDocument = useMutation({
     mutationFn: async (formData) => {
       const response = await axios.post("/document", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -30,8 +41,7 @@ export const useDocuments = () => {
     },
   });
 
-  // Supprimer un document
-  const deleteMutation = useMutation({
+  const deleteDocument = useMutation({
     mutationFn: async (documentId) => {
       await axios.delete(`/document/${documentId}`);
     },
@@ -40,8 +50,7 @@ export const useDocuments = () => {
     },
   });
 
-  // Modifier un document
-  const updateMutation = useMutation({
+  const updateDocument = useMutation({
     mutationFn: async ({ documentId, formData }) => {
       const response = await axios.put(`/document/${documentId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -53,12 +62,25 @@ export const useDocuments = () => {
     },
   });
 
+  const deleteSending = useMutation({
+    mutationFn: async (sendingId) => {
+      await axios.delete(`/document/sendings/${sendingId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sendings"]);
+    },
+  });
+
   return {
     documents,
     isLoading,
     isError,
-    addMutation,
-    deleteMutation,
-    updateMutation,
+    sendings,
+    isLoadingSendings,
+    isErrorSendings,
+    addDocument,
+    deleteDocument,
+    updateDocument,
+    deleteSending,
   };
 };
