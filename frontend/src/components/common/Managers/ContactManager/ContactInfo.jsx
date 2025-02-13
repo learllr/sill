@@ -7,6 +7,15 @@ import { useContacts } from "../../../../hooks/useContacts.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import Loading from "../../Design/Loading.jsx";
 import EditContactForm from "./EditContactForm.jsx";
+import {
+  formatPhoneNumber,
+  formatUrl,
+  formatDate,
+  isDate,
+  formatPostalCode,
+  formatSocialSecurityNumber,
+  formatSalary,
+} from "../../../../../../shared/utils/formatUtils.js";
 
 export default function ContactInfo({ contactId, contactType }) {
   const navigate = useNavigate();
@@ -107,7 +116,8 @@ export default function ContactInfo({ contactId, contactType }) {
                         )}
                         {item.phone && (
                           <span>
-                            - <strong>Téléphone :</strong> {item.phone}{" "}
+                            - <strong>Téléphone :</strong>{" "}
+                            {formatPhoneNumber(item.phone)}{" "}
                           </span>
                         )}
                         {item.email && (
@@ -119,6 +129,56 @@ export default function ContactInfo({ contactId, contactType }) {
                     ))}
                   </ul>
                 </div>
+              );
+            }
+
+            if (name.toLowerCase().includes("date") && isDate(value)) {
+              value = formatDate(value);
+            }
+
+            if (name.toLowerCase().includes("phone")) {
+              value = formatPhoneNumber(value);
+              return (
+                <p key={name}>
+                  <strong>{label} :</strong>{" "}
+                  <a
+                    href={`tel:${value.replace(/\s/g, "")}`}
+                    className="text-blue-500 underline"
+                  >
+                    {value}
+                  </a>
+                </p>
+              );
+            }
+
+            if (name.toLowerCase().includes("postal")) {
+              value = formatPostalCode(value);
+            }
+
+            if (name.toLowerCase().includes("secu")) {
+              value = formatSocialSecurityNumber(value);
+            }
+
+            if (name.toLowerCase().includes("salary")) {
+              value = formatSalary(value);
+            }
+
+            if (
+              name.toLowerCase().includes("website") ||
+              name.toLowerCase().includes("site")
+            ) {
+              return (
+                <p key={name}>
+                  <strong>{label} :</strong>{" "}
+                  <a
+                    href={formatUrl(value)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    {value}
+                  </a>
+                </p>
               );
             }
 

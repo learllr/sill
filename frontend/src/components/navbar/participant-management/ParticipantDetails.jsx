@@ -35,6 +35,7 @@ export default function ParticipantDetails({ participantType }) {
         ContactInfoComponent={() => (
           <ContactInfo contactId={id} contactType={participantType} />
         )}
+        inParticipantSection={true}
       />
     </div>
   );

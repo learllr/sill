@@ -27,6 +27,7 @@ export default function ItemContainer({
   isSending,
   onDocumentIdClick,
   onDelete,
+  inParticipantSection,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { documents } = useDocuments();
@@ -111,7 +112,7 @@ export default function ItemContainer({
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
-        {!isSending && (
+        {!isSending && !inParticipantSection && (
           <IconButton onClick={onAdd} variant="green">
             <Plus />
           </IconButton>

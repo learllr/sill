@@ -19,6 +19,7 @@ export default function DocumentManager({
   ContactInfoComponent = null,
   participantId = null,
   projectId = null,
+  inParticipantSection = false,
 }) {
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
@@ -134,6 +135,7 @@ export default function DocumentManager({
               isSending={isSending}
               onDocumentIdClick={handleDocumentIdClick}
               onDelete={deleteSending.mutate}
+              inParticipantSection={inParticipantSection}
             />
           )}
         </div>

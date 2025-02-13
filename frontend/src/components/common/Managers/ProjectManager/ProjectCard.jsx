@@ -1,4 +1,4 @@
-import { formatDate } from "../../../../../../shared/utils/dateUtils.js";
+import { formatDate } from "../../../../../../shared/utils/formatUtils.js";
 
 export default function ProjectCard({ project, onSelectItem }) {
   const getStatusColor = () => {

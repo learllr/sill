@@ -78,7 +78,7 @@ export default function ItemContainer({
       <div
         className="grid gap-3 p-2"
         style={{
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, max-content))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, max-content))",
         }}
       >
         {filteredItems.length > 0 &&

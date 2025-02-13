@@ -3,6 +3,12 @@ import { useState } from "react";
 import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
 import { getTypeName } from "../../../../../../shared/constants/types.js";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
+import {
+  formatPhoneNumber,
+  formatPostalCode,
+  formatSocialSecurityNumber,
+  formatSalary,
+} from "../../../../../../shared/utils/formatUtils.js";
 
 export default function EditContactForm({
   contact,
@@ -36,9 +42,23 @@ export default function EditContactForm({
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    let formattedValue = value;
+
+    if (name.toLowerCase().includes("phone")) {
+      formattedValue = formatPhoneNumber(value);
+    }
+
+    if (name.toLowerCase().includes("postal")) {
+      formattedValue = formatPostalCode(value);
+    }
+
+    if (name.toLowerCase().includes("secu")) {
+      formattedValue = formatSocialSecurityNumber(value);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : formattedValue,
     }));
   };
 
@@ -132,7 +152,7 @@ export default function EditContactForm({
                             name,
                             index,
                             "phone",
-                            e.target.value
+                            formatPhoneNumber(e.target.value)
                           )
                         }
                         className="border rounded-md p-2 flex-1"
@@ -175,40 +195,14 @@ export default function EditContactForm({
               <span className="text-gray-700">
                 {label} {required && <span className="text-red-500">*</span>}
               </span>
-              {type === "select" ? (
-                <select
-                  name={name}
-                  value={value || ""}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                >
-                  <option value="">Sélectionner...</option>
-                  {options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              ) : type === "checkbox" ? (
-                <div className="flex items-center space-x-2 mt-1">
-                  <input
-                    type="checkbox"
-                    name={name}
-                    checked={value || false}
-                    onChange={handleChange}
-                  />
-                  <span>{label}</span>
-                </div>
-              ) : (
-                <input
-                  type={type}
-                  name={name}
-                  value={value || ""}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border rounded-md p-2"
-                  {...(type === "number" ? { min: 0 } : {})}
-                />
-              )}
+              <input
+                type={type}
+                name={name}
+                value={value || ""}
+                onChange={handleChange}
+                className="block w-full mt-1 border rounded-md p-2"
+                {...(type === "number" ? { min: 0 } : {})}
+              />
             </label>
           );
         })}

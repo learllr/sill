@@ -1,5 +1,5 @@
 import { DocumentType } from "../../../../../../shared/constants/types.js";
-import { formatDate } from "../../../../../../shared/utils/dateUtils.js";
+import { formatDate } from "../../../../../../shared/utils/formatUtils.js";
 import getFileIcon from "../../../../../../shared/utils/getFileIcon.jsx";
 
 export default function DocumentCard({

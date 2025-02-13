@@ -1,4 +1,4 @@
-import { formatDateTime } from "../../../../../../shared/utils/dateUtils.js";
+import { formatDateTime } from "../../../../../../shared/utils/formatUtils.js";
 import { useParticipants } from "../../../../hooks/useParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
