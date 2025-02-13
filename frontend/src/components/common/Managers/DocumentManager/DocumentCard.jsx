@@ -16,6 +16,7 @@ export default function DocumentCard({
 
   const isInvoice = document.type === DocumentType.FACTURES;
   const isQuote = document.type === DocumentType.DEVIS;
+  const isPV = document.type === DocumentType.PV;
 
   const getBorderColor = () => {
     if (isCEDIG) {
@@ -44,8 +45,14 @@ export default function DocumentCard({
     }
 
     if (isInvoice) {
-      const paidOn = document.invoiceInfos[0]?.paidOn;
-      return !paidOn ? "border-red-500" : "border-green-500";
+      return !document.invoiceInfos[0]?.paidOn
+        ? "border-red-500"
+        : "border-green-500";
+    }
+
+    if (isPV) {
+      if (document.pvType === "Sans réserves") return "border-red-500";
+      if (document.pvType === "Avec réserves") return "border-green-500";
     }
 
     return "border-gray-300";
