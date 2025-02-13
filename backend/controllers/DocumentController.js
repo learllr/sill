@@ -38,11 +38,7 @@ export const createDocument = async (req, res) => {
         return res.status(400).json({ error: "Liste des documents invalide." });
       }
 
-      if (
-        !documentData.year ||
-        !documentData.month ||
-        !documentData.projectId
-      ) {
+      if (!documentData.year || !documentData.month) {
         return res
           .status(400)
           .json({ error: "Année et mois requis pour un envoi." });

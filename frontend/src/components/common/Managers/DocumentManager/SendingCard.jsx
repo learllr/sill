@@ -1,5 +1,4 @@
-import { ChevronDown, ChevronUp, FileText, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { FileText, Trash2 } from "lucide-react";
 
 export default function SendingCard({
   document,
@@ -8,8 +7,6 @@ export default function SendingCard({
   participants,
   documents,
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-
   let documentIds = document.documentIds;
   try {
     if (typeof documentIds === "string") {
@@ -41,11 +38,11 @@ export default function SendingCard({
     }
   });
 
+  const getPluralizedLabel = (count, singular, plural) =>
+    count === 1 ? singular : plural;
+
   return (
-    <div
-      className="border border-blue-300 p-3 rounded-lg text-center w-[250px] flex-shrink-0 hover:bg-gray-50 transition-colors duration-200 ease-in-out cursor-pointer"
-      onClick={() => setIsOpen(!isOpen)}
-    >
+    <div className="relative border border-blue-200 p-3 rounded-lg text-center w-[250px] flex-shrink-0 hover:bg-gray-50 transition-colors duration-200 ease-in-out cursor-pointer min-h-[120px]">
       <div className="flex justify-between items-center">
         <button
           onClick={(event) => {
@@ -56,21 +53,30 @@ export default function SendingCard({
         >
           <Trash2 size={16} />
         </button>
-        {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
       </div>
       <p className="mt-2 text-gray-800 font-semibold">
         {document.year} - {document.month}
       </p>
-      <p className="text-gray-600">{documentIds.length} documents</p>
+      <p className="text-gray-600">
+        {documentIds.length}{" "}
+        {getPluralizedLabel(documentIds.length, "document", "documents")}
+      </p>
 
-      {isOpen && (
-        <div className="mt-2 border-t pt-2 text-left">
-          {Object.entries(categorizedDocuments).map(
-            ([category, docs]) =>
-              docs.length > 0 && (
-                <div key={category} className="mb-2">
-                  <p className="font-semibold text-gray-700">{category}</p>
-                  {docs.map((docId, index) => (
+      <div className="mt-2 border-t pt-2 text-left">
+        {Object.entries(categorizedDocuments).map(
+          ([category, docs]) =>
+            docs.length > 0 && (
+              <div key={category} className="mb-2">
+                <p className="font-semibold text-gray-700">
+                  {getPluralizedLabel(
+                    docs.length,
+                    category.slice(0, -1),
+                    category
+                  )}
+                </p>
+                {docs.map((docId, index) => {
+                  const docDetails = documents?.find((d) => d.id === docId);
+                  return (
                     <p
                       key={index}
                       className="text-gray-500 flex items-center gap-2"
@@ -83,15 +89,17 @@ export default function SendingCard({
                           onDocumentIdClick(docId);
                         }}
                       >
-                        {docId}
+                        {docDetails
+                          ? `${docDetails.month} - ${docDetails.year}`
+                          : "Inconnu"}
                       </span>
                     </p>
-                  ))}
-                </div>
-              )
-          )}
-        </div>
-      )}
+                  );
+                })}
+              </div>
+            )
+        )}
+      </div>
     </div>
   );
 }

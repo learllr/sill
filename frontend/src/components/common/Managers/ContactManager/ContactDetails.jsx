@@ -18,7 +18,7 @@ export default function ContactDetails({ contact, contactType }) {
     <div className="p-2 space-y-4">
       <h2 className="text-lg text-center font-semibold">Détails du contact</h2>
       <div className="flex flex-col space-y-1 text-left">
-        {fields.length > 0 ? (
+        {fields.length > 0 &&
           fields.map(({ name, label, type }) => {
             let value = contact?.[name];
 
@@ -31,12 +31,7 @@ export default function ContactDetails({ contact, contactType }) {
                 <strong>{label} :</strong> {value}
               </p>
             ) : null;
-          })
-        ) : (
-          <p className="text-center text-gray-500">
-            Aucun détail disponible pour ce type de contact.
-          </p>
-        )}
+          })}
       </div>
       <div className="mt-4 text-gray-600 text-sm text-center">
         <p>

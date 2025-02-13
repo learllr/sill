@@ -81,7 +81,7 @@ export default function ItemContainer({
           gridTemplateColumns: "repeat(auto-fit, minmax(250px, max-content))",
         }}
       >
-        {filteredItems.length > 0 ? (
+        {filteredItems.length > 0 &&
           filteredItems.map((project) =>
             projectId ? (
               <ParticipantProjectCard
@@ -100,12 +100,7 @@ export default function ItemContainer({
                 onSelectItem={onSelectItem}
               />
             )
-          )
-        ) : (
-          <p className="text-center text-gray-500 col-span-full">
-            Aucun résultat trouvé
-          </p>
-        )}
+          )}
       </div>
     </div>
   );

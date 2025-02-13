@@ -94,7 +94,7 @@ export default function SelectorDialog({ type, typeId, onSelect, onClose }) {
             </div>
             <ScrollArea className="h-60">
               <ul className="border rounded p-2">
-                {filteredItems.length > 0 ? (
+                {filteredItems.length > 0 &&
                   filteredItems.map((item) => (
                     <li
                       key={item.id}
@@ -112,10 +112,7 @@ export default function SelectorDialog({ type, typeId, onSelect, onClose }) {
                         }}
                       />
                     </li>
-                  ))
-                ) : (
-                  <li className="p-2 text-gray-600">Aucun {title} trouvé.</li>
-                )}
+                  ))}
               </ul>
             </ScrollArea>
           </>

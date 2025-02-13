@@ -111,7 +111,7 @@ export default function ItemContainer({
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
-        {!isSending && !isCEDIG && (
+        {!isSending && (
           <IconButton onClick={onAdd} variant="green">
             <Plus />
           </IconButton>
@@ -131,7 +131,7 @@ export default function ItemContainer({
       )}
 
       <div className="space-y-4 p-2 overflow-auto">
-        {Object.keys(groupedByYear).length > 0 ? (
+        {Object.keys(groupedByYear).length > 0 &&
           Object.entries(groupedByYear).map(([year, docs]) => (
             <div key={year}>
               {!employeeId && (
@@ -144,7 +144,7 @@ export default function ItemContainer({
                 style={{
                   gridTemplateColumns: `repeat(auto-fit, minmax(${
                     isSending ? "230px" : "180px"
-                  }, max-content))`,
+                  }, min-content))`,
                 }}
               >
                 {docs.map((item) => (
@@ -167,17 +167,15 @@ export default function ItemContainer({
                         onToggleSelect={handleToggleSelect}
                         selectedDocuments={selectedDocuments}
                         checkboxVisible={checkboxVisible}
-                        isSending={isSending}
+                        isCEDIG={isCEDIG}
+                        participants={participants}
                       />
                     )}
                   </>
                 ))}
               </div>
             </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">Aucun document trouvé</p>
-        )}
+          ))}
       </div>
     </div>
   );

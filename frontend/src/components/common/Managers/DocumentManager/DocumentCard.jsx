@@ -9,11 +9,24 @@ export default function DocumentCard({
   onToggleSelect,
   selectedDocuments,
   checkboxVisible,
-  isSending,
+  isCEDIG,
+  participants,
 }) {
   const isChecked = selectedDocuments.includes(document.id);
 
   const getBorderColor = () => {
+    if (isCEDIG) {
+      const participant = participants?.find(
+        (p) => p.id === document.participantId
+      );
+      if (participant?.type === "Fournisseur") {
+        return "border-yellow-700";
+      }
+      if (participant?.type === "Client") {
+        return "border-blue-500";
+      }
+    }
+
     if (document.type === DocumentType.DEVIS) {
       switch (document.quoteInfos[0]?.status) {
         case "En attente":
@@ -40,7 +53,7 @@ export default function DocumentCard({
       className={`relative border ${getBorderColor()} p-3 rounded-lg text-center w-[180px] flex-shrink-0 hover:bg-gray-50 transition-colors duration-200 ease-in-out cursor-pointer`}
       onClick={() => onSelectItem(document)}
     >
-      {checkboxVisible && isSending && (
+      {checkboxVisible && isCEDIG && (
         <input
           type="checkbox"
           className="absolute top-2 right-2 w-5 h-5 cursor-pointer"

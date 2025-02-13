@@ -76,7 +76,6 @@ export default function NewDocumentForm({
 
     if (isCEDIG) {
       formData.append("documentIds", JSON.stringify(selectedDocuments));
-      formData.append("projectId", projectId);
     }
 
     if (employeeId) {
@@ -141,6 +140,11 @@ export default function NewDocumentForm({
       )}
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
+      {isCEDIG && (
+        <p className="text-center">
+          Coche les documents à insérer dans l'envoi{" "}
+        </p>
+      )}
 
       {!employeeId && (
         <>
