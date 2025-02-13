@@ -117,12 +117,25 @@ export default function ContactInfo({ contactId, contactType }) {
                         {item.phone && (
                           <span>
                             - <strong>Téléphone :</strong>{" "}
-                            {formatPhoneNumber(item.phone)}{" "}
+                            <a
+                              href={`tel:${item.phone.replace(/\s/g, "")}`}
+                              className="text-blue-500 underline"
+                            >
+                              {formatPhoneNumber(item.phone)}
+                            </a>
                           </span>
                         )}
                         {item.email && (
                           <span>
-                            - <strong>Email :</strong> {item.email}
+                            - <strong>Email :</strong>{" "}
+                            <a
+                              href={`https://mail.orange.fr/appsuite/#!!&app=io.ox/mail&folder=default0/INBOX&to=${item.email}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                              {item.email}
+                            </a>
                           </span>
                         )}
                       </li>
