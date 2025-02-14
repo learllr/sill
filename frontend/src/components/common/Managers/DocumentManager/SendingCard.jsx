@@ -1,7 +1,11 @@
-import { Check, Edit, FileText, Trash2, X } from "lucide-react";
+import { saveAs } from "file-saver";
+import JSZip from "jszip";
+import { Check, Edit, FileText, Mail, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "../../../../../../shared/utils/formatUtils";
 import { useDocuments } from "../../../../hooks/useDocuments";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function SendingCard({
   document,
@@ -26,6 +30,61 @@ export default function SendingCard({
   } catch (error) {
     documentIds = [];
   }
+
+  const getDocumentLinks = () => {
+    return documentIds
+      .map((docId) => {
+        const doc = documents?.find((d) => d.id === docId);
+        return doc ? `${BASE_URL}/uploads/${doc.path}` : null;
+      })
+      .filter(Boolean);
+  };
+
+  const downloadFiles = async () => {
+    const links = getDocumentLinks();
+    if (links.length === 0) {
+      return;
+    }
+
+    const zip = new JSZip();
+    try {
+      const downloadPromises = links.map(async (link) => {
+        try {
+          const response = await fetch(link);
+          const blob = await response.blob();
+          const filename = link.split("/").pop() || "fichier_inconnu";
+          zip.file(filename, blob);
+        } catch (error) {
+          console.error(`Erreur lors du téléchargement de ${link}:`, error);
+        }
+      });
+
+      await Promise.all(downloadPromises);
+
+      zip.generateAsync({ type: "blob" }).then((zipBlob) => {
+        const zipFilename = `${formatDate(document.date)} - ${
+          document.name || "Documents"
+        }.zip`;
+
+        if (zipBlob) {
+          saveAs(zipBlob, zipFilename);
+        }
+      });
+    } catch (error) {
+      console.error("Erreur lors de la génération du fichier ZIP:", error);
+    }
+  };
+
+  const sendMail = async () => {
+    await downloadFiles();
+    const mailBody = encodeURIComponent(
+      `Bonjour,\nVoici les documents\nMerci.`
+    );
+
+    // const mailHref = `https://mail.orange.fr/appsuite/#!!&app=io.ox/mail&folder=default0/INBOX&to=&body=${mailBody}}`;
+    const mailUrl = `https://mail.google.com/mail/?view=cm&fs=1&body=${mailBody}`;
+    window.open(mailUrl);
+  };
 
   const categorizedDocuments = {
     Clients: [],
@@ -65,50 +124,59 @@ export default function SendingCard({
 
   return (
     <div className="relative border border-blue-200 p-3 rounded-lg text-center w-[250px] flex-shrink-0 hover:bg-gray-50 transition-colors duration-200 ease-in-out cursor-pointer min-h-[120px]">
-      <div className="flex justify-end space-x-2">
-        {!isEditing && (
-          <button
-            onClick={(event) => {
-              event.stopPropagation();
-              onDelete(document.id);
-            }}
-            className="bg-gray-100 hover:bg-red-100 text-red-600 rounded-full p-2 transition"
-          >
-            <Trash2 size={16} />
-          </button>
-        )}
-        {isEditing ? (
-          <>
+      <div className="flex justify-between">
+        <button
+          onClick={sendMail}
+          className="bg-gray-100 hover:bg-orange-100 text-orange-600 rounded-full p-2 transition"
+        >
+          <Mail size={16} />
+        </button>
+
+        <div className="flex space-x-2">
+          {!isEditing && (
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleSave();
-              }}
-              className="bg-gray-100 hover:bg-green-100 text-green-600 rounded-full p-2 transition"
-            >
-              <Check size={16} />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleCancel();
+              onClick={(event) => {
+                event.stopPropagation();
+                onDelete(document.id);
               }}
               className="bg-gray-100 hover:bg-red-100 text-red-600 rounded-full p-2 transition"
             >
-              <X size={16} />
+              <Trash2 size={16} />
             </button>
-          </>
-        ) : (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsEditing(true);
-            }}
-            className="bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-full p-2 transition"
-          >
-            <Edit size={16} />
-          </button>
-        )}
+          )}
+          {isEditing ? (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSave();
+                }}
+                className="bg-gray-100 hover:bg-green-100 text-green-600 rounded-full p-2 transition"
+              >
+                <Check size={16} />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCancel();
+                }}
+                className="bg-gray-100 hover:bg-red-100 text-red-600 rounded-full p-2 transition"
+              >
+                <X size={16} />
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditing(true);
+              }}
+              className="bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-full p-2 transition"
+            >
+              <Edit size={16} />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mt-3 text-left">
