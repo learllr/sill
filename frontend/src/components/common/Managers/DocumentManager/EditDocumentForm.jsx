@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
+import { useParticipants } from "../../../../hooks/useParticipants.jsx";
+import { useProjects } from "../../../../hooks/useProjects.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
@@ -12,6 +14,7 @@ export default function EditDocumentForm({
   onUpdate,
   isUpdating,
   employeeId,
+  isCEDIG,
 }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
@@ -19,6 +22,8 @@ export default function EditDocumentForm({
   const [formFields, setFormFields] = useState({
     name: document.name || "",
     date: document.date || "",
+    projectId: document.projectId,
+    participantId: document.participantId,
     invoiceNumber: document.invoiceInfos[0]?.invoiceNumber || "",
     lot: document.invoiceInfos[0]?.lot || document.quoteInfos[0]?.lot || "",
     paidOn: document.invoiceInfos[0]?.paidOn || "",
@@ -31,6 +36,9 @@ export default function EditDocumentForm({
     finalCompletion: document.invoiceInfos[0]?.finalCompletion || false,
     pvType: document.pvType || "Avec réserves",
   });
+
+  const { projects } = useProjects();
+  const { participants } = useParticipants();
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -61,7 +69,7 @@ export default function EditDocumentForm({
     const formData = new FormData();
 
     formData.append("name", formFields.name);
-    formData.append("type", documentType);
+    formData.append("type", isCEDIG ? DocumentType.FACTURES : documentType);
 
     if (!employeeId) {
       formData.append("date", formFields.date);
@@ -69,6 +77,11 @@ export default function EditDocumentForm({
 
     if (file) {
       formData.append("file", file);
+    }
+
+    if (isCEDIG) {
+      formData.append("projectId", formFields.projectId);
+      formData.append("participantId", formFields.participantId);
     }
 
     if (documentType === DocumentType.FACTURES) {
@@ -142,15 +155,56 @@ export default function EditDocumentForm({
         </>
       )}
 
+      {isCEDIG && (
+        <>
+          <label className="block">
+            <span className="text-gray-700">Chantier</span>
+            <select
+              name="projectId"
+              value={formFields.projectId || ""}
+              onChange={handleChange}
+              className="block w-full mt-1 border rounded-md p-2"
+            >
+              <option value="">Sélectionner un chantier</option>
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="block">
+            <span className="text-gray-700">Intervenant</span>
+            <select
+              name="participantId"
+              value={formFields.participantId || ""}
+              onChange={handleChange}
+              className="block w-full mt-1 border rounded-md p-2"
+            >
+              <option value="">Sélectionner un intervenant</option>
+              {participants
+                .filter((p) => ["Client", "Fournisseur"].includes(p.type))
+                .map((participant) => (
+                  <option key={participant.id} value={participant.id}>
+                    {participant.name}
+                  </option>
+                ))}
+            </select>
+          </label>
+        </>
+      )}
+
       {(documentType === DocumentType.FACTURES ||
-        documentType === DocumentType.DEVIS) && (
+        documentType === DocumentType.DEVIS ||
+        isCEDIG) && (
         <>
           <label className="block">
             <span className="text-gray-700">Numéro</span>
             <input
               type="text"
               name="invoiceNumber"
-              value={formFields.invoiceNumber}
+              value={formFields.invoiceNumber || ""}
               onChange={handleChange}
               className="block w-full mt-1 border rounded-md p-2"
             />
@@ -161,13 +215,13 @@ export default function EditDocumentForm({
             <input
               type="text"
               name="lot"
-              value={formFields.lot}
+              value={formFields.lot || ""}
               onChange={handleChange}
               className="block w-full mt-1 border rounded-md p-2"
             />
           </label>
 
-          {documentType === DocumentType.FACTURES && (
+          {(documentType === DocumentType.FACTURES || isCEDIG) && (
             <>
               <label className="block">
                 <span className="text-gray-700">Date de paiement</span>
@@ -184,13 +238,12 @@ export default function EditDocumentForm({
                 <span className="text-gray-700">Méthode de paiement</span>
                 <select
                   name="paymentMethod"
-                  value={formFields.paymentMethod}
+                  value={formFields.paymentMethod || ""}
                   onChange={handleChange}
                   className="block w-full mt-1 border rounded-md p-2"
                 >
                   <option value="Virement">Virement</option>
                   <option value="Chèque">Chèque</option>
-                  <option value="Espèces">Espèces</option>
                 </select>
               </label>
 
@@ -248,7 +301,7 @@ export default function EditDocumentForm({
                 <span className="text-gray-700">Statut</span>
                 <select
                   name="status"
-                  value={formFields.status}
+                  value={formFields.status || ""}
                   onChange={handleChange}
                   className="block w-full mt-1 border rounded-md p-2"
                 >
@@ -267,7 +320,7 @@ export default function EditDocumentForm({
           <span className="text-gray-700">Type de PV</span>
           <select
             name="pvType"
-            value={formFields.pvType}
+            value={formFields.pvType || ""}
             onChange={handleChange}
             className="block w-full mt-1 border rounded-md p-2"
           >

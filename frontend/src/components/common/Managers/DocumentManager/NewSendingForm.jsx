@@ -26,11 +26,6 @@ export default function NewSendingForm({
       return;
     }
 
-    if (!formFields.name.trim()) {
-      alert("Le nom est obligatoire.");
-      return;
-    }
-
     if (!formFields.date) {
       alert("La date est obligatoire.");
       return;
@@ -58,9 +53,7 @@ export default function NewSendingForm({
       </p>
 
       <label className="block">
-        <span className="text-gray-700">
-          Nom <span className="text-red-500">*</span>
-        </span>
+        <span className="text-gray-700">Nom</span>
         <input
           type="text"
           name="name"

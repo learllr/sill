@@ -99,15 +99,6 @@ export default class DocumentDAO {
     });
   }
 
-  static async createSending({ name, date, documentIds, remarks }) {
-    return await Sending.create({
-      name,
-      date,
-      documentIds: JSON.stringify(documentIds),
-      remarks,
-    });
-  }
-
   static async updateDocument(document, updatedData) {
     if (updatedData.path && document.path) {
       const oldFilePath = path.resolve("uploads", document.path);
@@ -227,6 +218,23 @@ export default class DocumentDAO {
     return await Sending.findAll({
       order: [["createdAt", "DESC"]],
     });
+  }
+
+  static async createSending({ name, date, documentIds, remarks }) {
+    return await Sending.create({
+      name,
+      date,
+      documentIds: JSON.stringify(documentIds),
+      remarks,
+    });
+  }
+
+  static async getSendingById(id) {
+    return await Sending.findOne({ where: { id } });
+  }
+
+  static async updateSending(sending, updatedData) {
+    return await sending.update(updatedData);
   }
 
   static async deleteSending(sendingId) {

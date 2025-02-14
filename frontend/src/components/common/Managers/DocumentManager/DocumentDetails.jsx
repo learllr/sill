@@ -42,15 +42,19 @@ export default function DocumentDetails({ document, employeeId }) {
       </div>
 
       <div>
-        {document.participantId && participant && (
-          <p>
-            <strong>{participant.type} :</strong>{" "}
-            {participant.name || "Nom non renseigné"}
-          </p>
+        <strong>Chantier :</strong>{" "}
+        {document.projectId && project ? (
+          <p>{project.name}</p>
+        ) : (
+          "Non renseigné"
         )}
-        {document.projectId && project && (
+        {document.participantId && participant ? (
           <p>
-            <strong>Chantier :</strong> {project.name || "Nom non renseigné"}
+            <strong>{participant.type} :</strong> {participant.name}
+          </p>
+        ) : (
+          <p>
+            <strong>Intervenant :</strong> {"Non renseigné"}
           </p>
         )}
       </div>

@@ -25,9 +25,10 @@ export default function DocumentCard({
       );
       if (participant?.type === "Fournisseur") {
         return "border-yellow-700";
-      }
-      if (participant?.type === "Client") {
+      } else if (participant?.type === "Client") {
         return "border-blue-500";
+      } else {
+        return "border-gray-300";
       }
     }
 
@@ -60,7 +61,7 @@ export default function DocumentCard({
 
   return (
     <div
-      className={`relative border ${getBorderColor()} p-3 rounded-lg text-center w-[180px] flex-shrink-0 hover:bg-gray-50 transition-colors duration-200 ease-in-out cursor-pointer`}
+      className={`relative border ${getBorderColor()} p-4 rounded-lg text-center w-[200px] flex-shrink-0 bg-white transition-transform duration-200 ease-in-out cursor-pointer`}
       onClick={() => onSelectItem(document)}
     >
       {checkboxVisible && isCEDIG && (
@@ -73,15 +74,22 @@ export default function DocumentCard({
         />
       )}
 
+      {document.name && (
+        <div className="text-zinc-900 text-sm font-semibold px-3 rounded-md mb-2">
+          {document.name}
+        </div>
+      )}
+
       {getFileIcon(document.path)}
-      <p className="mt-2 text-gray-800">
+
+      <p className="mt-2 text-gray-700 text-sm">
         {employeeId ? (
           formatDate(document.updatedAt)
         ) : isInvoice && document.invoiceInfos[0]?.invoiceNumber ? (
           <>
             {formatDate(document.date)}
             <br />
-            <span className="text-gray-400 text-sm">
+            <span className="text-gray-500 text-xs">
               {document.invoiceInfos[0]?.invoiceNumber}
             </span>
           </>
@@ -89,7 +97,7 @@ export default function DocumentCard({
           <>
             {formatDate(document.date)}
             <br />
-            <span className="text-gray-400 text-sm">
+            <span className="text-gray-500 text-xs">
               {document.quoteInfos[0]?.quoteNumber}
             </span>
           </>

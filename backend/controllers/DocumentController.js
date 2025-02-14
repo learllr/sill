@@ -108,6 +108,53 @@ export const getAllSendings = async (req, res) => {
   }
 };
 
+export const createSending = async (req, res) => {
+  try {
+    const { name, date, documentIds, remarks } = req.body;
+
+    if (!date || !documentIds) {
+      return res.status(400).json({ error: "Tous les champs sont requis." });
+    }
+
+    const sending = await DocumentDAO.createSending({
+      name,
+      date,
+      documentIds: JSON.parse(documentIds),
+      remarks,
+    });
+
+    res.status(201).json({ message: "Envoi ajouté avec succès", sending });
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de l'envoi :", error);
+    res.status(500).json({ error: "Erreur lors de l'ajout de l'envoi" });
+  }
+};
+
+export const updateSending = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, remarks } = req.body;
+
+    const sending = await DocumentDAO.getSendingById(id);
+    if (!sending) {
+      return res.status(404).json({ error: "Envoi non trouvé" });
+    }
+
+    const updatedSending = await DocumentDAO.updateSending(sending, {
+      name,
+      remarks,
+    });
+
+    res.status(200).json({
+      message: "Envoi mis à jour avec succès",
+      updatedSending,
+    });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'envoi :", error);
+    res.status(500).json({ error: "Erreur lors de la mise à jour de l'envoi" });
+  }
+};
+
 export const deleteSending = async (req, res) => {
   try {
     const { id } = req.params;

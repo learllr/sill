@@ -88,9 +88,11 @@ export default function ItemContainer({
         item.quoteInfos?.[0]?.quoteNumber?.toLowerCase() || "";
       const invoiceNumber =
         item.invoiceInfos?.[0]?.invoiceNumber?.toLowerCase() || "";
+      const name = item.name?.toLowerCase() || "";
 
       return searchTerms.every(
         (term) =>
+          name.includes(term) ||
           formattedDate.includes(term) ||
           quoteNumber.includes(term) ||
           invoiceNumber.includes(term)

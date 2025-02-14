@@ -43,6 +43,7 @@ export default function DocumentManager({
     isLoading,
     isError,
     addDocument,
+    addSending,
     deleteDocument,
     updateDocument,
     deleteSending,
@@ -54,10 +55,6 @@ export default function DocumentManager({
 
   const filteredDocuments = documents?.filter((doc) => {
     if (isCEDIG) {
-      // const allowedParticipants = participants
-      //   ?.filter((p) => ["Client", "Fournisseur"].includes(p.type))
-      //   .map((p) => p.id);
-      // if (!allowedParticipants.includes(doc.participantId)) return false;
       if (doc.type !== "Factures") return false;
     } else {
       if (participantId && doc.participantId !== Number(participantId))
@@ -70,9 +67,11 @@ export default function DocumentManager({
   });
 
   const handleSelectItem = (document) => {
-    setIsDetailVisible(true);
-    setIsAddingNew(false);
-    setSelectedDocument(document);
+    if (!checkboxVisible) {
+      setIsDetailVisible(true);
+      setIsAddingNew(false);
+      setSelectedDocument(document);
+    }
   };
 
   const handleDocumentIdClick = (docId) => {
@@ -162,6 +161,7 @@ export default function DocumentManager({
               addMutation={addDocument}
               deleteMutation={deleteDocument}
               updateMutation={updateDocument}
+              addSending={addSending}
               employeeId={employeeId}
               participantId={participantId}
               projectId={projectId}

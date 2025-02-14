@@ -62,6 +62,34 @@ export const useDocuments = (selectedMainTab) => {
     },
   });
 
+  const addSending = useMutation({
+    mutationFn: async (formData) => {
+      const response = await axios.post("/document/sendings", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sendings"]);
+    },
+  });
+
+  const updateSending = useMutation({
+    mutationFn: async ({ sendingId, formData }) => {
+      const response = await axios.put(
+        `/document/sendings/${sendingId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sendings"]);
+    },
+  });
+
   const deleteSending = useMutation({
     mutationFn: async (sendingId) => {
       await axios.delete(`/document/sendings/${sendingId}`);
@@ -79,8 +107,10 @@ export const useDocuments = (selectedMainTab) => {
     isLoadingSendings,
     isErrorSendings,
     addDocument,
-    deleteDocument,
     updateDocument,
+    deleteDocument,
+    addSending,
+    updateSending,
     deleteSending,
   };
 };

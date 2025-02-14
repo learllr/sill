@@ -14,6 +14,7 @@ export default function DetailContainer({
   addMutation,
   deleteMutation,
   updateMutation,
+  addSending,
   employeeId,
   participantId,
   projectId,
@@ -35,29 +36,21 @@ export default function DetailContainer({
   return (
     <div className="border p-4 flex flex-col space-y-3 h-[80vh] overflow-auto">
       <div className="flex justify-end space-x-2">
-        {!isNew &&
-          !isEditing &&
-          !isCEDIG &&
-          !isSending &&
-          !inParticipantSection && (
-            <IconButton
-              onClick={handleDelete}
-              variant="red"
-              disabled={deleteMutation.isLoading}
-            >
-              {deleteMutation.isLoading ? "Suppression..." : <Trash2 />}
-            </IconButton>
-          )}
+        {!isNew && !isEditing && !isSending && !inParticipantSection && (
+          <IconButton
+            onClick={handleDelete}
+            variant="red"
+            disabled={deleteMutation.isLoading}
+          >
+            {deleteMutation.isLoading ? "Suppression..." : <Trash2 />}
+          </IconButton>
+        )}
 
-        {!isNew &&
-          !isEditing &&
-          !isCEDIG &&
-          !isSending &&
-          !inParticipantSection && (
-            <IconButton onClick={() => setIsEditing(true)} variant="blue">
-              <Pencil />
-            </IconButton>
-          )}
+        {!isNew && !isEditing && !isSending && !inParticipantSection && (
+          <IconButton onClick={() => setIsEditing(true)} variant="blue">
+            <Pencil />
+          </IconButton>
+        )}
 
         <IconButton onClick={onClose} variant="gray">
           <X />
@@ -69,7 +62,7 @@ export default function DetailContainer({
           isAddingSending ? (
             <NewSendingForm
               onSave={onClose}
-              addMutation={addMutation}
+              addMutation={addSending}
               selectedDocuments={selectedDocuments}
               isCEDIG={isCEDIG}
             />
@@ -97,6 +90,7 @@ export default function DetailContainer({
             }}
             isUpdating={updateMutation.isLoading}
             employeeId={employeeId}
+            isCEDIG={isCEDIG}
           />
         ) : (
           <DocumentDetails document={document} employeeId={employeeId} />
