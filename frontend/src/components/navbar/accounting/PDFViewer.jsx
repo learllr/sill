@@ -7,6 +7,7 @@ const PDFViewer = ({
   scale,
   currentPage,
   signatures,
+  signaturesApplied,
 }) => {
   const pdfCanvasRef = useRef(null);
   const overlayCanvasRef = useRef(null);
@@ -51,34 +52,46 @@ const PDFViewer = ({
     }
   }, [previewLogo]);
 
+  useEffect(() => {
+    if (signaturesApplied) {
+      setPreviewPosition(null);
+      drawSignatures(); // Redessiner le canvas vide
+    }
+  }, [signaturesApplied]);
+
   const handleMouseMove = (e) => {
-    if (!overlayCanvasRef.current || !viewport) return;
+    if (!overlayCanvasRef.current || !viewport || signaturesApplied) return;
 
     const rect = overlayCanvasRef.current.getBoundingClientRect();
+    const scaledWidth = previewLogo.width * scale;
+    const scaledHeight = previewLogo.height * scale;
+
     const x =
-      ((e.clientX - rect.left) / rect.width) * viewport.width -
-      previewLogo.width / 2;
+      ((e.clientX - rect.left) / rect.width) * viewport.width - scaledWidth / 2;
     const y =
       ((e.clientY - rect.top) / rect.height) * viewport.height -
-      previewLogo.height / 2;
+      scaledHeight / 2;
 
-    setPreviewPosition({ x, y });
+    setPreviewPosition({ x, y, width: scaledWidth, height: scaledHeight });
     drawSignatures();
   };
 
   const handleClick = (e) => {
-    if (!overlayCanvasRef.current || !viewport) return;
+    if (!overlayCanvasRef.current || !viewport || signaturesApplied) return;
 
     const rect = overlayCanvasRef.current.getBoundingClientRect();
+    const scaledWidth = previewLogo.width * scale;
+    const scaledHeight = previewLogo.height * scale;
+
     const x = ((e.clientX - rect.left) / rect.width) * viewport.width;
     const y = ((e.clientY - rect.top) / rect.height) * viewport.height;
 
     onCanvasClick({
-      x: x - previewLogo.width / 2,
-      y: viewport.height - y - previewLogo.height / 2,
+      x: x - scaledWidth / 2,
+      y: y - scaledHeight / 2,
       page: currentPage,
-      width: previewLogo.width,
-      height: previewLogo.height,
+      width: scaledWidth,
+      height: scaledHeight,
     });
 
     setPreviewPosition(null);
@@ -106,8 +119,8 @@ const PDFViewer = ({
         imgRef.current,
         previewPosition.x,
         previewPosition.y,
-        previewLogo.width,
-        previewLogo.height
+        previewPosition.width,
+        previewPosition.height
       );
       context.globalAlpha = 1.0;
     }

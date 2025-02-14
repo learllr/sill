@@ -2,7 +2,7 @@ import React from "react";
 
 const ToolBar = ({ scale, setScale }) => {
   return (
-    <div className="flex items-center justify-center space-x-4 bg-gray-100 p-3 rounded-lg m-4">
+    <div className="flex items-center justify-center  bg-gray-100 px-5 py-3 rounded-lg">
       <label className="flex items-center space-x-2">
         <span className="text-gray-700 font-medium">Échelle du logo :</span>
         <input
