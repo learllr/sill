@@ -14,9 +14,9 @@ const DocumentSigning = () => {
   const [pdfDoc, setPdfDoc] = useState(null);
   const [modifiedPdfBytes, setModifiedPdfBytes] = useState(null);
   const [scale, setScale] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [signatures, setSignatures] = useState([]);
   const [previewLogo, setPreviewLogo] = useState({
-    x: 0,
-    y: 0,
     width: BASE_LOGO_WIDTH,
     height: BASE_LOGO_HEIGHT,
     src: LOGO_PATH,
@@ -25,7 +25,6 @@ const DocumentSigning = () => {
   const handleFileChange = async (event) => {
     const selectedFile = event.target.files[0];
     if (!selectedFile) return;
-
     setFile(selectedFile);
     loadPdf(selectedFile);
   };
@@ -37,69 +36,39 @@ const DocumentSigning = () => {
     setPdfDoc(pdf);
   };
 
-  const updatePreviewPosition = (event, canvas) => {
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    setPreviewLogo({
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-      width: BASE_LOGO_WIDTH * scale,
-      height: BASE_LOGO_HEIGHT * scale,
-      src: LOGO_PATH,
-    });
+  const handleCanvasClick = (position) => {
+    setSignatures((prev) => [...prev, position]);
   };
 
-  const handleCanvasClick = async (event) => {
+  const handleUndo = () => {
+    setSignatures((prev) => prev.slice(0, -1));
+  };
+
+  const applySignatures = async () => {
     if (!file || !pdfDoc) return;
+    const pdfBytes = await file.arrayBuffer();
+    const pdfDocInstance = await PDFDocument.load(pdfBytes);
 
-    const canvas = event.target;
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left - (BASE_LOGO_WIDTH * scale) / 2;
-    const y =
-      rect.height - (event.clientY - rect.top) - (BASE_LOGO_HEIGHT * scale) / 2;
-
-    const modifiedPdfBytes = await modifyPdf(
-      file,
-      x,
-      y,
-      rect.width,
-      rect.height
-    );
-    if (!modifiedPdfBytes) return;
-
-    setModifiedPdfBytes(modifiedPdfBytes);
-
-    const pdfBlob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
-    loadPdfFromUrl(URL.createObjectURL(pdfBlob));
-  };
-
-  const modifyPdf = async (file, x, y, canvasWidth, canvasHeight) => {
-    try {
-      const pdfBytes = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(pdfBytes);
-      const firstPage = pdfDoc.getPages()[0];
-      if (!firstPage) return null;
-
-      const { width, height } = firstPage.getSize();
-      const pdfX = (x / canvasWidth) * width;
-      const pdfY = (y / canvasHeight) * height;
+    for (const { x, y, page, width, height } of signatures) {
+      const pdfPage = pdfDocInstance.getPages()[page];
+      if (!pdfPage) continue;
 
       const response = await fetch(LOGO_PATH);
-      if (!response.ok) return null;
+      if (!response.ok) continue;
+      const logoImage = await pdfDocInstance.embedJpg(
+        await response.arrayBuffer()
+      );
 
-      const logoImage = await pdfDoc.embedJpg(await response.arrayBuffer());
-      firstPage.drawImage(logoImage, {
-        x: pdfX,
-        y: pdfY,
-        width: BASE_LOGO_WIDTH * scale,
-        height: BASE_LOGO_HEIGHT * scale,
-      });
-
-      return await pdfDoc.save();
-    } catch {
-      return null;
+      pdfPage.drawImage(logoImage, { x, y, width, height });
     }
+
+    const finalPdfBytes = await pdfDocInstance.save();
+    setModifiedPdfBytes(finalPdfBytes);
+    loadPdfFromUrl(
+      URL.createObjectURL(
+        new Blob([finalPdfBytes], { type: "application/pdf" })
+      )
+    );
   };
 
   const loadPdfFromUrl = async (pdfUrl) => {
@@ -109,7 +78,6 @@ const DocumentSigning = () => {
 
   const handleDownload = () => {
     if (!modifiedPdfBytes || !file) return;
-
     const fileName = file.name.replace(/\.pdf$/, "") + "_signé.pdf";
     saveAs(new Blob([modifiedPdfBytes], { type: "application/pdf" }), fileName);
   };
@@ -119,7 +87,6 @@ const DocumentSigning = () => {
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">
         ✍️ Signer un PDF
       </h2>
-
       <label className="cursor-pointer flex flex-col items-center bg-white border-2 border-dashed border-gray-300 rounded-lg p-5 w-80 hover:border-blue-500 transition">
         <span className="text-gray-600 font-medium">
           Sélectionner un fichier PDF
@@ -136,17 +103,54 @@ const DocumentSigning = () => {
 
       {pdfDoc && (
         <div className="flex flex-col items-center space-y-6 w-full mt-6">
+          <div className="flex items-center space-x-4 mt-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+              disabled={currentPage === 0}
+              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            >
+              ◀️ Précédent
+            </button>
+            <span>
+              Page {currentPage + 1} / {pdfDoc.numPages}
+            </span>
+            <button
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  Math.min(prev + 1, pdfDoc.numPages - 1)
+                )
+              }
+              disabled={currentPage === pdfDoc.numPages - 1}
+              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            >
+              Suivant ▶️
+            </button>
+          </div>
+
           <PDFViewer
             pdfDoc={pdfDoc}
             scale={scale}
             onCanvasClick={handleCanvasClick}
-            previewLogo={
-              previewLogo && {
-                ...previewLogo,
-                updatePosition: updatePreviewPosition,
-              }
-            }
+            previewLogo={previewLogo}
+            currentPage={currentPage}
+            signatures={signatures}
           />
+
+          <div className="flex space-x-4">
+            <button
+              onClick={handleUndo}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition"
+            >
+              ⬅️ Annuler
+            </button>
+            <button
+              onClick={applySignatures}
+              className="px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition"
+            >
+              ✅ Appliquer les signatures
+            </button>
+          </div>
+
           {modifiedPdfBytes && (
             <button
               onClick={handleDownload}
