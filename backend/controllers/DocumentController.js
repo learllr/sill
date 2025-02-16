@@ -133,7 +133,7 @@ export const createSending = async (req, res) => {
 export const updateSending = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, remarks } = req.body;
+    const { name, date, remarks } = req.body;
 
     const sending = await DocumentDAO.getSendingById(id);
     if (!sending) {
@@ -142,6 +142,7 @@ export const updateSending = async (req, res) => {
 
     const updatedSending = await DocumentDAO.updateSending(sending, {
       name,
+      date,
       remarks,
     });
 

@@ -16,6 +16,7 @@ export default function SendingCard({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(document.name || "");
+  const [editedDate, setEditedDate] = useState(document.date || "");
   const [editedRemarks, setEditedRemarks] = useState(document.remarks || "");
   const { updateSending } = useDocuments();
 
@@ -111,7 +112,7 @@ export default function SendingCard({
   const handleSave = () => {
     updateSending.mutate({
       sendingId: document.id,
-      formData: { name: editedName, remarks: editedRemarks },
+      formData: { name: editedName, remarks: editedRemarks, date: editedDate },
     });
     setIsEditing(false);
   };
@@ -119,6 +120,7 @@ export default function SendingCard({
   const handleCancel = () => {
     setEditedName(document.name || "");
     setEditedRemarks(document.remarks || "");
+    setEditedDate(document.date || "");
     setIsEditing(false);
   };
 
@@ -199,9 +201,24 @@ export default function SendingCard({
         ) : null}
       </div>
 
-      <p className="mt-2 text-gray-800 font-semibold">
-        {formatDate(document.date)}
-      </p>
+      {isEditing ? (
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-1">
+            Date
+          </label>
+          <input
+            type="date"
+            value={editedDate}
+            onChange={(e) => setEditedDate(e.target.value)}
+            className="border p-2 w-full rounded-md"
+          />
+        </div>
+      ) : (
+        <p className="mt-2 text-gray-800 font-semibold">
+          {formatDate(document.date)}
+        </p>
+      )}
+
       <p className="text-gray-600">
         {documentIds.length}{" "}
         {getPluralizedLabel(documentIds.length, "document", "documents")}
