@@ -55,7 +55,11 @@ const PDFViewer = ({
   useEffect(() => {
     if (signaturesApplied) {
       setPreviewPosition(null);
-      drawSignatures(); // Redessiner le canvas vide
+      const overlayCanvas = overlayCanvasRef.current;
+      if (overlayCanvas) {
+        const context = overlayCanvas.getContext("2d");
+        context.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      }
     }
   }, [signaturesApplied]);
 
@@ -98,7 +102,7 @@ const PDFViewer = ({
   };
 
   const drawSignatures = () => {
-    if (!overlayCanvasRef.current || !viewport) return;
+    if (!overlayCanvasRef.current || !viewport || signaturesApplied) return;
 
     const overlayCanvas = overlayCanvasRef.current;
     const context = overlayCanvas.getContext("2d");

@@ -1,0 +1,29 @@
+import { useState } from "react";
+import { dashboardMenuItems } from "../../../../../shared/constants/menuItems.js";
+import NavigationTabs from "../../common/Design/Buttons/NavigationTabs";
+import Section from "../../common/Managers/Section.jsx";
+import ActivityLogs from "./ActivityLogs.jsx";
+import SignatureStamp from "./SignatureStamp.jsx";
+import UserPermissions from "./UserPermissions.jsx";
+
+export default function Dashboard() {
+  const [selectedTab, setSelectedTab] = useState(dashboardMenuItems[0].label);
+
+  const tabComponents = {
+    "Gestion des droits": <UserPermissions />,
+    "Historique des actions": <ActivityLogs />,
+    "Tampon de signature": <SignatureStamp />,
+  };
+
+  return (
+    <div>
+      <Section title="Tableau de bord" />
+      <NavigationTabs
+        menuItems={dashboardMenuItems.map((item) => item.label)}
+        selectedTab={selectedTab}
+        onTabChange={setSelectedTab}
+      />
+      <div className="mt-4">{tabComponents[selectedTab] || null}</div>
+    </div>
+  );
+}

@@ -52,6 +52,10 @@ const data = {
         { title: "Signature de document", url: "/document-signing" },
       ],
     },
+    {
+      title: "Administration",
+      items: [{ title: "Tableau de bord", url: "/dashboard" }],
+    },
   ],
 };
 

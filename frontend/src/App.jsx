@@ -4,6 +4,7 @@ import { ParticipantType, getTypeName } from "../../shared/constants/types.js";
 import GlobalBody from "./components/common/GlobalBody.jsx";
 import DocumentSigning from "./components/navbar/accounting/DocumentSigning.jsx";
 import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting.jsx";
+import Dashboard from "./components/navbar/administration/Dashboard.jsx";
 import Bank from "./components/navbar/aministrative-services/Bank.jsx";
 import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
 import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails.jsx";
@@ -54,6 +55,7 @@ export default function App() {
     { path: "/document-signing", element: <DocumentSigning /> },
     ...participantRoutes,
     { path: "*", element: <h1>URL non trouvée</h1> },
+    { path: "/dashboard", element: <Dashboard /> },
   ];
 
   return (
