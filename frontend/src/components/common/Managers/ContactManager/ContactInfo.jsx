@@ -66,6 +66,7 @@ export default function ContactInfo({ sections, contactId, contactType }) {
       {isEditing ? (
         <EditContactForm
           contact={contact}
+          sections={sections}
           onSave={() => setIsEditing(false)}
           contactType={contactType}
           onUpdate={updateMutation.mutate}

@@ -6,6 +6,7 @@ import {
   formatSalary,
   formatSocialSecurityNumber,
 } from "../../../../../../shared/utils/formatUtils";
+import ContactPersons from "./ContactPersons.jsx";
 
 export default function ContactSection({
   title,
@@ -47,101 +48,7 @@ export default function ContactSection({
               if (values) {
                 return contact[key]?.length > 0 ? (
                   <div key={key} className="text-sm text-gray-900">
-                    {contact[key].map((person, index) => (
-                      <p
-                        key={`${key}-${index}`}
-                        className="text-sm text-gray-900"
-                      >
-                        {values.map(({ key, label }) => {
-                          let formattedValue = person[key] ?? "Non renseigné";
-
-                          if (typeof formattedValue === "boolean") {
-                            formattedValue = formattedValue ? "Oui" : "Non";
-                          }
-
-                          if (
-                            key.includes("Date") &&
-                            formattedValue !== "Non renseigné"
-                          ) {
-                            formattedValue = formatDate(formattedValue);
-                          }
-
-                          if (
-                            key.includes("phone") &&
-                            formattedValue !== "Non renseigné"
-                          ) {
-                            formattedValue = (
-                              <a
-                                href={`tel:${formattedValue}`}
-                                className="text-blue-600 underline"
-                              >
-                                {formatPhoneNumber(formattedValue)}
-                              </a>
-                            );
-                          }
-
-                          if (
-                            key.includes("email") &&
-                            formattedValue !== "Non renseigné"
-                          ) {
-                            formattedValue = (
-                              <a
-                                href={`https://mail.orange.fr/appsuite/#!!&app=io.ox/mail&folder=default0/INBOX&to=${encodeURIComponent(
-                                  formattedValue
-                                )}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline"
-                              >
-                                {formattedValue}
-                              </a>
-                            );
-                          }
-
-                          if (
-                            key.includes("Salary") &&
-                            formattedValue !== "Non renseigné"
-                          ) {
-                            formattedValue = formatSalary(formattedValue);
-                          }
-
-                          if (
-                            key.includes("Secu") &&
-                            formattedValue !== "Non renseigné"
-                          ) {
-                            formattedValue =
-                              formatSocialSecurityNumber(formattedValue);
-                          }
-
-                          if (
-                            key.includes("website") &&
-                            formattedValue !== "Non renseigné"
-                          ) {
-                            formattedValue = (
-                              <a
-                                href={
-                                  formattedValue.startsWith("http")
-                                    ? formattedValue
-                                    : `https://${formattedValue}`
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline"
-                              >
-                                {formattedValue}
-                              </a>
-                            );
-                          }
-
-                          return (
-                            <span key={key}>
-                              <strong>{label} :</strong> {formattedValue}{" "}
-                              {key !== values[values.length - 1].key && "- "}
-                            </span>
-                          );
-                        })}
-                      </p>
-                    ))}
+                    <ContactPersons contactPersons={contact[key]} />
                   </div>
                 ) : (
                   <p key={key} className="text-sm text-gray-500">
@@ -169,11 +76,7 @@ export default function ContactSection({
               if (key.includes("email") && value !== "Non renseigné") {
                 value = (
                   <a
-                    href={`https://mail.orange.fr/appsuite/#!!&app=io.ox/mail&folder=default0/INBOX&to=${encodeURIComponent(
-                      value
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`mailto:${value}`}
                     className="text-blue-600 underline"
                   >
                     {value}

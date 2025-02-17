@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { CONTACT_FIELDS } from "../../../../../shared/constants/contactFields.js";
 import {
   getPrecisionContactMenuItems,
   getTypeName,
@@ -21,22 +22,32 @@ export default function ParticipantDetails({ participantType }) {
     }
   }, [menuItems]);
 
+  const type =
+    participantType === "Client"
+      ? "client"
+      : participantType === "Fournisseur"
+      ? "supplier"
+      : participantType === "Sous-traitant"
+      ? "subcontractor"
+      : participantType === "Architecte"
+      ? "architect"
+      : "employee";
+  const participantFields = CONTACT_FIELDS[type] || [];
+
+  const fields = Array.isArray(participantFields)
+    ? participantFields
+    : participantFields.flatMap((section) => section.fields);
+
   const sections = [
     {
       title: "Informations générales",
-      fields: [
-        { name: "name", label: "Nom de l'entreprise" },
-        { name: "address", label: "Adresse" },
-        { name: "website", label: "Site web" },
-      ],
+      fields: fields.filter(({ name }) =>
+        ["name", "address", "website"].includes(name)
+      ),
     },
     {
       title: "Interlocuteurs",
-      fields: [
-        { name: "contactPersons", label: "Nom", key: "name" },
-        { name: "contactPersons", label: "Téléphone", key: "phone" },
-        { name: "contactPersons", label: "Email", key: "email" },
-      ],
+      fields: fields.filter(({ name }) => ["contactPersons"].includes(name)),
     },
   ];
 

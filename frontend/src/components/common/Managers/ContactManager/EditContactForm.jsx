@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields";
 import {
   formatPhoneNumber,
   formatPostalCode,
@@ -16,29 +15,22 @@ export default function EditContactForm({
   contactType,
   onUpdate,
   isUpdating,
+  sections,
 }) {
-  const isEmployee = contactType === "employee";
-  const fieldsData =
-    CONTACT_FIELDS[
-      isEmployee ? contactType : getTypeName(contactType, "english")
-    ] || [];
-  const fields = Array.isArray(fieldsData)
-    ? fieldsData
-    : fieldsData.flatMap((section) => section.fields);
+  const [formData, setFormData] = useState(
+    sections.reduce((acc, { fields }) => {
+      fields.forEach(({ name, type, defaultValue }) => {
+        let value =
+          contact[name] ?? (type === "checkbox" ? defaultValue || false : "");
+        if (type === "date" && isDate(value))
+          value = new Date(value).toISOString().split("T")[0];
+        acc[name] = value;
+      });
+      return acc;
+    }, {})
+  );
 
-  const initialFormData = fields.reduce((acc, field) => {
-    let value =
-      contact[field.name] ??
-      (field.type === "checkbox" ? field.defaultValue || false : "");
-    if (field.type === "date" && isDate(value))
-      value = new Date(value).toISOString().split("T")[0];
-    acc[field.name] = value;
-    return acc;
-  }, {});
-
-  const [formData, setFormData] = useState(initialFormData);
   const [error, setError] = useState("");
-  const [openSections, setOpenSections] = useState([true, false, false]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -57,8 +49,10 @@ export default function EditContactForm({
   };
 
   const handleSubmit = () => {
-    const missingFields = fields
-      .filter((field) => field.required && !formData[field.name])
+    const missingFields = sections
+      .flatMap(({ fields }) =>
+        fields.filter((field) => field.required && !formData[field.name])
+      )
       .map((field) => field.label);
 
     if (missingFields.length > 0) {
@@ -66,6 +60,12 @@ export default function EditContactForm({
         `Veuillez remplir les champs obligatoires : ${missingFields.join(", ")}`
       );
       return;
+    }
+
+    if (formData.contactPersons) {
+      formData.contactPersons = formData.contactPersons.filter((contact) =>
+        Object.values(contact).some((val) => val.trim() !== "")
+      );
     }
 
     onUpdate(
@@ -77,62 +77,6 @@ export default function EditContactForm({
     );
   };
 
-  const toggleSection = (index) => {
-    setOpenSections((prev) =>
-      prev.map((isOpen, i) => (i === index ? !isOpen : isOpen))
-    );
-  };
-
-  const sections = [
-    {
-      title: "Informations personnelles",
-      fields: fields.filter(({ name }) =>
-        [
-          "active",
-          "firstName",
-          "lastName",
-          "birthDate",
-          "birthCity",
-          "nationality",
-          "gender",
-          "familyStatus",
-          "dependentChildren",
-        ].includes(name)
-      ),
-    },
-    {
-      title: "Coordonnées",
-      fields: fields.filter(({ name }) =>
-        [
-          "address",
-          "postalCode",
-          "city",
-          "phone",
-          "email",
-          "jobTitle",
-          "qualification",
-        ].includes(name)
-      ),
-    },
-    {
-      title: "Contrat et salaire",
-      fields: fields.filter(({ name }) =>
-        [
-          "contractType",
-          "contractDurationMonths",
-          "workTime",
-          "monthlyNetSalary",
-          "weeklyHours",
-          "startDate",
-          "endDate",
-          "medicalCheckupDate",
-          "socialSecurityNumber",
-          "btpCard",
-        ].includes(name)
-      ),
-    },
-  ];
-
   return (
     <div className="space-y-3">
       {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -141,11 +85,12 @@ export default function EditContactForm({
         <EditContactSection
           key={title}
           title={title}
+          fields={fields}
           formData={formData}
           handleChange={handleChange}
-          fields={fields}
-          isOpen={openSections[index]}
-          onToggle={() => toggleSection(index)}
+          isOpen={true}
+          onToggle={() => {}}
+          setFormData={setFormData}
         />
       ))}
 
