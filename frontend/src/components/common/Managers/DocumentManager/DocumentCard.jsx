@@ -1,6 +1,7 @@
-import { PenTool } from "lucide-react";
+import { Mail, PenTool } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
+import { sendMail } from "../../../../../../shared/utils/documentUtils.js";
 import { formatDate } from "../../../../../../shared/utils/formatUtils.js";
 import getFileIcon from "../../../../../../shared/utils/getFileIcon.jsx";
 
@@ -70,17 +71,24 @@ export default function DocumentCard({
 
   return (
     <div
-      className={`relative border ${getBorderColor()} p-4 rounded-lg text-center w-[200px] flex-shrink-0 bg-white transition-transform duration-200 ease-in-out cursor-pointer`}
+      className={`relative border ${getBorderColor()} p-4 rounded-lg text-center w-[200px] flex-shrink-0 bg-white transition-transform duration-200 ease-in-out cursor-pointer hover:bg-gray-50`}
       onClick={() => onSelectItem(document)}
     >
       {isPdf && (
         <button
-          className="absolute bottom-2 left-2 bg-gray-100 hover:bg-purple-100 text-purple-600 rounded-full p-2 transition"
+          className="absolute top-11 left-2 bg-gray-100 hover:bg-purple-100 text-purple-600 rounded-full p-2 transition"
           onClick={handleSigning}
         >
           <PenTool size={16} />
         </button>
       )}
+
+      <button
+        onClick={() => sendMail(document, [document.id], [document])}
+        className="absolute top-2 left-2 bg-gray-100 hover:bg-orange-100 text-orange-600 rounded-full p-2 transition"
+      >
+        <Mail size={16} />
+      </button>
 
       {checkboxVisible && isCEDIG && (
         <input
