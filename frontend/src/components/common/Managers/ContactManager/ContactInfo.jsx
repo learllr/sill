@@ -1,84 +1,22 @@
 import { Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
-import { getTypeName } from "../../../../../../shared/constants/types.js";
 import { useContacts } from "../../../../hooks/useContacts.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import Loading from "../../Design/Loading.jsx";
 import ContactSection from "./ContactSection.jsx";
 import EditContactForm from "./EditContactForm.jsx";
 
-export default function ContactInfo({ contactId, contactType }) {
+export default function ContactInfo({ sections, contactId, contactType }) {
   const navigate = useNavigate();
-  const isEmployee = contactType === "employee";
   const { contacts, isLoading, isError, updateMutation, deleteMutation } =
-    useContacts(
-      isEmployee ? contactType : getTypeName(contactType, "singular")
-    );
+    useContacts(contactType);
+
   const contact = contacts?.find((c) => c.id === parseInt(contactId));
-
-  const fieldsData =
-    CONTACT_FIELDS[
-      isEmployee ? contactType : getTypeName(contactType, "english")
-    ] || [];
-  const fields = Array.isArray(fieldsData)
-    ? fieldsData
-    : fieldsData.flatMap((section) => section.fields);
-
-  const sections = [
-    {
-      title: "Informations personnelles",
-      fields: fields.filter(({ name }) =>
-        [
-          "active",
-          "gender",
-          "firstName",
-          "lastName",
-          "birthDate",
-          "birthCity",
-          "nationality",
-          "familyStatus",
-          "dependentChildren",
-        ].includes(name)
-      ),
-    },
-    {
-      title: "Coordonnées",
-      fields: fields.filter(({ name }) =>
-        [
-          "address",
-          "postalCode",
-          "city",
-          "phone",
-          "email",
-          "jobTitle",
-          "qualification",
-        ].includes(name)
-      ),
-    },
-    {
-      title: "Contrat et salaire",
-      fields: fields.filter(({ name }) =>
-        [
-          "contractType",
-          "contractDurationMonths",
-          "workTime",
-          "monthlyNetSalary",
-          "weeklyHours",
-          "startDate",
-          "endDate",
-          "medicalCheckupDate",
-          "socialSecurityNumber",
-          "btpCard",
-        ].includes(name)
-      ),
-    },
-  ];
 
   const [isEditing, setIsEditing] = useState(false);
   const [openSections, setOpenSections] = useState(
-    sections.map((_, index) => index === 0)
+    sections ? sections.map((_, index) => index === 0) : []
   );
 
   if (isLoading) return <Loading />;
@@ -87,15 +25,13 @@ export default function ContactInfo({ contactId, contactType }) {
       <p className="text-red-500 text-center">{`${contactType} introuvable.`}</p>
     );
 
-  const getRedirectPath = () =>
-    contactType === "employee"
-      ? "/salariés"
-      : `/${getTypeName(contactType, "plural")}`;
-
   const handleDelete = () => {
     if (window.confirm("Voulez-vous vraiment supprimer ce contact ?")) {
       deleteMutation.mutate(contact.id, {
-        onSuccess: () => navigate(getRedirectPath()),
+        onSuccess: () =>
+          navigate(
+            contactType === "employee" ? "/salariés" : `/${contactType}`
+          ),
       });
     }
   };
@@ -136,18 +72,16 @@ export default function ContactInfo({ contactId, contactType }) {
           isUpdating={updateMutation.isLoading}
         />
       ) : (
-        <>
-          {sections.map(({ title, fields }, index) => (
-            <ContactSection
-              key={title}
-              title={title}
-              contact={contact}
-              fields={fields}
-              isOpen={openSections[index]}
-              onToggle={() => toggleSection(index)}
-            />
-          ))}
-        </>
+        sections?.map(({ title, fields }, index) => (
+          <ContactSection
+            key={title}
+            title={title}
+            contact={contact}
+            fields={fields}
+            isOpen={openSections[index]}
+            onToggle={() => toggleSection(index)}
+          />
+        ))
       )}
     </div>
   );

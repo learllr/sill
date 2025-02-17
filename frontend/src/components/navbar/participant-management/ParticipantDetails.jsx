@@ -9,7 +9,6 @@ import DocumentManager from "../../common/Managers/DocumentManager/DocumentManag
 
 export default function ParticipantDetails({ participantType }) {
   const { id } = useParams();
-
   const menuItems = getPrecisionContactMenuItems(participantType) || [];
 
   const [selectedMainTab, setSelectedMainTab] = useState("");
@@ -22,6 +21,25 @@ export default function ParticipantDetails({ participantType }) {
     }
   }, [menuItems]);
 
+  const sections = [
+    {
+      title: "Informations générales",
+      fields: [
+        { name: "name", label: "Nom de l'entreprise" },
+        { name: "address", label: "Adresse" },
+        { name: "website", label: "Site web" },
+      ],
+    },
+    {
+      title: "Interlocuteurs",
+      fields: [
+        { name: "contactPersons", label: "Nom", key: "name" },
+        { name: "contactPersons", label: "Téléphone", key: "phone" },
+        { name: "contactPersons", label: "Email", key: "email" },
+      ],
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <DocumentManager
@@ -33,7 +51,11 @@ export default function ParticipantDetails({ participantType }) {
         menuItems={menuItems}
         participantId={id}
         ContactInfoComponent={() => (
-          <ContactInfo contactId={id} contactType={participantType} />
+          <ContactInfo
+            contactId={id}
+            contactType={participantType}
+            sections={sections}
+          />
         )}
         inParticipantSection={true}
       />
