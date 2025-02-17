@@ -1,14 +1,14 @@
-import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
-import { getTypeName } from "../../../../../../shared/constants/types.js";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
+import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields";
 import {
   formatPhoneNumber,
   formatPostalCode,
-  formatSocialSecurityNumber,
   formatSalary,
-} from "../../../../../../shared/utils/formatUtils.js";
+  formatSocialSecurityNumber,
+  isDate,
+} from "../../../../../../shared/utils/formatUtils";
+import IconButton from "../../Design/Buttons/IconButton";
+import EditContactSection from "./EditContactSection";
 
 export default function EditContactForm({
   contact,
@@ -22,39 +22,33 @@ export default function EditContactForm({
     CONTACT_FIELDS[
       isEmployee ? contactType : getTypeName(contactType, "english")
     ] || [];
-
   const fields = Array.isArray(fieldsData)
     ? fieldsData
     : fieldsData.flatMap((section) => section.fields);
 
   const initialFormData = fields.reduce((acc, field) => {
-    acc[field.name] =
-      contact[field.name] !== undefined && contact[field.name] !== null
-        ? contact[field.name]
-        : field.type === "checkbox"
-        ? field.defaultValue || false
-        : "";
+    let value =
+      contact[field.name] ??
+      (field.type === "checkbox" ? field.defaultValue || false : "");
+    if (field.type === "date" && isDate(value))
+      value = new Date(value).toISOString().split("T")[0];
+    acc[field.name] = value;
     return acc;
   }, {});
 
   const [formData, setFormData] = useState(initialFormData);
   const [error, setError] = useState("");
+  const [openSections, setOpenSections] = useState([true, false, false]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     let formattedValue = value;
 
-    if (name.toLowerCase().includes("phone")) {
-      formattedValue = formatPhoneNumber(value);
-    }
-
-    if (name.toLowerCase().includes("postal")) {
-      formattedValue = formatPostalCode(value);
-    }
-
-    if (name.toLowerCase().includes("secu")) {
+    if (name.includes("phone")) formattedValue = formatPhoneNumber(value);
+    if (name.includes("postal")) formattedValue = formatPostalCode(value);
+    if (name.includes("Secu"))
       formattedValue = formatSocialSecurityNumber(value);
-    }
+    if (name.includes("salary")) formattedValue = formatSalary(value);
 
     setFormData((prev) => ({
       ...prev,
@@ -62,34 +56,9 @@ export default function EditContactForm({
     }));
   };
 
-  const handleArrayChange = (fieldName, index, key, value) => {
-    setFormData((prev) => {
-      const updatedArray = [...(prev[fieldName] || [])];
-      updatedArray[index] = { ...updatedArray[index], [key]: value };
-      return { ...prev, [fieldName]: updatedArray };
-    });
-  };
-
-  const handleAddArrayItem = (fieldName) => {
-    setFormData((prev) => ({
-      ...prev,
-      [fieldName]: [
-        ...(prev[fieldName] || []),
-        { name: "", phone: "", email: "" },
-      ],
-    }));
-  };
-
-  const handleRemoveArrayItem = (fieldName, index) => {
-    setFormData((prev) => {
-      const updatedArray = prev[fieldName].filter((_, i) => i !== index);
-      return { ...prev, [fieldName]: updatedArray };
-    });
-  };
-
   const handleSubmit = () => {
     const missingFields = fields
-      .filter((field) => field.required && formData[field.name] === "")
+      .filter((field) => field.required && !formData[field.name])
       .map((field) => field.label);
 
     if (missingFields.length > 0) {
@@ -99,21 +68,8 @@ export default function EditContactForm({
       return;
     }
 
-    const cleanedFormData = { ...formData };
-
-    Object.keys(cleanedFormData).forEach((key) => {
-      if (Array.isArray(cleanedFormData[key])) {
-        cleanedFormData[key] = cleanedFormData[key].filter(
-          (item) =>
-            item.name.trim() !== "" ||
-            item.phone.trim() !== "" ||
-            item.email.trim() !== ""
-        );
-      }
-    });
-
     onUpdate(
-      { contactId: contact.id, formData: cleanedFormData },
+      { contactId: contact.id, formData },
       {
         onSuccess: onSave,
         onError: () => setError("Erreur lors de la modification du contact."),
@@ -121,94 +77,77 @@ export default function EditContactForm({
     );
   };
 
+  const toggleSection = (index) => {
+    setOpenSections((prev) =>
+      prev.map((isOpen, i) => (i === index ? !isOpen : isOpen))
+    );
+  };
+
+  const sections = [
+    {
+      title: "Informations personnelles",
+      fields: fields.filter(({ name }) =>
+        [
+          "active",
+          "firstName",
+          "lastName",
+          "birthDate",
+          "birthCity",
+          "nationality",
+          "gender",
+          "familyStatus",
+          "dependentChildren",
+        ].includes(name)
+      ),
+    },
+    {
+      title: "Coordonnées",
+      fields: fields.filter(({ name }) =>
+        [
+          "address",
+          "postalCode",
+          "city",
+          "phone",
+          "email",
+          "jobTitle",
+          "qualification",
+        ].includes(name)
+      ),
+    },
+    {
+      title: "Contrat et salaire",
+      fields: fields.filter(({ name }) =>
+        [
+          "contractType",
+          "contractDurationMonths",
+          "workTime",
+          "monthlyNetSalary",
+          "weeklyHours",
+          "startDate",
+          "endDate",
+          "medicalCheckupDate",
+          "socialSecurityNumber",
+          "btpCard",
+        ].includes(name)
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {fields.map(({ name, label, type, options, required }) => {
-          const value = formData[name];
-
-          if (Array.isArray(value)) {
-            return (
-              <div key={name} className="col-span-full">
-                <strong>{label}</strong>
-                <div className="space-y-2 mt-2">
-                  {value.map((item, index) => (
-                    <div key={index} className="flex space-x-2 items-center">
-                      <input
-                        type="text"
-                        placeholder="Nom"
-                        value={item.name || ""}
-                        onChange={(e) =>
-                          handleArrayChange(name, index, "name", e.target.value)
-                        }
-                        className="border rounded-md p-2 flex-1"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Téléphone"
-                        value={item.phone || ""}
-                        onChange={(e) =>
-                          handleArrayChange(
-                            name,
-                            index,
-                            "phone",
-                            formatPhoneNumber(e.target.value)
-                          )
-                        }
-                        className="border rounded-md p-2 flex-1"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Email"
-                        value={item.email || ""}
-                        onChange={(e) =>
-                          handleArrayChange(
-                            name,
-                            index,
-                            "email",
-                            e.target.value
-                          )
-                        }
-                        className="border rounded-md p-2 flex-1"
-                      />
-                      <IconButton
-                        onClick={() => handleRemoveArrayItem(name, index)}
-                        variant="red"
-                      >
-                        <Trash2 />
-                      </IconButton>
-                    </div>
-                  ))}
-                  <IconButton
-                    onClick={() => handleAddArrayItem(name)}
-                    variant="green"
-                  >
-                    <Plus />
-                  </IconButton>
-                </div>
-              </div>
-            );
-          }
-
-          return (
-            <label key={name} className="block">
-              <span className="text-gray-700">
-                {label} {required && <span className="text-red-500">*</span>}
-              </span>
-              <input
-                type={type}
-                name={name}
-                value={value || ""}
-                onChange={handleChange}
-                className="block w-full mt-1 border rounded-md p-2"
-                {...(type === "number" ? { min: 0 } : {})}
-              />
-            </label>
-          );
-        })}
-      </div>
-
       {error && <p className="text-red-500 text-sm">{error}</p>}
+
+      {sections.map(({ title, fields }, index) => (
+        <EditContactSection
+          key={title}
+          title={title}
+          formData={formData}
+          handleChange={handleChange}
+          fields={fields}
+          isOpen={openSections[index]}
+          onToggle={() => toggleSection(index)}
+        />
+      ))}
 
       <IconButton
         onClick={handleSubmit}

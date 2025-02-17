@@ -1,10 +1,15 @@
 export function formatPostalCode(postalCode) {
-  return postalCode.replace(/\D/g, "").replace(/^(\d{2})(\d{3})$/, "$1 $2");
+  return postalCode
+    .replace(/\D/g, "")
+    .slice(0, 5)
+    .replace(/(\d{2})(\d{0,3})/, "$1 $2")
+    .trim();
 }
 
 export function formatPhoneNumber(phone) {
   return phone
     .replace(/\D/g, "")
+    .slice(0, 10)
     .replace(/(\d{2})(?=\d)/g, "$1 ")
     .trim();
 }
@@ -42,10 +47,14 @@ export function formatDateTime(date) {
 }
 
 export function formatSocialSecurityNumber(ssn) {
-  return ssn.replace(
-    /^(\d{1,1})?(\d{0,2})?(\d{0,2})?(\d{0,2})?(\d{0,3})?(\d{0,3})?(\d{0,2})?$/,
-    (_, a, b, c, d, e, f, g) => [a, b, c, d, e, f, g].filter(Boolean).join(" ")
-  );
+  return ssn
+    .replace(/\D/g, "")
+    .slice(0, 15)
+    .replace(
+      /^(\d{1})?(\d{0,2})?(\d{0,2})?(\d{0,2})?(\d{0,3})?(\d{0,3})?(\d{0,2})?$/,
+      (_, a, b, c, d, e, f, g) =>
+        [a, b, c, d, e, f, g].filter(Boolean).join(" ")
+    );
 }
 
 export function formatSalary(salary) {
