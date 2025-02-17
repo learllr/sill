@@ -10,21 +10,22 @@ export default function SignatureStamp() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [hasNewFile, setHasNewFile] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: signatureData, isLoading } = useQuery(
-    "signature",
-    fetchSignature,
-    {
-      onSuccess: (data) => {
-        if (!file) {
-          setPreview(
-            data?.filePath ? `${BASE_URL}/uploads/${data.filePath}` : null
-          );
-        }
-      },
-    }
-  );
+  const {
+    data: signatureData,
+    isLoading,
+    isError,
+  } = useQuery("signature", fetchSignature, {
+    onSuccess: (data) => {
+      if (!hasNewFile && data?.filePath) {
+        setPreview(`${BASE_URL}/uploads/${data.filePath}`);
+      }
+    },
+    onError: () => setPreview(null),
+    retry: false,
+  });
 
   const uploadMutation = useMutation(uploadSignature, {
     onSuccess: (data) => {
@@ -32,12 +33,18 @@ export default function SignatureStamp() {
       setPreview(`${BASE_URL}/uploads/${data.filePath}`);
       setIsEditing(false);
       setFile(null);
+      setHasNewFile(false);
     },
   });
 
   async function fetchSignature() {
-    const response = await axios.get("/signature");
-    return response.data;
+    try {
+      const response = await axios.get("/signature");
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) return null;
+      throw error;
+    }
   }
 
   async function uploadSignature(file) {
@@ -52,6 +59,8 @@ export default function SignatureStamp() {
     if (uploadedFile) {
       setFile(uploadedFile);
       setPreview(URL.createObjectURL(uploadedFile));
+      setHasNewFile(true);
+      setIsEditing(true);
     }
   };
 
@@ -61,6 +70,7 @@ export default function SignatureStamp() {
 
   const handleCancel = () => {
     setFile(null);
+    setHasNewFile(false);
     setPreview(
       signatureData?.filePath
         ? `${BASE_URL}/uploads/${signatureData.filePath}`
@@ -73,36 +83,50 @@ export default function SignatureStamp() {
     <div className="flex flex-col items-center space-y-4 w-full max-w-md mx-auto justify-center">
       {isLoading ? (
         <p>Chargement...</p>
-      ) : preview && !isEditing ? (
-        <div className="relative border p-2">
-          <img src={preview} alt="Tampon de signature" className="max-w-xs" />
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-full p-2 transition absolute top-2 right-2"
-          >
-            <Pencil size={16} />
-          </button>
-        </div>
       ) : (
         <>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
-          {preview && (
-            <div className="border p-2">
-              <img src={preview} alt="Aperçu du tampon" className="max-w-xs" />
+          {preview && !isEditing ? (
+            <div className="relative border p-2">
+              <img
+                src={preview}
+                alt="Tampon de signature"
+                className="max-w-xs"
+              />
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-full p-2 transition absolute top-2 right-2"
+              >
+                <Pencil size={16} />
+              </button>
             </div>
+          ) : (
+            <>
+              <input type="file" accept="image/*" onChange={handleFileChange} />
+              {preview && (
+                <div className="border p-2">
+                  <img
+                    src={preview}
+                    alt="Aperçu du tampon"
+                    className="max-w-xs"
+                  />
+                </div>
+              )}
+              <div className="flex space-x-2">
+                <IconButton
+                  onClick={handleSave}
+                  disabled={!file || uploadMutation.isLoading}
+                  variant="green"
+                >
+                  {uploadMutation.isLoading
+                    ? "Enregistrement..."
+                    : "Enregistrer"}
+                </IconButton>
+                <IconButton onClick={handleCancel} variant="red">
+                  Annuler
+                </IconButton>
+              </div>
+            </>
           )}
-          <div className="flex space-x-2">
-            <IconButton
-              onClick={handleSave}
-              disabled={!file || uploadMutation.isLoading}
-              variant="green"
-            >
-              {uploadMutation.isLoading ? "Enregistrement..." : "Enregistrer"}
-            </IconButton>
-            <IconButton onClick={handleCancel} variant="red">
-              Annuler
-            </IconButton>
-          </div>
         </>
       )}
     </div>
