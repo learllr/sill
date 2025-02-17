@@ -1,3 +1,5 @@
+import { PenTool } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { formatDate } from "../../../../../../shared/utils/formatUtils.js";
 import getFileIcon from "../../../../../../shared/utils/getFileIcon.jsx";
@@ -12,11 +14,18 @@ export default function DocumentCard({
   isCEDIG,
   participants,
 }) {
+  const navigate = useNavigate();
   const isChecked = selectedDocuments.includes(document.id);
-
   const isInvoice = document.type === DocumentType.FACTURES;
   const isQuote = document.type === DocumentType.DEVIS;
   const isPV = document.type === DocumentType.PV;
+
+  const isPdf = document.path?.endsWith(".pdf");
+
+  const handleSigning = (e) => {
+    e.stopPropagation();
+    navigate("/document-signing", { state: { document } });
+  };
 
   const getBorderColor = () => {
     if (isCEDIG) {
@@ -64,6 +73,15 @@ export default function DocumentCard({
       className={`relative border ${getBorderColor()} p-4 rounded-lg text-center w-[200px] flex-shrink-0 bg-white transition-transform duration-200 ease-in-out cursor-pointer`}
       onClick={() => onSelectItem(document)}
     >
+      {isPdf && (
+        <button
+          className="absolute bottom-2 left-2 bg-gray-100 hover:bg-purple-100 text-purple-600 rounded-full p-2 transition"
+          onClick={handleSigning}
+        >
+          <PenTool size={16} />
+        </button>
+      )}
+
       {checkboxVisible && isCEDIG && (
         <input
           type="checkbox"
