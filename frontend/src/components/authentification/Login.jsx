@@ -31,7 +31,7 @@ export default function Login() {
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <form
         onSubmit={handleLogin}
-        className="w-80 p-6 bg-white shadow-lg rounded-lg"
+        className="w-96 p-10 bg-white shadow-lg rounded-lg"
       >
         <h2 className="text-xl font-semibold mb-4">Connexion</h2>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}

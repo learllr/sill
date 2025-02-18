@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import UserDAO from "../dao/UserDAO.js";
 
 export const getProfile = async (req, res) => {
@@ -17,7 +18,6 @@ export const getProfile = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { firstName, lastName, email } = req.body;
     const userId = req.params.id;
 
     const user = await UserDAO.getUserById(userId);
@@ -25,11 +25,7 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ error: "Utilisateur non trouvé." });
     }
 
-    const updatedUser = await UserDAO.updateUser(user, {
-      firstName: firstName || user.firstName,
-      lastName: lastName || user.lastName,
-      email: email || user.email,
-    });
+    const updatedUser = await UserDAO.updateUser(user, req.body);
 
     res.status(200).json({
       message: "Informations de l'utilisateur mises à jour avec succès",
@@ -62,6 +58,12 @@ export const createUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password, roleId } = req.body;
 
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ error: "Tous les champs sont requis" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await UserDAO.createUser({
       firstName,
       lastName,
@@ -69,11 +71,6 @@ export const createUser = async (req, res) => {
       password: hashedPassword,
       roleId,
     });
-
-    // await UserSettingDAO.create({
-    //   userId: user.id,
-    //   consultationDuration: 60,
-    // });
 
     res.status(201).json({ message: "Utilisateur créé avec succès", user });
   } catch (error) {

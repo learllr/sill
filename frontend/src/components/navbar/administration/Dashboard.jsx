@@ -13,8 +13,8 @@ export default function Dashboard() {
   const tabComponents = {
     "Gestion des droits": <UserPermissions />,
     "Historique des actions": <ActivityLogs />,
-    "Tampon de signature": <SignatureStamp />,
     Corbeille: <TrashBin />,
+    "Tampon de signature": <SignatureStamp />,
   };
 
   return (

@@ -8,7 +8,7 @@ export default function IconButton({
   variant = "gray",
 }) {
   const baseStyles =
-    "p-2 rounded-md transition flex items-center justify-center space-x-2";
+    "p-2 rounded-md transition flex items-center justify-center space-x-2 hover:scale-105";
 
   const variants = {
     gray: "bg-gray-400 text-white hover:bg-gray-500",
