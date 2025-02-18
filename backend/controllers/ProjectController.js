@@ -115,3 +115,21 @@ export const removeParticipantFromProject = async (req, res) => {
       .json({ error: "Erreur lors de la suppression du participant" });
   }
 };
+
+export const getParticipantsByProject = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const participants = await ProjectDAO.getParticipantsByProject(id);
+
+    res.status(200).json(participants);
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des participants du projet :",
+      error
+    );
+    res.status(500).json({
+      error: "Erreur lors de la récupération des participants du projet",
+    });
+  }
+};

@@ -71,4 +71,16 @@ export default class ProjectDAO {
       },
     });
   }
+
+  static async getParticipantsByProject(projectId) {
+    return await ProjectParticipant.findAll({
+      where: { projectId },
+      include: [
+        {
+          model: Participant,
+          as: "participants",
+        },
+      ],
+    });
+  }
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
-import { useParticipants } from "../../../../hooks/useParticipants.jsx";
+import { useProjectParticipants } from "../../../../hooks/useProjectParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
@@ -38,7 +38,7 @@ export default function EditDocumentForm({
   });
 
   const { projects } = useProjects();
-  const { participants } = useParticipants();
+  const { participants } = useProjectParticipants(formFields.projectId);
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -183,13 +183,16 @@ export default function EditDocumentForm({
               className="block w-full mt-1 border rounded-md p-2"
             >
               <option value="">Sélectionner un intervenant</option>
-              {participants
-                .filter((p) => ["Client", "Fournisseur"].includes(p.type))
-                .map((participant) => (
-                  <option key={participant.id} value={participant.id}>
-                    {participant.name}
+              {participants.map((participant) => {
+                const participantInfo = participant.participants[0];
+
+                return participantInfo &&
+                  ["Client", "Fournisseur"].includes(participantInfo.type) ? (
+                  <option key={participantInfo.id} value={participantInfo.id}>
+                    {participantInfo.name}
                   </option>
-                ))}
+                ) : null;
+              })}
             </select>
           </label>
         </>

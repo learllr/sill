@@ -53,6 +53,18 @@ export default (sequelize) => {
       foreignKey: "participantId",
       onDelete: "CASCADE",
     });
+
+    ProjectParticipant.hasMany(models.Participant, {
+      foreignKey: "id",
+      sourceKey: "participantId",
+      as: "participants",
+    });
+
+    ProjectParticipant.hasMany(models.Project, {
+      foreignKey: "id",
+      sourceKey: "projectId",
+      as: "projects",
+    });
   };
 
   return ProjectParticipant;
