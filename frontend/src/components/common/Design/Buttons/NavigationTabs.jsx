@@ -12,7 +12,7 @@ export default function NavigationTabs({
 }) {
   return (
     <NavigationMenu>
-      <NavigationMenuList className="flex space-x-4 border-b pb-2 mb-4">
+      <NavigationMenuList className="flex flex-wrap justify-center gap-2 border-b pb-2 mb-4">
         {menuItems.map((item) => (
           <NavigationMenuItem key={item}>
             <NavigationMenuLink

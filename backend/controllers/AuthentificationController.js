@@ -106,3 +106,36 @@ export const logout = (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Déconnexion réussie" });
 };
+
+export const getLoginHistory = async (req, res) => {
+  try {
+    const history = await AuthentificationDAO.getAllLoginHistory();
+    res.status(200).json(history);
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération de l'historique des connexions:",
+      error
+    );
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération de l'historique" });
+  }
+};
+
+export const deleteLoginHistory = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Aucun ID fourni pour suppression" });
+    }
+
+    await AuthentificationDAO.deleteLoginRecords(ids);
+    res.status(200).json({ message: "Historique supprimé avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'historique:", error);
+    res.status(500).json({ error: "Erreur lors de la suppression" });
+  }
+};

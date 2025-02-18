@@ -88,7 +88,7 @@ export default function UserPermissions() {
   if (isError) return <p>Erreur lors du chargement</p>;
 
   return (
-    <div className="p-4 mb-14">
+    <div className="px-4 mb-10">
       <div className="mb-6 p-4 border rounded-lg shadow-md">
         <h3 className="text-lg font-semibold mb-4">Ajouter un utilisateur</h3>
         <div className="grid md:grid-cols-2 grid-cols-1 gap-4">

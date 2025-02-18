@@ -137,7 +137,7 @@ export const precisionProjectItems = [
 
 export const dashboardMenuItems = [
   { label: "Gestion des droits" },
-  { label: "Historique des actions" },
+  { label: "Historique des connexions" },
   { label: "Corbeille" },
   { label: "Tampon de signature" },
 ];

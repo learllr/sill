@@ -24,4 +24,19 @@ export default class AuthentificationDAO {
       order: [["loginAt", "DESC"]],
     });
   }
+
+  static async getAllLoginHistory() {
+    return await LoginHistory.findAll({
+      include: {
+        model: User,
+        as: "user",
+        attributes: ["id", "firstName", "lastName"],
+      },
+      order: [["loginAt", "DESC"]],
+    });
+  }
+
+  static async deleteLoginRecords(ids) {
+    return await LoginHistory.destroy({ where: { id: ids } });
+  }
 }

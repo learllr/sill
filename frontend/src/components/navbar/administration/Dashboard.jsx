@@ -2,17 +2,24 @@ import { useState } from "react";
 import { dashboardMenuItems } from "../../../../../shared/constants/menuItems.js";
 import NavigationTabs from "../../common/Design/Buttons/NavigationTabs";
 import Section from "../../common/Managers/Section.jsx";
-import ActivityLogs from "./TabComponents/ActivityLogs.jsx";
+import { useUser } from "../../contexts/UserContext.jsx";
+import LoginHistory from "./TabComponents/LoginHistory.jsx";
 import SignatureStamp from "./TabComponents/SignatureStamp.jsx";
 import TrashBin from "./TabComponents/TrashBin.jsx";
 import UserPermissions from "./TabComponents/UserPermissions.jsx";
 
 export default function Dashboard() {
-  const [selectedTab, setSelectedTab] = useState(dashboardMenuItems[0].label);
+  const { roleId } = useUser();
+
+  const availableTabs = dashboardMenuItems
+    .filter((item) => item.label !== "Gestion des droits" || roleId === 1)
+    .map((item) => item.label);
+
+  const [selectedTab, setSelectedTab] = useState(availableTabs[0]);
 
   const tabComponents = {
-    "Gestion des droits": <UserPermissions />,
-    "Historique des actions": <ActivityLogs />,
+    ...(roleId === 1 && { "Gestion des droits": <UserPermissions /> }),
+    "Historique des connexions": <LoginHistory />,
     Corbeille: <TrashBin />,
     "Tampon de signature": <SignatureStamp />,
   };
@@ -21,7 +28,7 @@ export default function Dashboard() {
     <div>
       <Section title="Tableau de bord" />
       <NavigationTabs
-        menuItems={dashboardMenuItems.map((item) => item.label)}
+        menuItems={availableTabs}
         selectedTab={selectedTab}
         onTabChange={setSelectedTab}
       />
