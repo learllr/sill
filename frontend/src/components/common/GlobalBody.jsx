@@ -14,53 +14,67 @@ import {
 } from "@/components/ui/sidebar";
 import { GalleryVerticalEnd } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
 import GlobalHeader from "./GlobalHeader.jsx";
 
-const data = {
-  navMain: [
-    {
-      title: "Gestion de chantiers",
-      items: [{ title: "Chantiers", url: "/chantiers" }],
-    },
-    {
-      title: "Gestion des intervenants",
-      items: [
-        { title: "Clients", url: "/clients" },
-        { title: "Fournisseurs", url: "/fournisseurs" },
-        { title: "Sous-traitants", url: "/sous-traitants" },
-        { title: "Architectes", url: "/architectes" },
-      ],
-    },
-    {
-      title: "Services RH",
-      items: [
-        { title: "Salariés", url: "/salariés" },
-        { title: "Notes", url: "/notes" },
-      ],
-    },
-    {
-      title: "Services administratifs",
-      items: [
-        { title: "Banque", url: "/banque" },
-        { title: "Statut SILL", url: "/statut-sill" },
-      ],
-    },
-    {
-      title: "Comptabilité",
-      items: [
-        { title: "Comptabilité ZIED", url: "/compatibilité-zied" },
-        { title: "Signature de document", url: "/document-signing" },
-      ],
-    },
-    {
-      title: "Administration",
-      items: [{ title: "Tableau de bord", url: "/dashboard" }],
-    },
-  ],
-};
+const fullMenu = [
+  {
+    title: "Gestion de chantiers",
+    items: [{ title: "Chantiers", url: "/chantiers" }],
+  },
+  {
+    title: "Gestion des intervenants",
+    items: [
+      { title: "Clients", url: "/clients" },
+      { title: "Fournisseurs", url: "/fournisseurs" },
+      { title: "Sous-traitants", url: "/sous-traitants" },
+      { title: "Architectes", url: "/architectes" },
+    ],
+  },
+  {
+    title: "Services RH",
+    items: [
+      { title: "Salariés", url: "/salariés" },
+      { title: "Notes", url: "/notes" },
+    ],
+  },
+  {
+    title: "Services administratifs",
+    items: [
+      { title: "Banque", url: "/banque" },
+      { title: "Statut SILL", url: "/statut-sill" },
+    ],
+  },
+  {
+    title: "Comptabilité",
+    items: [
+      { title: "Comptabilité ZIED", url: "/compatibilité-zied" },
+      { title: "Signature de document", url: "/document-signing" },
+    ],
+  },
+  {
+    title: "Administration",
+    items: [{ title: "Tableau de bord", url: "/dashboard" }],
+  },
+];
 
 function AppSidebar({ ...props }) {
   const location = useLocation();
+  const { roleId } = useUser();
+
+  const hasFullAccess = roleId === 1 || roleId === 2;
+
+  const filteredMenu = hasFullAccess
+    ? fullMenu
+    : fullMenu.filter(
+        (section) =>
+          !(
+            roleId === 3 &&
+            ["Services RH", "Administration", "Comptabilité"].includes(
+              section.title
+            )
+          )
+      );
 
   return (
     <Sidebar {...props}>
@@ -79,7 +93,7 @@ function AppSidebar({ ...props }) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item) => (
+            {filteredMenu.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <div className="font-semibold text-sm text-sidebar-foreground px-3 mt-3 mb-2">
                   {item.title}

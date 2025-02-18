@@ -1,6 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
-import axios from "../../axiosConfig.js";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
+import axios from "../../axiosConfig.js";
 
 const UserContext = createContext();
 
@@ -9,6 +9,7 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [roleId, setRoleId] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -22,10 +23,12 @@ export const UserProvider = ({ children }) => {
     enabled: isAuthenticated,
     onSuccess: (data) => {
       setUser(data);
+      setRoleId(data.roleId);
       setIsAuthenticated(true);
     },
     onError: () => {
       setUser(null);
+      setRole(null);
       setIsAuthenticated(false);
     },
   });
@@ -89,6 +92,7 @@ export const UserProvider = ({ children }) => {
       value={{
         user: userProfile || user,
         isAuthenticated,
+        roleId,
         signupUser,
         loginUser,
         logoutUser,

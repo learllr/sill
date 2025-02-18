@@ -89,7 +89,6 @@ export const login = async (req, res) => {
         firstName,
         lastName,
         roleId,
-        createdAt,
       },
       token,
     });

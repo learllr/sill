@@ -139,4 +139,5 @@ export const dashboardMenuItems = [
   { label: "Gestion des droits" },
   { label: "Historique des actions" },
   { label: "Tampon de signature" },
+  { label: "Corbeille" },
 ];

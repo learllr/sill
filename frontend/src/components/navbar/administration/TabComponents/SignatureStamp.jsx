@@ -1,8 +1,8 @@
 import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import axios from "../../../axiosConfig.js";
-import IconButton from "../../common/Design/Buttons/IconButton.jsx";
+import axios from "../../../../axiosConfig.js";
+import IconButton from "../../../common/Design/Buttons/IconButton.jsx";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 

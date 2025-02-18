@@ -1,20 +1,27 @@
-import React from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+import Login from "./components/authentification/Login.jsx";
+import ProtectedRoute from "./components/authentification/ProtectedRoute.jsx";
+
+import DocumentSigning from "./components/navbar/accounting/DocumentSigning";
+import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting";
+import Dashboard from "./components/navbar/administration/Dashboard";
+import Bank from "./components/navbar/aministrative-services/Bank";
+import SillStatus from "./components/navbar/aministrative-services/SillStatus";
+import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails";
+import Employees from "./components/navbar/hr-services/Employees";
+import Memos from "./components/navbar/hr-services/Memos";
+import ParticipantDetails from "./components/navbar/participant-management/ParticipantDetails";
+import Participants from "./components/navbar/participant-management/Participants";
+import ParticipantProjectDetails from "./components/navbar/project-management/ParticipantProjectDetails";
+import ProjectDetails from "./components/navbar/project-management/ProjectDetails";
+import Projects from "./components/navbar/project-management/Projects";
+
 import { ParticipantType, getTypeName } from "../../shared/constants/types.js";
-import GlobalBody from "./components/common/GlobalBody.jsx";
-import DocumentSigning from "./components/navbar/accounting/DocumentSigning.jsx";
-import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting.jsx";
-import Dashboard from "./components/navbar/administration/Dashboard.jsx";
-import Bank from "./components/navbar/aministrative-services/Bank.jsx";
-import SillStatus from "./components/navbar/aministrative-services/SillStatus.jsx";
-import EmployeeDetails from "./components/navbar/hr-services/EmployeeDetails.jsx";
-import Employees from "./components/navbar/hr-services/Employees.jsx";
-import Memos from "./components/navbar/hr-services/Memos.jsx";
-import ParticipantDetails from "./components/navbar/participant-management/ParticipantDetails.jsx";
-import Participants from "./components/navbar/participant-management/Participants.jsx";
-import ParticipantProjectDetails from "./components/navbar/project-management/ParticipantProjectDetails.jsx";
-import ProjectDetails from "./components/navbar/project-management/ProjectDetails.jsx";
-import Projects from "./components/navbar/project-management/Projects.jsx";
 
 export default function App() {
   const participantRoutes = Object.values(ParticipantType)
@@ -42,31 +49,33 @@ export default function App() {
     })
     .flat();
 
-  const routes = [
-    { path: "/", element: <Projects /> },
-    { path: "/chantiers", element: <Projects /> },
-    { path: "/chantiers/:id", element: <ProjectDetails /> },
-    { path: "/salariés", element: <Employees /> },
-    { path: "/salariés/:id", element: <EmployeeDetails /> },
-    { path: "/notes", element: <Memos /> },
-    { path: "/banque", element: <Bank /> },
-    { path: "/statut-sill", element: <SillStatus /> },
-    { path: "/compatibilité-zied", element: <ZiedAccounting /> },
-    { path: "/document-signing", element: <DocumentSigning /> },
-    ...participantRoutes,
-    { path: "*", element: <h1>URL non trouvée</h1> },
-    { path: "/dashboard", element: <Dashboard /> },
-  ];
-
   return (
     <Router>
-      <GlobalBody>
-        <Routes>
-          {routes.map(({ path, element }) => (
+      <Routes>
+        {/* Page de connexion */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Routes protégées */}
+        <Route path="/" element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/chantiers" element={<Projects />} />
+          <Route path="/chantiers/:id" element={<ProjectDetails />} />
+          <Route path="/salariés" element={<Employees />} />
+          <Route path="/salariés/:id" element={<EmployeeDetails />} />
+          <Route path="/notes" element={<Memos />} />
+          <Route path="/banque" element={<Bank />} />
+          <Route path="/statut-sill" element={<SillStatus />} />
+          <Route path="/compatibilité-zied" element={<ZiedAccounting />} />
+          <Route path="/document-signing" element={<DocumentSigning />} />
+          {/* Routes dynamiques pour les participants */}
+          {participantRoutes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
           ))}
-        </Routes>
-      </GlobalBody>
+        </Route>
+
+        {/* Redirection si l'URL ne correspond à rien */}
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
     </Router>
   );
 }
