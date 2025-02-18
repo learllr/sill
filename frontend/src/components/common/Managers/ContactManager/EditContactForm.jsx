@@ -12,7 +12,6 @@ import EditContactSection from "./EditContactSection";
 export default function EditContactForm({
   contact,
   onSave,
-  contactType,
   onUpdate,
   isUpdating,
   sections,

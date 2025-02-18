@@ -62,17 +62,15 @@ function AppSidebar({ ...props }) {
   const location = useLocation();
   const { roleId } = useUser();
 
-  const hasFullAccess = roleId === 1 || roleId === 2;
+  const hasFullAccess = roleId <= 2;
 
   const filteredMenu = hasFullAccess
     ? fullMenu
     : fullMenu.filter(
         (section) =>
           !(
-            roleId === 3 &&
-            ["Services RH", "Administration", "Comptabilité"].includes(
-              section.title
-            )
+            roleId >= 3 &&
+            ["Administration", "Comptabilité"].includes(section.title)
           )
       );
 

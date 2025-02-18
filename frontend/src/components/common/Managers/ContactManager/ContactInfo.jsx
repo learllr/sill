@@ -2,6 +2,7 @@ import { Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useContacts } from "../../../../hooks/useContacts.jsx";
+import { useUser } from "../../../contexts/UserContext";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import Loading from "../../Design/Loading.jsx";
 import ContactSection from "./ContactSection.jsx";
@@ -11,6 +12,7 @@ export default function ContactInfo({ sections, contactId, contactType }) {
   const navigate = useNavigate();
   const { contacts, isLoading, isError, updateMutation, deleteMutation } =
     useContacts(contactType);
+  const { roleId } = useUser();
 
   const contact = contacts?.find((c) => c.id === parseInt(contactId));
 
@@ -42,6 +44,13 @@ export default function ContactInfo({ sections, contactId, contactType }) {
     );
   };
 
+  const filteredSections = sections.map((section) => ({
+    ...section,
+    fields: section.fields.filter(
+      (field) => !(roleId >= 3 && field.name.includes("Salary"))
+    ),
+  }));
+
   return (
     <div className="border p-4 w-full bg-white">
       <div className="flex justify-between items-center mb-4">
@@ -66,14 +75,13 @@ export default function ContactInfo({ sections, contactId, contactType }) {
       {isEditing ? (
         <EditContactForm
           contact={contact}
-          sections={sections}
+          sections={filteredSections}
           onSave={() => setIsEditing(false)}
-          contactType={contactType}
           onUpdate={updateMutation.mutate}
           isUpdating={updateMutation.isLoading}
         />
       ) : (
-        sections?.map(({ title, fields }, index) => (
+        filteredSections.map(({ title, fields }, index) => (
           <ContactSection
             key={title}
             title={title}
