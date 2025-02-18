@@ -1,6 +1,6 @@
 import db from "../orm/models/index.js";
 
-const { User } = db;
+const { User, LoginHistory } = db;
 
 export default class AuthentificationDAO {
   static async findUserByEmail(email) {
@@ -12,5 +12,16 @@ export default class AuthentificationDAO {
       { password: hashedPassword },
       { where: { id: userId } }
     );
+  }
+
+  static async createLoginRecord(userId) {
+    return await LoginHistory.create({ userId });
+  }
+
+  static async getUserLoginHistory(userId) {
+    return await LoginHistory.findAll({
+      where: { userId },
+      order: [["loginAt", "DESC"]],
+    });
   }
 }

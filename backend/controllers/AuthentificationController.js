@@ -74,6 +74,8 @@ export const login = async (req, res) => {
 
     const { id, firstName, lastName, roleId } = user;
 
+    await AuthentificationDAO.createLoginRecord(id);
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
