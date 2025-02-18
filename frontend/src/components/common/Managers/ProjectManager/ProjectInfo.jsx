@@ -95,7 +95,7 @@ export default function ProjectInfo({ projectId }) {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmDelete}
         title="Confirmer la suppression"
-        message="Voulez-vous vraiment supprimer ce projet ?"
+        message="Voulez-vous vraiment supprimer ce chantier ?"
         confirmText="Supprimer"
         cancelText="Annuler"
       />

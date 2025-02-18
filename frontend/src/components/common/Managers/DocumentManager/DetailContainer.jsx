@@ -1,5 +1,6 @@
 import { Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
+import ConfirmDialog from "../../../dialogs/ConfirmDialog.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentDetails from "./DocumentDetails.jsx";
 import EditDocumentForm from "./EditDocumentForm.jsx";
@@ -26,12 +27,16 @@ export default function DetailContainer({
   isDOE,
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleDelete = () => {
-    if (window.confirm("Voulez-vous vraiment supprimer ce document ?")) {
-      deleteMutation.mutate(document.id);
-      onClose();
-    }
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMutation.mutate(document.id);
+    onClose();
+    setIsConfirmOpen(false);
   };
 
   return (
@@ -107,6 +112,16 @@ export default function DetailContainer({
           <DocumentDetails document={document} employeeId={employeeId} />
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Confirmer la suppression"
+        message="Voulez-vous vraiment supprimer ce document ?"
+        confirmText="Supprimer"
+        cancelText="Annuler"
+      />
     </div>
   );
 }

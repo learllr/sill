@@ -3,6 +3,7 @@ import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { formatDate } from "../../../../../../shared/utils/formatUtils.js";
 import { useDocuments } from "../../../../hooks/useDocuments.jsx";
+import ConfirmDialog from "../../../dialogs/ConfirmDialog.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import NavigationSubTabs from "../../Design/Buttons/NavigationSubTabs.jsx";
 import ScrollBarSearch from "../ScrollBarSearch.jsx";
@@ -34,6 +35,8 @@ export default function ItemContainer({
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { documents } = useDocuments();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState(null);
 
   const handleToggleSelect = (documentId) => {
     setSelectedDocuments((prevSelected) =>
@@ -41,6 +44,19 @@ export default function ItemContainer({
         ? prevSelected.filter((id) => id !== documentId)
         : [...prevSelected, documentId]
     );
+  };
+
+  const handleDelete = (document) => {
+    setDocumentToDelete(document);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (documentToDelete) {
+      onDelete(documentToDelete.id);
+      setIsConfirmOpen(false);
+      setDocumentToDelete(null);
+    }
   };
 
   const filteredItems = isDOE
@@ -180,7 +196,7 @@ export default function ItemContainer({
                     <SendingCard
                       document={item}
                       onDocumentIdClick={onDocumentIdClick}
-                      onDelete={onDelete}
+                      onDelete={() => handleDelete(item)}
                       participants={participants}
                       documents={documents}
                     />
@@ -203,6 +219,16 @@ export default function ItemContainer({
           </div>
         ))}
       </div>
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Confirmer la suppression"
+        message="Voulez-vous vraiment supprimer cet envoi ?"
+        confirmText="Supprimer"
+        cancelText="Annuler"
+      />
     </div>
   );
 }
