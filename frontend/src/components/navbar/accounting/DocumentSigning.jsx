@@ -58,8 +58,30 @@ const DocumentSigning = () => {
           const file = new File([blob], "document.pdf", {
             type: "application/pdf",
           });
+
           setFile(file);
-          loadPdf(file);
+
+          const typedarray = new Uint8Array(await file.arrayBuffer());
+          const loadingTask = pdfjsLib.getDocument({ data: typedarray });
+          const pdf = await loadingTask.promise;
+
+          const firstPage = await pdf.getPage(1);
+          const isWindows = navigator.userAgent.includes("Windows");
+
+          let rotation = firstPage._pageInfo?.rotate?.angle ?? 0;
+          if (isWindows) {
+            rotation = (rotation + 180) % 360;
+          }
+
+          console.log(isWindows, rotation, firstPage);
+
+          setPdfDoc(pdf);
+          setTotalPages(pdf.numPages);
+
+          setSignatures([]);
+          setModifiedPdfBytes(null);
+          setSignaturesApplied(false);
+          setCurrentPage(0);
 
           const logoData = await fetchLogoPath();
           if (logoData) setPreviewLogo(logoData);
@@ -84,6 +106,16 @@ const DocumentSigning = () => {
     const typedarray = pdfBytes || new Uint8Array(await file.arrayBuffer());
     const loadingTask = pdfjsLib.getDocument({ data: typedarray });
     const pdf = await loadingTask.promise;
+
+    const firstPage = await pdf.getPage(1);
+    const isWindows = navigator.userAgent.includes("Windows");
+
+    let rotation = firstPage.rotate.angle;
+
+    if (isWindows) {
+      rotation = (rotation + 180) % 360;
+    }
+
     setPdfDoc(pdf);
     setTotalPages(pdf.numPages);
   };

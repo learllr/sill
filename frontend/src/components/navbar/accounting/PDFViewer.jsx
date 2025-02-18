@@ -20,7 +20,20 @@ const PDFViewer = ({
 
     const renderPdf = async () => {
       const page = await pdfDoc.getPage(currentPage + 1);
-      const newViewport = page.getViewport({ scale: 1 });
+      const isWindows = navigator.userAgent.includes("Windows");
+
+      let rotation = page.rotate.angle;
+
+      if (isWindows) {
+        rotation = (rotation + 180) % 360;
+      }
+
+      const validRotation = [0, 90, 180, 270].includes(rotation) ? rotation : 0;
+      const newViewport = page.getViewport({
+        scale: 1,
+        rotation: validRotation,
+      });
+
       setViewport(newViewport);
 
       const pdfCanvas = pdfCanvasRef.current;

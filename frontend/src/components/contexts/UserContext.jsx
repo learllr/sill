@@ -28,7 +28,7 @@ export const UserProvider = ({ children }) => {
     },
     onError: () => {
       setUser(null);
-      setRole(null);
+      setRoleId(null);
       setIsAuthenticated(false);
     },
   });
