@@ -110,7 +110,7 @@ export const getAllSendings = async (req, res) => {
 
 export const createSending = async (req, res) => {
   try {
-    const { name, date, documentIds, remarks } = req.body;
+    const { name, projectId, type, date, documentIds, remarks } = req.body;
 
     if (!date || !documentIds) {
       return res.status(400).json({ error: "Tous les champs sont requis." });
@@ -118,6 +118,8 @@ export const createSending = async (req, res) => {
 
     const sending = await DocumentDAO.createSending({
       name,
+      type,
+      projectId,
       date,
       documentIds: JSON.parse(documentIds),
       remarks,
@@ -133,7 +135,7 @@ export const createSending = async (req, res) => {
 export const updateSending = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, date, remarks } = req.body;
+    const { name, projectId, type, date, remarks } = req.body;
 
     const sending = await DocumentDAO.getSendingById(id);
     if (!sending) {
@@ -142,6 +144,8 @@ export const updateSending = async (req, res) => {
 
     const updatedSending = await DocumentDAO.updateSending(sending, {
       name,
+      type,
+      projectId,
       date,
       remarks,
     });

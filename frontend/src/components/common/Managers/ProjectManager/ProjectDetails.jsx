@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProjectManager from "../../common/Managers/ProjectManager/ProjectManager.jsx";
+import { precisionProjectItems } from "../../../../../shared/constants/menuItems.js";
 import MarketInfo from "../../common/Managers/ProjectManager/MarketInfo.jsx";
 import ProjectInfo from "../../common/Managers/ProjectManager/ProjectInfo.jsx";
-import { precisionProjectItems } from "../../../../../shared/constants/menuItems.js";
+import ProjectManager from "../../common/Managers/ProjectManager/ProjectManager.jsx";
 
 export default function ProjectDetails() {
   const { id } = useParams();

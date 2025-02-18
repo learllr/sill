@@ -18,6 +18,7 @@ export default function ZiedAccounting() {
       selectedSubTab={selectedSubTab}
       setSelectedSubTab={setSelectedSubTab}
       menuItems={ziedMenuItems}
+      typeSpending="CEDIG"
     />
   );
 }

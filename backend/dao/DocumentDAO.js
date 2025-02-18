@@ -220,9 +220,18 @@ export default class DocumentDAO {
     });
   }
 
-  static async createSending({ name, date, documentIds, remarks }) {
+  static async createSending({
+    name,
+    projectId,
+    type,
+    date,
+    documentIds,
+    remarks,
+  }) {
     return await Sending.create({
       name,
+      type,
+      projectId,
       date,
       documentIds: JSON.stringify(documentIds),
       remarks,

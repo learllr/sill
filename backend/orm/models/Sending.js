@@ -12,6 +12,11 @@ export default (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
+      type: {
+        type: DataTypes.ENUM("CEDIG", "DOE"),
+        allowNull: false,
+        defaultValue: "CEDIG",
+      },
       name: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -31,6 +36,16 @@ export default (sequelize) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      projectId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: null,
+        references: {
+          model: "Projects",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+      },
     },
     {
       sequelize,
@@ -44,7 +59,7 @@ export default (sequelize) => {
     Sending.belongsTo(models.Project, {
       foreignKey: "projectId",
       as: "project",
-      onDelete: "CASCADE",
+      onDelete: "SET NULL",
     });
   };
 

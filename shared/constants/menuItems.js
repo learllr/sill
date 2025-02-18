@@ -69,6 +69,7 @@ export const precisionSupplierMenuItems = [
   },
   {
     label: "Devis",
+    subMenu: ["Tous", "En attente", "Acceptés", "Rejetés"],
   },
   {
     label: "Fiches techniques",
@@ -108,6 +109,9 @@ export const precisionArchitectMenuItems = [
   {
     label: "DOE",
   },
+  {
+    label: "Les envois",
+  },
 ];
 
 export const projectMenuItems = [
@@ -128,33 +132,6 @@ export const precisionProjectItems = [
   },
   {
     label: "Architecte",
-  },
-];
-
-export const projectContactMenuItems = [
-  {
-    label: "Client",
-    subMenu: ["Devis", "Factures"],
-  },
-  {
-    label: "Fournisseur",
-    subMenu: ["Devis", "Factures", "Fiches techniques", "Bons pour accord"],
-  },
-  {
-    label: "Sous-traitant",
-    subMenu: ["Administratif", "Contrats", "Factures"],
-  },
-  {
-    label: "Architecte",
-    subMenu: [
-      "Plans",
-      "Bons de commandes",
-      "PV",
-      "Ordres de règlement",
-      "Réserves",
-      "Marchés",
-      "DOE",
-    ],
   },
 ];
 

@@ -14,6 +14,7 @@ export default function DocumentCard({
   checkboxVisible,
   isCEDIG,
   participants,
+  isDOE,
 }) {
   const navigate = useNavigate();
   const isChecked = selectedDocuments.includes(document.id);
@@ -90,7 +91,7 @@ export default function DocumentCard({
         <Mail size={16} />
       </button>
 
-      {checkboxVisible && isCEDIG && (
+      {checkboxVisible && (isCEDIG || isDOE) && (
         <input
           type="checkbox"
           className="absolute top-2 right-2 w-5 h-5 cursor-pointer"

@@ -29,6 +29,8 @@ export default function ItemContainer({
   onDelete,
   inParticipantSection,
   onAddSending,
+  isDOE,
+  typeSpending,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { documents } = useDocuments();
@@ -41,63 +43,77 @@ export default function ItemContainer({
     );
   };
 
-  const filteredItems = items
-    .filter((item) => {
-      if (isCEDIG) {
-        if (selectedSubTab === "Fournisseurs") {
-          return participants?.some(
-            (p) => p.id === item.participantId && p.type === "Fournisseur"
+  const filteredItems = isDOE
+    ? items
+    : isSending
+    ? typeSpending === "DOE"
+      ? items.filter(
+          (item) =>
+            item.type === typeSpending && item.projectId === Number(projectId)
+        )
+      : typeSpending === "CEDIG"
+      ? items.filter((item) => item.type === typeSpending)
+      : items
+    : items
+        .filter((item) => {
+          if (isCEDIG) {
+            if (selectedSubTab === "Fournisseurs") {
+              return participants?.some(
+                (p) => p.id === item.participantId && p.type === "Fournisseur"
+              );
+            }
+            if (selectedSubTab === "Clients") {
+              return participants?.some(
+                (p) => p.id === item.participantId && p.type === "Client"
+              );
+            }
+          } else {
+            if (employeeId) return true;
+            if (item.type === DocumentType.DEVIS) {
+              const status = item.quoteInfos[0]?.status;
+              if (selectedSubTab === "En attente")
+                return status === "En attente";
+              if (selectedSubTab === "Acceptés") return status === "Accepté";
+              if (selectedSubTab === "Rejetés") return status === "Rejeté";
+            } else if (item.type === DocumentType.FACTURES) {
+              const paidOn = item.invoiceInfos[0]?.paidOn;
+              if (selectedSubTab === "Payés") return !!paidOn;
+              if (selectedSubTab === "Non payés") return !paidOn;
+            } else if (item.type === DocumentType.PV) {
+              if (selectedSubTab === "Avec réserves")
+                return item.pvType === "Avec réserves";
+              if (selectedSubTab === "Sans réserves")
+                return item.pvType === "Sans réserves";
+            }
+          }
+          if (participantId && item.participantId !== Number(participantId))
+            return false;
+          if (projectId && item.projectId !== Number(projectId)) return false;
+
+          return selectedSubTab === "Tous" || !selectedSubTab;
+        })
+        .filter((item) => {
+          if (!searchTerm) return true;
+
+          const searchTerms = searchTerm.toLowerCase().split(" ");
+
+          const formattedDate = formatDate(
+            employeeId ? item.createdAt : item.date
           );
-        }
-        if (selectedSubTab === "Clients") {
-          return participants?.some(
-            (p) => p.id === item.participantId && p.type === "Client"
+          const quoteNumber =
+            item.quoteInfos?.[0]?.quoteNumber?.toLowerCase() || "";
+          const invoiceNumber =
+            item.invoiceInfos?.[0]?.invoiceNumber?.toLowerCase() || "";
+          const name = item.name?.toLowerCase() || "";
+
+          return searchTerms.every(
+            (term) =>
+              name.includes(term) ||
+              formattedDate.includes(term) ||
+              quoteNumber.includes(term) ||
+              invoiceNumber.includes(term)
           );
-        }
-      } else {
-        if (employeeId) return true;
-        if (item.type === DocumentType.DEVIS) {
-          const status = item.quoteInfos[0]?.status;
-          if (selectedSubTab === "En attente") return status === "En attente";
-          if (selectedSubTab === "Acceptés") return status === "Accepté";
-          if (selectedSubTab === "Rejetés") return status === "Rejeté";
-        } else if (item.type === DocumentType.FACTURES) {
-          const paidOn = item.invoiceInfos[0]?.paidOn;
-          if (selectedSubTab === "Payés") return !!paidOn;
-          if (selectedSubTab === "Non payés") return !paidOn;
-        } else if (item.type === DocumentType.PV) {
-          if (selectedSubTab === "Avec réserves")
-            return item.pvType === "Avec réserves";
-          if (selectedSubTab === "Sans réserves")
-            return item.pvType === "Sans réserves";
-        }
-      }
-      if (participantId && item.participantId !== Number(participantId))
-        return false;
-      if (projectId && item.projectId !== Number(projectId)) return false;
-
-      return selectedSubTab === "Tous" || !selectedSubTab;
-    })
-    .filter((item) => {
-      if (!searchTerm) return true;
-
-      const searchTerms = searchTerm.toLowerCase().split(" ");
-
-      const formattedDate = formatDate(employeeId ? item.createdAt : item.date);
-      const quoteNumber =
-        item.quoteInfos?.[0]?.quoteNumber?.toLowerCase() || "";
-      const invoiceNumber =
-        item.invoiceInfos?.[0]?.invoiceNumber?.toLowerCase() || "";
-      const name = item.name?.toLowerCase() || "";
-
-      return searchTerms.every(
-        (term) =>
-          name.includes(term) ||
-          formattedDate.includes(term) ||
-          quoteNumber.includes(term) ||
-          invoiceNumber.includes(term)
-      );
-    });
+        });
 
   const groupedByYear = filteredItems.reduce((acc, item) => {
     const documentDate = item.date ? new Date(item.date) : null;
@@ -120,12 +136,12 @@ export default function ItemContainer({
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
-        {!isSending && !inParticipantSection && (
+        {!isSending && !inParticipantSection && !isDOE && (
           <IconButton onClick={onAdd} variant="green">
             <Plus />
           </IconButton>
         )}
-        {isCEDIG && (
+        {(isCEDIG || isDOE) && (
           <IconButton onClick={onAddSending} variant="blue">
             <Send />
           </IconButton>
@@ -178,6 +194,7 @@ export default function ItemContainer({
                       checkboxVisible={checkboxVisible}
                       isCEDIG={isCEDIG}
                       participants={participants}
+                      isDOE={isDOE}
                     />
                   )}
                 </div>

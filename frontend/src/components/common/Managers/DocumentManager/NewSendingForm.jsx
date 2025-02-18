@@ -5,6 +5,8 @@ export default function NewSendingForm({
   onSave,
   addMutation,
   selectedDocuments,
+  isDOE,
+  projectId,
 }) {
   const [formFields, setFormFields] = useState({
     name: "",
@@ -35,7 +37,9 @@ export default function NewSendingForm({
     formData.append("name", formFields.name);
     formData.append("date", formFields.date);
     formData.append("remarks", formFields.remarks);
+    if (projectId) formData.append("projectId", projectId);
     formData.append("documentIds", JSON.stringify(selectedDocuments));
+    formData.append("type", isDOE ? "DOE" : "CEDIG");
 
     addMutation.mutate(formData, {
       onSuccess: onSave,

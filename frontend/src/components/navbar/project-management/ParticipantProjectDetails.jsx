@@ -35,6 +35,7 @@ export default function ParticipantProjectDetails({ participantType }) {
         menuItems={menuItems}
         participantId={participantId}
         projectId={projectId}
+        typeSpending="DOE"
       />
     </div>
   );

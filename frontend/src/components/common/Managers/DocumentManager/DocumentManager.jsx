@@ -20,6 +20,7 @@ export default function DocumentManager({
   participantId = null,
   projectId = null,
   inParticipantSection = false,
+  typeSpending,
 }) {
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
@@ -31,6 +32,7 @@ export default function DocumentManager({
   const [isAddingSending, setIsAddingSending] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [error, setError] = useState("");
+  const isDOE = selectedMainTab === "DOE";
 
   const documentType =
     documentScope === "sub" && selectedSubTab
@@ -53,18 +55,26 @@ export default function DocumentManager({
   const isSending = selectedMainTab === "Les envois";
   const isCEDIG = selectedMainTab === "CEDIG";
 
-  const filteredDocuments = documents?.filter((doc) => {
-    if (isCEDIG) {
-      if (doc.type !== "Factures") return false;
-    } else {
-      if (participantId && doc.participantId !== Number(participantId))
-        return false;
-      if (documentScope === "sub" && doc.type !== selectedSubTab) return false;
-      if (documentScope === "main" && doc.type !== selectedMainTab)
-        return false;
-    }
-    return true;
-  });
+  const filteredDocuments = isDOE
+    ? documents?.filter((doc) =>
+        projectId
+          ? doc.type === "Fiches techniques" &&
+            doc.projectId === Number(projectId)
+          : doc.type === "Fiches techniques"
+      )
+    : documents?.filter((doc) => {
+        if (isCEDIG) {
+          if (doc.type !== "Factures") return false;
+        } else {
+          if (participantId && doc.participantId !== Number(participantId))
+            return false;
+          if (documentScope === "sub" && doc.type !== selectedSubTab)
+            return false;
+          if (documentScope === "main" && doc.type !== selectedMainTab)
+            return false;
+        }
+        return true;
+      });
 
   const handleSelectItem = (document) => {
     if (!checkboxVisible) {
@@ -142,6 +152,8 @@ export default function DocumentManager({
               onDocumentIdClick={handleDocumentIdClick}
               onDelete={deleteSending.mutate}
               inParticipantSection={inParticipantSection}
+              isDOE={isDOE}
+              typeSpending={typeSpending}
             />
           )}
         </div>
@@ -170,6 +182,7 @@ export default function DocumentManager({
               isSending={isSending}
               inParticipantSection={inParticipantSection}
               isAddingSending={isAddingSending}
+              isDOE={isDOE}
             />
           </div>
         )}

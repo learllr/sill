@@ -23,6 +23,7 @@ export default function DetailContainer({
   isSending,
   inParticipantSection,
   isAddingSending,
+  isDOE,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -36,21 +37,29 @@ export default function DetailContainer({
   return (
     <div className="border p-4 flex flex-col space-y-3 h-[80vh] overflow-auto">
       <div className="flex justify-end space-x-2">
-        {!isNew && !isEditing && !isSending && !inParticipantSection && (
-          <IconButton
-            onClick={handleDelete}
-            variant="red"
-            disabled={deleteMutation.isLoading}
-          >
-            {deleteMutation.isLoading ? "Suppression..." : <Trash2 />}
-          </IconButton>
-        )}
+        {!isNew &&
+          !isEditing &&
+          !isSending &&
+          !inParticipantSection &&
+          !isDOE && (
+            <IconButton
+              onClick={handleDelete}
+              variant="red"
+              disabled={deleteMutation.isLoading}
+            >
+              {deleteMutation.isLoading ? "Suppression..." : <Trash2 />}
+            </IconButton>
+          )}
 
-        {!isNew && !isEditing && !isSending && !inParticipantSection && (
-          <IconButton onClick={() => setIsEditing(true)} variant="blue">
-            <Pencil />
-          </IconButton>
-        )}
+        {!isNew &&
+          !isEditing &&
+          !isSending &&
+          !inParticipantSection &&
+          !isDOE && (
+            <IconButton onClick={() => setIsEditing(true)} variant="blue">
+              <Pencil />
+            </IconButton>
+          )}
 
         <IconButton onClick={onClose} variant="gray">
           <X />
@@ -65,6 +74,8 @@ export default function DetailContainer({
               addMutation={addSending}
               selectedDocuments={selectedDocuments}
               isCEDIG={isCEDIG}
+              isDOE={isDOE}
+              projectId={projectId}
             />
           ) : (
             <NewDocumentForm
