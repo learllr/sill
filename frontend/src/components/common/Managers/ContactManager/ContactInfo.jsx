@@ -7,11 +7,13 @@ import IconButton from "../../Design/Buttons/IconButton.jsx";
 import Loading from "../../Design/Loading.jsx";
 import ContactSection from "./ContactSection.jsx";
 import EditContactForm from "./EditContactForm.jsx";
+import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 
 export default function ContactInfo({ sections, contactId, contactType }) {
   const navigate = useNavigate();
   const { contacts, isLoading, isError, updateMutation, deleteMutation } =
     useContacts(contactType);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { roleId } = useUser();
 
   const contact = contacts?.find((c) => c.id === parseInt(contactId));
@@ -28,14 +30,15 @@ export default function ContactInfo({ sections, contactId, contactType }) {
     );
 
   const handleDelete = () => {
-    if (window.confirm("Voulez-vous vraiment supprimer ce contact ?")) {
-      deleteMutation.mutate(contact.id, {
-        onSuccess: () =>
-          navigate(
-            contactType === "employee" ? "/salariés" : `/${contactType}`
-          ),
-      });
-    }
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMutation.mutate(contact.id, {
+      onSuccess: () =>
+        navigate(contactType === "employee" ? "/salariés" : `/${contactType}`),
+    });
+    setIsConfirmOpen(false);
   };
 
   const toggleSection = (index) => {
@@ -71,7 +74,6 @@ export default function ContactInfo({ sections, contactId, contactType }) {
           </IconButton>
         </div>
       </div>
-
       {isEditing ? (
         <EditContactForm
           contact={contact}
@@ -92,6 +94,15 @@ export default function ContactInfo({ sections, contactId, contactType }) {
           />
         ))
       )}
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Confirmer la suppression"
+        message="Voulez-vous vraiment supprimer cet employé ?"
+        confirmText="Supprimer"
+        cancelText="Annuler"
+      />
     </div>
   );
 }

@@ -2,19 +2,20 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
+import { useUser } from "../../../contexts/UserContext";
+import ConfirmDialog from "../../../dialogs/ConfirmDialog.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
-import Loading from "../../Design/Loading.jsx";
 import EditProjectForm from "./EditProjectForm.jsx";
 
 export default function ProjectInfo({ projectId }) {
   const navigate = useNavigate();
   const { projects, isLoading, isError, updateProject, deleteProject } =
     useProjects();
+  const { roleId } = useUser();
   const project = projects?.find((p) => p.id === parseInt(projectId, 10));
 
   const [isEditing, setIsEditing] = useState(false);
-
-  if (isLoading) return <Loading />;
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (isError || !project) {
@@ -23,11 +24,14 @@ export default function ProjectInfo({ projectId }) {
   }, [isError, project, navigate]);
 
   const handleDelete = () => {
-    if (window.confirm("Voulez-vous vraiment supprimer ce projet ?")) {
-      deleteProject.mutate(project.id, {
-        onSuccess: () => navigate("/chantiers"),
-      });
-    }
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteProject.mutate(project.id, {
+      onSuccess: () => navigate("/chantiers"),
+    });
+    setIsConfirmOpen(false);
   };
 
   const handleUpdate = (updatedData) => {
@@ -44,13 +48,15 @@ export default function ProjectInfo({ projectId }) {
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">Informations du projet</h2>
         <div className="flex space-x-2">
-          <IconButton
-            onClick={handleDelete}
-            variant="red"
-            disabled={deleteProject.isLoading}
-          >
-            {deleteProject.isLoading ? "Suppression..." : <Trash2 />}
-          </IconButton>
+          {roleId < 3 && (
+            <IconButton
+              onClick={handleDelete}
+              variant="red"
+              disabled={deleteProject.isLoading}
+            >
+              {deleteProject.isLoading ? "Suppression..." : <Trash2 />}
+            </IconButton>
+          )}
           <IconButton onClick={() => setIsEditing(!isEditing)} variant="blue">
             <Pencil />
           </IconButton>
@@ -83,6 +89,16 @@ export default function ProjectInfo({ projectId }) {
           </p>
         </>
       )}
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Confirmer la suppression"
+        message="Voulez-vous vraiment supprimer ce projet ?"
+        confirmText="Supprimer"
+        cancelText="Annuler"
+      />
     </div>
   );
 }
