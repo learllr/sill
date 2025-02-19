@@ -32,6 +32,7 @@ export default function ItemContainer({
   onAddSending,
   isDOE,
   typeSpending,
+  isTrash,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { documents } = useDocuments();
@@ -102,9 +103,11 @@ export default function ItemContainer({
                 return item.pvType === "Sans réserves";
             }
           }
-          if (participantId && item.participantId !== Number(participantId))
-            return false;
-          if (projectId && item.projectId !== Number(projectId)) return false;
+          if (!isTrash) {
+            if (participantId && item.participantId !== Number(participantId))
+              return false;
+            if (projectId && item.projectId !== Number(projectId)) return false;
+          }
 
           return selectedSubTab === "Tous" || !selectedSubTab;
         })
@@ -145,13 +148,17 @@ export default function ItemContainer({
     .sort((a, b) => b - a);
 
   return (
-    <div className="border p-4 flex flex-col space-y-3 h-[80vh]">
+    <div
+      className={`p-4 flex flex-col space-y-3 h-[80vh] ${
+        isTrash ? "border border-rose-300" : "border"
+      }`}
+    >
       <div className="flex justify-between items-center space-x-2">
         <ScrollBarSearch
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
-        {!isSending && !inParticipantSection && !isDOE && (
+        {!isSending && !inParticipantSection && !isDOE && !isTrash && (
           <IconButton onClick={onAdd} variant="green">
             <Plus />
           </IconButton>

@@ -25,6 +25,7 @@ export default function DetailContainer({
   inParticipantSection,
   isAddingSending,
   isDOE,
+  isTrash,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -34,13 +35,32 @@ export default function DetailContainer({
   };
 
   const confirmDelete = () => {
-    deleteMutation.mutate(document.id);
-    onClose();
-    setIsConfirmOpen(false);
+    if (isTrash) {
+      deleteMutation.mutate(document.id, {
+        onSuccess: () => {
+          onClose();
+          setIsConfirmOpen(false);
+        },
+      });
+    } else {
+      updateMutation.mutate(
+        { documentId: document.id, formData: { deleted: true } },
+        {
+          onSuccess: () => {
+            onClose();
+            setIsConfirmOpen(false);
+          },
+        }
+      );
+    }
   };
 
   return (
-    <div className="border p-4 flex flex-col space-y-3 h-[80vh] overflow-auto">
+    <div
+      className={`p-4 flex flex-col space-y-3 h-[80vh] overflow-auto ${
+        isTrash ? "border border-rose-300" : "border"
+      }`}
+    >
       <div className="flex justify-end space-x-2">
         {!isNew &&
           !isEditing &&
@@ -60,7 +80,8 @@ export default function DetailContainer({
           !isEditing &&
           !isSending &&
           !inParticipantSection &&
-          !isDOE && (
+          !isDOE &&
+          !isTrash && (
             <IconButton onClick={() => setIsEditing(true)} variant="blue">
               <Pencil />
             </IconButton>
@@ -118,7 +139,9 @@ export default function DetailContainer({
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmDelete}
         title="Confirmer la suppression"
-        message="Voulez-vous vraiment supprimer ce document ?"
+        message={`Voulez-vous vraiment supprimer ${
+          isTrash ? "définitivement" : ""
+        } ce document ?`}
         confirmText="Supprimer"
         cancelText="Annuler"
       />

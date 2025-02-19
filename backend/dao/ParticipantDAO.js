@@ -73,6 +73,10 @@ export default class ParticipantDAO {
           name: updatedData.name,
           address: updatedData.address,
           website: updatedData.website,
+          deleted:
+            updatedData.deleted !== undefined
+              ? updatedData.deleted
+              : participant.deleted,
         },
         { transaction }
       );
@@ -106,6 +110,10 @@ export default class ParticipantDAO {
                 name: contact.name,
                 phone: contact.phone,
                 email: contact.email,
+                deleted:
+                  updatedData.deleted !== undefined
+                    ? updatedData.deleted
+                    : false,
               },
               { where: { id: contact.id }, transaction }
             );
@@ -116,6 +124,10 @@ export default class ParticipantDAO {
                 name: contact.name,
                 phone: contact.phone,
                 email: contact.email,
+                deleted:
+                  updatedData.deleted !== undefined
+                    ? updatedData.deleted
+                    : false,
               },
               { transaction }
             );

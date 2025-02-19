@@ -37,7 +37,7 @@ export default function EditContactPersons({ contactPersons, setFormData }) {
   return (
     <div className="space-y-3">
       {contactPersons.map((person, index) => (
-        <div key={index} className="border p-4 rounded-lg bg-white ">
+        <div key={index} className="border p-4 rounded-lg ">
           <div className="flex space-x-2 items-center justify-center ">
             <div>
               <label className="block text-sm font-medium text-gray-700">

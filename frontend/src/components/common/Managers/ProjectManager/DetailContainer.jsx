@@ -10,9 +10,14 @@ export default function DetailContainer({
   projectId,
   selectedMainTab,
   projects,
+  isTrash,
 }) {
   return (
-    <div className="border p-4 flex flex-col space-y-3 h-[80vh] overflow-auto">
+    <div
+      className={`p-4 flex flex-col space-y-3 h-[80vh] overflow-auto ${
+        isTrash ? "border border-rose-300" : "border"
+      }`}
+    >
       <div className="flex justify-end">
         <IconButton onClick={onClose} variant="gray">
           <X />

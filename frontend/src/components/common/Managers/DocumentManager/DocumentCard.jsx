@@ -26,7 +26,7 @@ export default function DocumentCard({
 
   const handleSigning = (e) => {
     e.stopPropagation();
-    navigate("/document-signing", { state: { document } });
+    navigate("/signature-document", { state: { document } });
   };
 
   const getBorderColor = () => {
@@ -72,7 +72,7 @@ export default function DocumentCard({
 
   return (
     <div
-      className={`relative border ${getBorderColor()} p-4 rounded-lg text-center w-[200px] flex-shrink-0 bg-white transition-transform duration-200 ease-in-out cursor-pointer hover:bg-gray-50`}
+      className={`relative border ${getBorderColor()} p-4 rounded-lg text-center w-[200px] flex-shrink-0 transition-transform duration-200 ease-in-out cursor-pointer hover:bg-gray-50`}
       onClick={() => onSelectItem(document)}
     >
       {isPdf && (

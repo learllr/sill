@@ -1,8 +1,8 @@
 import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import axios from "../../../../axiosConfig.js";
-import IconButton from "../../../common/Design/Buttons/IconButton.jsx";
+import axios from "../../../axiosConfig.js";
+import IconButton from "../../common/Design/Buttons/IconButton.jsx";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -80,55 +80,63 @@ export default function SignatureStamp() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 w-full max-w-md mx-auto justify-center">
-      {isLoading ? (
-        <p>Chargement...</p>
-      ) : (
-        <>
-          {preview && !isEditing ? (
-            <div className="relative border p-2">
-              <img
-                src={preview}
-                alt="Tampon de signature"
-                className="max-w-xs"
-              />
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-full p-2 transition absolute top-2 right-2"
-              >
-                <Pencil size={16} />
-              </button>
-            </div>
-          ) : (
-            <>
-              <input type="file" accept="image/*" onChange={handleFileChange} />
-              {preview && (
-                <div className="border p-2">
-                  <img
-                    src={preview}
-                    alt="Aperçu du tampon"
-                    className="max-w-xs"
-                  />
-                </div>
-              )}
-              <div className="flex space-x-2">
-                <IconButton
-                  onClick={handleSave}
-                  disabled={!file || uploadMutation.isLoading}
-                  variant="green"
+    <div>
+      <h1 className="text-lg font-semibold mb-4 px-4 ">Tampon de signature</h1>
+
+      <div className="flex flex-col items-center space-y-4 w-full max-w-md mx-auto justify-center">
+        {isLoading ? (
+          <p>Chargement...</p>
+        ) : (
+          <>
+            {preview && !isEditing ? (
+              <div className="relative border p-2">
+                <img
+                  src={preview}
+                  alt="Tampon de signature"
+                  className="max-w-xs"
+                />
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-full p-2 transition absolute top-2 right-2"
                 >
-                  {uploadMutation.isLoading
-                    ? "Enregistrement..."
-                    : "Enregistrer"}
-                </IconButton>
-                <IconButton onClick={handleCancel} variant="red">
-                  Annuler
-                </IconButton>
+                  <Pencil size={16} />
+                </button>
               </div>
-            </>
-          )}
-        </>
-      )}
+            ) : (
+              <>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+                {preview && (
+                  <div className="border p-2">
+                    <img
+                      src={preview}
+                      alt="Aperçu du tampon"
+                      className="max-w-xs"
+                    />
+                  </div>
+                )}
+                <div className="flex space-x-2">
+                  <IconButton
+                    onClick={handleSave}
+                    disabled={!file || uploadMutation.isLoading}
+                    variant="green"
+                  >
+                    {uploadMutation.isLoading
+                      ? "Enregistrement..."
+                      : "Enregistrer"}
+                  </IconButton>
+                  <IconButton onClick={handleCancel} variant="red">
+                    Annuler
+                  </IconButton>
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

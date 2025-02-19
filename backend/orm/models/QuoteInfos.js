@@ -56,6 +56,11 @@ export default (sequelize) => {
         type: DataTypes.DATEONLY,
         allowNull: true,
       },
+      deleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

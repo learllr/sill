@@ -48,13 +48,19 @@ const fullMenu = [
   {
     title: "Comptabilité",
     items: [
-      { title: "Comptabilité ZIED", url: "/compatibilité-zied" },
-      { title: "Signature de document", url: "/document-signing" },
+      { title: "Comptabilité ZIED", url: "/compatibilite-zied" },
+      { title: "Signature de document", url: "/signature-document" },
     ],
   },
   {
     title: "Administration",
-    items: [{ title: "Tableau de bord", url: "/dashboard" }],
+    items: [
+      { title: "Gestion des droits", url: "/gestion-droits" },
+      { title: "Équipe", url: "/equipe" },
+      { title: "Historique de connexions", url: "/historique-connexions" },
+      { title: "Corbeille", url: "/corbeille" },
+      { title: "Tampon de signature", url: "/tampon-signature" },
+    ],
   },
 ];
 
@@ -94,7 +100,7 @@ function AppSidebar({ ...props }) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu>
+          <SidebarMenu className="mb-8">
             {filteredMenu.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <div className="font-semibold text-sm text-sidebar-foreground px-3 mt-3 mb-2">

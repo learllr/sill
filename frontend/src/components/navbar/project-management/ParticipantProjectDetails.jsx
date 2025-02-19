@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
   getPrecisionContactMenuItems,
   getTypeName,
@@ -8,6 +8,8 @@ import DocumentManager from "../../common/Managers/DocumentManager/DocumentManag
 
 export default function ParticipantProjectDetails({ participantType }) {
   const { projectId, participantId } = useParams();
+  const location = useLocation();
+  const isTrash = location.pathname.includes("/corbeille");
 
   const menuItems = getPrecisionContactMenuItems(participantType) || [];
 
@@ -36,6 +38,7 @@ export default function ParticipantProjectDetails({ participantType }) {
         participantId={participantId}
         projectId={projectId}
         typeSpending="DOE"
+        isTrash={isTrash}
       />
     </div>
   );

@@ -7,7 +7,7 @@ import ConfirmDialog from "../../../dialogs/ConfirmDialog.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import EditProjectForm from "./EditProjectForm.jsx";
 
-export default function ProjectInfo({ projectId }) {
+export default function ProjectInfo({ projectId, isTrash }) {
   const navigate = useNavigate();
   const { projects, isLoading, isError, updateProject, deleteProject } =
     useProjects();
@@ -28,9 +28,18 @@ export default function ProjectInfo({ projectId }) {
   };
 
   const confirmDelete = () => {
-    deleteProject.mutate(project.id, {
-      onSuccess: () => navigate("/chantiers"),
-    });
+    if (isTrash) {
+      deleteProject.mutate(project.id, {
+        onSuccess: () => navigate("/corbeille"),
+      });
+    } else {
+      updateProject.mutate(
+        { projectId: project.id, updatedData: { deleted: true } },
+        {
+          onSuccess: () => navigate("/chantiers"),
+        }
+      );
+    }
     setIsConfirmOpen(false);
   };
 
@@ -44,7 +53,9 @@ export default function ProjectInfo({ projectId }) {
   };
 
   return (
-    <div className="border p-4 w-full">
+    <div
+      className={`p-4 w-full ${isTrash ? "border border-rose-300" : "border"}`}
+    >
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">Informations du chantier</h2>
         <div className="flex space-x-2">
@@ -57,9 +68,11 @@ export default function ProjectInfo({ projectId }) {
               {deleteProject.isLoading ? "Suppression..." : <Trash2 />}
             </IconButton>
           )}
-          <IconButton onClick={() => setIsEditing(!isEditing)} variant="blue">
-            <Pencil />
-          </IconButton>
+          {!isTrash && (
+            <IconButton onClick={() => setIsEditing(!isEditing)} variant="blue">
+              <Pencil />
+            </IconButton>
+          )}
         </div>
       </div>
 
@@ -95,7 +108,9 @@ export default function ProjectInfo({ projectId }) {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmDelete}
         title="Confirmer la suppression"
-        message="Voulez-vous vraiment supprimer ce chantier ?"
+        message={`Voulez-vous vraiment supprimer ${
+          isTrash ? "définitivement" : ""
+        } ce chantier ?`}
         confirmText="Supprimer"
         cancelText="Annuler"
       />

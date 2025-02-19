@@ -16,6 +16,7 @@ export default function ItemContainer({
   projectId = null,
   mainTab,
   isZied,
+  isTrash,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -53,14 +54,18 @@ export default function ItemContainer({
       });
 
   return (
-    <div className="border p-4 flex flex-col space-y-3 h-[80vh]">
+    <div
+      className={`p-4 flex flex-col space-y-3 h-[80vh] ${
+        isTrash ? "border border-rose-300" : "border"
+      }`}
+    >
       <div className="flex justify-between items-center space-x-2">
         <ScrollBarSearch
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
 
-        {!isZied && (
+        {!isZied && !isTrash && (
           <IconButton onClick={onAdd} variant={projectId ? "blue" : "green"}>
             {projectId ? <Pencil /> : <Plus />}
           </IconButton>
@@ -92,6 +97,7 @@ export default function ItemContainer({
                 }}
                 onSelectItem={onSelectItem}
                 mainTab={mainTab}
+                isTrash={isTrash}
               />
             ) : (
               <ProjectCard

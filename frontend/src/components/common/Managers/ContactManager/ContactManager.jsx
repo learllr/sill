@@ -13,6 +13,7 @@ export default function ContactManager({
   menuItems,
   selectedSubTab,
   setSelectedSubTab,
+  isTrash = false,
 }) {
   const navigate = useNavigate();
   const subMenuItems = menuItems?.[0]?.subMenu || [];
@@ -24,9 +25,12 @@ export default function ContactManager({
   const { contacts, isLoading, isError, addMutation } =
     useContacts(contactType);
 
+  const allContacts =
+    contacts?.filter((contact) => contact.deleted === isTrash) || [];
+
   return (
     <div>
-      <Section title={title} />
+      {title && <Section title={title} />}
 
       {error && <p className="text-red-500 text-center">{error}</p>}
 
@@ -36,7 +40,7 @@ export default function ContactManager({
           {isError && <p>Erreur lors du chargement des contacts.</p>}
           {!isLoading && !isError && (
             <ItemContainer
-              items={contacts || []}
+              items={allContacts || []}
               subMenuItems={subMenuItems}
               selectedSubTab={selectedSubTab}
               setSelectedSubTab={setSelectedSubTab}
@@ -46,14 +50,19 @@ export default function ContactManager({
               }}
               onSelectItem={(contact) => {
                 if (contactType === "employee") {
-                  navigate(`/salariés/${contact.id}`);
+                  navigate(
+                    `/salariés/${contact.id}${isTrash ? "/corbeille" : ""}`
+                  );
                 } else {
                   navigate(
-                    `/${getTypeName(contactType, "plural")}/${contact.id}`
+                    `/${getTypeName(contactType, "plural")}/${contact.id}${
+                      isTrash ? "/corbeille" : ""
+                    }`
                   );
                 }
               }}
               contactType={contactType}
+              isTrash={isTrash}
             />
           )}
         </div>

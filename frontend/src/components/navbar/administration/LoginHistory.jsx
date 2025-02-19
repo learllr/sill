@@ -46,10 +46,15 @@ export default function LoginHistory() {
 
   return (
     <div className="px-4 mb-10">
+      <h1 className="text-lg font-semibold mb-4 ">Historique de connexions</h1>
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm font-medium">
-          {selectedRows.length} ligne(s) sélectionnée(s)
+          {selectedRows.length}{" "}
+          {selectedRows.length > 1
+            ? "lignes sélectionnées"
+            : "ligne sélectionnée"}
         </span>
+
         <Button
           variant="destructive"
           onClick={handleDeleteSelected}

@@ -3,24 +3,33 @@ import { useQuery, useQueryClient } from "react-query";
 import axios from "../../axiosConfig.js";
 
 const UserContext = createContext();
-
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [roleId, setRoleId] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      queryClient.prefetchQuery("userProfile", fetchUserProfile);
+      fetchUserProfile().then((data) => {
+        if (data) {
+          setUser(data);
+          setRoleId(data.roleId);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      });
+    } else {
+      setIsAuthenticated(false);
     }
-  }, [queryClient]);
+  }, []);
 
   const { data: userProfile } = useQuery("userProfile", fetchUserProfile, {
-    enabled: isAuthenticated,
+    enabled: !!localStorage.getItem("token"),
     onSuccess: (data) => {
       setUser(data);
       setRoleId(data.roleId);
@@ -34,11 +43,16 @@ export const UserProvider = ({ children }) => {
   });
 
   async function fetchUserProfile() {
-    const token = localStorage.getItem("token");
-    const response = await axios.get("/user/profile", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return null;
+      const response = await axios.get("/user/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      return null;
+    }
   }
 
   const signupUser = async (userData) => {
@@ -98,7 +112,7 @@ export const UserProvider = ({ children }) => {
         logoutUser,
       }}
     >
-      {children}
+      {isAuthenticated === null ? null : children}
     </UserContext.Provider>
   );
 };

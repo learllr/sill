@@ -2,7 +2,7 @@ import { FileText, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ParticipantType } from "../../../../../../shared/constants/types.js";
 
-export default function ParticipantProjectCard({ project, mainTab }) {
+export default function ParticipantProjectCard({ project, mainTab, isTrash }) {
   const navigate = useNavigate();
 
   const participantPath =
@@ -22,7 +22,9 @@ export default function ParticipantProjectCard({ project, mainTab }) {
           className="flex items-center w-full max-w-[400px] min-w-[250px] justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-100 cursor-pointer transition-all"
           onClick={() =>
             navigate(
-              `/chantiers/${project.id}/${participantPath}/${participant.id}`
+              `/chantiers/${project.id}/${participantPath}/${participant.id}${
+                isTrash ? "/corbeille" : ""
+              }`
             )
           }
         >

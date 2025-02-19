@@ -21,8 +21,9 @@ export default function DocumentManager({
   projectId = null,
   inParticipantSection = false,
   typeSpending,
+  isTrash = false,
 }) {
-  const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
+  const currentMenu = menuItems?.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
 
   const [checkboxVisible, setCheckboxVisible] = useState(false);
@@ -45,24 +46,29 @@ export default function DocumentManager({
     isLoading,
     isError,
     addDocument,
-    addSending,
     deleteDocument,
+    addSending,
     updateDocument,
     deleteSending,
   } = useDocuments(selectedMainTab);
+
+  const allDocuments =
+    documents?.filter((doc) => doc.deleted === isTrash) || [];
 
   const { participants } = useParticipants();
   const isSending = selectedMainTab === "Les envois";
   const isCEDIG = selectedMainTab === "CEDIG";
 
-  const filteredDocuments = isDOE
-    ? documents?.filter((doc) =>
+  const filteredDocuments = isTrash
+    ? allDocuments
+    : isDOE
+    ? allDocuments?.filter((doc) =>
         projectId
           ? doc.type === "Fiches techniques" &&
             doc.projectId === Number(projectId)
           : doc.type === "Fiches techniques"
       )
-    : documents?.filter((doc) => {
+    : allDocuments?.filter((doc) => {
         if (isCEDIG) {
           if (doc.type !== "Factures") return false;
         } else {
@@ -85,13 +91,13 @@ export default function DocumentManager({
   };
 
   const handleDocumentIdClick = (docId) => {
-    const selectedDoc = documents.find((doc) => doc.id === docId);
+    const selectedDoc = allDocuments.find((doc) => doc.id === docId);
     if (selectedDoc) handleSelectItem(selectedDoc);
   };
 
   return (
     <div className="mb-4">
-      <Section title={title} />
+      {title && <Section title={title} />}
 
       {ContactInfoComponent && (
         <div className="mb-6">
@@ -154,6 +160,7 @@ export default function DocumentManager({
               inParticipantSection={inParticipantSection}
               isDOE={isDOE}
               typeSpending={typeSpending}
+              isTrash={isTrash}
             />
           )}
         </div>
@@ -183,6 +190,7 @@ export default function DocumentManager({
               inParticipantSection={inParticipantSection}
               isAddingSending={isAddingSending}
               isDOE={isDOE}
+              isTrash={isTrash}
             />
           </div>
         )}

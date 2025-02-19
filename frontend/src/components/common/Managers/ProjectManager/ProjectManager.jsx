@@ -17,6 +17,7 @@ export default function ProjectManager({
   projectId,
   ProjectInfoComponent = null,
   isZied = false,
+  isTrash = false,
 }) {
   const navigate = useNavigate();
   const currentMenu = menuItems.find((item) => item.label === selectedMainTab);
@@ -28,18 +29,22 @@ export default function ProjectManager({
     isLoadingProjects: isLoading,
     isError,
   } = useProjects(selectedMainTab, projectId);
+
+  const allProjects =
+    projects?.filter((project) => project.deleted === isTrash) || [];
+
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
 
   return (
     <div className="mb-4">
-      <Section title={title} />
+      {title && <Section title={title} />}
 
       {projectId && (
         <div className="mb-6 space-y-4">
           {ProjectInfoComponent && (
-            <ProjectInfoComponent projectId={projectId} />
+            <ProjectInfoComponent projectId={projectId} isTrash={isTrash} />
           )}
         </div>
       )}
@@ -70,7 +75,7 @@ export default function ProjectManager({
           {isLoading && <Loading />}
           {!isLoading && !isError && (
             <ItemContainer
-              items={projects || []}
+              items={allProjects || []}
               subMenuItems={currentSubMenu}
               selectedSubTab={selectedSubTab}
               setSelectedSubTab={setSelectedSubTab}
@@ -80,11 +85,16 @@ export default function ProjectManager({
                 setSelectedProject(null);
               }}
               onSelectItem={(project) => {
-                navigate(`/chantiers/${project.id}${isZied ? "/zied" : ""}`);
+                navigate(
+                  `/chantiers/${project.id}${isZied ? "/zied" : ""}${
+                    isTrash ? "/corbeille" : ""
+                  }`
+                );
               }}
               projectId={projectId}
               mainTab={selectedMainTab}
               isZied={isZied}
+              isTrash={isTrash}
             />
           )}
         </div>
@@ -101,7 +111,8 @@ export default function ProjectManager({
               addMutation={addProject}
               projectId={projectId}
               selectedMainTab={selectedMainTab}
-              projects={projects}
+              projects={allProjects}
+              isTrash={isTrash}
             />
           </div>
         )}

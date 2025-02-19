@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { CONTACT_FIELDS } from "../../../../../shared/constants/contactFields.js";
 import {
   getPrecisionContactMenuItems,
@@ -10,6 +10,9 @@ import DocumentManager from "../../common/Managers/DocumentManager/DocumentManag
 
 export default function ParticipantDetails({ participantType }) {
   const { id } = useParams();
+  const location = useLocation();
+  const isTrash = location.pathname.includes("/corbeille");
+
   const menuItems = getPrecisionContactMenuItems(participantType) || [];
 
   const [selectedMainTab, setSelectedMainTab] = useState("");
@@ -66,9 +69,11 @@ export default function ParticipantDetails({ participantType }) {
             contactId={id}
             contactType={participantType}
             sections={sections}
+            isTrash={isTrash}
           />
         )}
         inParticipantSection={true}
+        isTrash={isTrash}
       />
     </div>
   );

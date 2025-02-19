@@ -3,14 +3,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useContacts } from "../../../../hooks/useContacts.jsx";
 import { useUser } from "../../../contexts/UserContext";
+import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import Loading from "../../Design/Loading.jsx";
 import ContactSection from "./ContactSection.jsx";
 import EditContactForm from "./EditContactForm.jsx";
-import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 
-export default function ContactInfo({ sections, contactId, contactType }) {
+export default function ContactInfo({
+  sections,
+  contactId,
+  contactType,
+  isTrash,
+}) {
   const navigate = useNavigate();
+
   const { contacts, isLoading, isError, updateMutation, deleteMutation } =
     useContacts(contactType);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -34,10 +40,22 @@ export default function ContactInfo({ sections, contactId, contactType }) {
   };
 
   const confirmDelete = () => {
-    deleteMutation.mutate(contact.id, {
-      onSuccess: () =>
-        navigate(contactType === "employee" ? "/salariés" : `/${contactType}`),
-    });
+    if (isTrash) {
+      deleteMutation.mutate(contact.id, {
+        onSuccess: () => navigate("/corbeille"),
+      });
+    } else {
+      updateMutation.mutate(
+        { contactId: contact.id, formData: { deleted: true } },
+        {
+          onSuccess: () => {
+            navigate(
+              contactType === "employee" ? "/salariés" : `/${contactType}s`
+            );
+          },
+        }
+      );
+    }
     setIsConfirmOpen(false);
   };
 
@@ -55,7 +73,9 @@ export default function ContactInfo({ sections, contactId, contactType }) {
   }));
 
   return (
-    <div className="border p-4 w-full bg-white">
+    <div
+      className={`p-4 w-full ${isTrash ? "border border-rose-300" : "border"}`}
+    >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Informations générales</h2>
         <div className="flex space-x-2">
@@ -66,12 +86,14 @@ export default function ContactInfo({ sections, contactId, contactType }) {
           >
             {deleteMutation.isLoading ? "Suppression..." : <Trash2 />}
           </IconButton>
-          <IconButton
-            onClick={() => setIsEditing(!isEditing)}
-            variant={isEditing ? "gray" : "blue"}
-          >
-            {isEditing ? <X /> : <Pencil />}
-          </IconButton>
+          {!isTrash && (
+            <IconButton
+              onClick={() => setIsEditing(!isEditing)}
+              variant={isEditing ? "gray" : "blue"}
+            >
+              {isEditing ? <X /> : <Pencil />}
+            </IconButton>
+          )}
         </div>
       </div>
       {isEditing ? (
@@ -99,7 +121,9 @@ export default function ContactInfo({ sections, contactId, contactType }) {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmDelete}
         title="Confirmer la suppression"
-        message="Voulez-vous vraiment supprimer cet employé ?"
+        message={`Voulez-vous vraiment supprimer ${
+          isTrash ? "définitivement" : ""
+        } cet employé ?`}
         confirmText="Supprimer"
         cancelText="Annuler"
       />

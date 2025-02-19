@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/table";
 import { Check, Pencil, Trash, X } from "lucide-react";
 import { useState } from "react";
-import { useUsers } from "../../../../hooks/useUsers";
-import ConfirmDialog from "../../../dialogs/ConfirmDialog";
+import { useUsers } from "../../../hooks/useUsers";
+import ConfirmDialog from "../../dialogs/ConfirmDialog";
 
 export default function UserPermissions() {
   const {
@@ -134,6 +134,7 @@ export default function UserPermissions() {
 
   return (
     <div className="px-4 mb-10">
+      <h1 className="text-lg font-semibold mb-4 ">Gestion des droits</h1>
       {errorMessage && (
         <p className="text-red-500 text-sm mb-3 text-center">{errorMessage}</p>
       )}

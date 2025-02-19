@@ -28,6 +28,11 @@ export default (sequelize) => {
           key: "id",
         },
       },
+      deleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

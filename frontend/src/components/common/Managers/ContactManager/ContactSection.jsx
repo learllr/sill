@@ -26,7 +26,7 @@ export default function ContactSection({
   }, {});
 
   return (
-    <div className="mb-4 border border-gray-200 rounded-lg bg-white">
+    <div className="mb-4 border border-gray-200 rounded-lg">
       <button
         onClick={onToggle}
         className="w-full flex justify-between items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 transition rounded-lg"
