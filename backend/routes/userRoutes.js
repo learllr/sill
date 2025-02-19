@@ -2,6 +2,7 @@ import express from "express";
 import {
   createUser,
   deleteUserById,
+  getAllRoles,
   getAllUsers,
   getProfile,
   updateUser,
@@ -18,6 +19,7 @@ router.put("/:id", updateUser);
 router.get("/", getAllUsers);
 router.post("/", createUser);
 router.delete("/:id", deleteUserById);
+router.get("/role", getAllRoles);
 
 router.get("/settings", getUserSettings);
 router.put("/settings", updateUserSettings);

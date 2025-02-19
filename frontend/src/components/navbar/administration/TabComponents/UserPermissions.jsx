@@ -16,19 +16,26 @@ import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 export default function UserPermissions() {
   const {
     users,
+    roles,
     isLoading,
     isError,
+    isLoadingRoles,
+    isErrorRoles,
     addMutation,
     updateMutation,
     deleteMutation,
   } = useUsers();
+
   const [newUser, setNewUser] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    roleId: 2,
+    roleId: roles?.length > 0 ? roles[0].id : 2,
   });
+
+  const [errorMessage, setErrorMessage] = useState("");
+
   const [editUserId, setEditUserId] = useState(null);
   const [editedUser, setEditedUser] = useState({});
   const [confirmDelete, setConfirmDelete] = useState({
@@ -36,23 +43,36 @@ export default function UserPermissions() {
     userId: null,
   });
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
+    setErrorMessage("");
+
     if (
       !newUser.firstName ||
       !newUser.lastName ||
       !newUser.email ||
-      !newUser.password
+      !newUser.password ||
+      !newUser.roleId
     ) {
-      alert("Veuillez remplir tous les champs !");
+      setErrorMessage("Veuillez remplir tous les champs.");
       return;
     }
-    addMutation.mutate(newUser);
-    setNewUser({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      roleId: 2,
+
+    addMutation.mutate(newUser, {
+      onError: (error) => {
+        setErrorMessage(
+          error.response?.data?.error ||
+            "Erreur lors de l'ajout de l'utilisateur."
+        );
+      },
+      onSuccess: () => {
+        setNewUser({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          roleId: roles?.length > 0 ? roles[0].id : 2,
+        });
+      },
     });
   };
 
@@ -61,85 +81,106 @@ export default function UserPermissions() {
     setEditedUser({ ...user });
   };
 
-  const handleUpdateUser = () => {
-    Object.keys(editedUser).forEach((field) => {
-      if (editedUser[field] !== users.find((u) => u.id === editUserId)[field]) {
-        updateMutation.mutate({
-          id: editUserId,
-          field,
-          value: editedUser[field],
-        });
+  const handleUpdateUser = async () => {
+    setErrorMessage("");
+
+    if (
+      !editedUser.firstName ||
+      !editedUser.lastName ||
+      !editedUser.email ||
+      !editedUser.roleId
+    ) {
+      setErrorMessage("Veuillez remplir tous les champs.");
+      return;
+    }
+
+    updateMutation.mutate(
+      { id: editUserId, updatedData: editedUser },
+      {
+        onError: (error) => {
+          setErrorMessage(
+            error.response?.data?.error ||
+              "Erreur lors de la mise à jour de l'utilisateur."
+          );
+        },
+        onSuccess: () => {
+          setEditUserId(null);
+        },
       }
-    });
-    setEditUserId(null);
+    );
   };
 
   const handleDeleteUser = (userId) => {
     setConfirmDelete({ isOpen: true, userId });
   };
 
-  const confirmDeleteUser = () => {
-    deleteMutation.mutate(confirmDelete.userId);
-    setConfirmDelete({ isOpen: false, userId: null });
+  const confirmDeleteUser = async () => {
+    deleteMutation.mutate(confirmDelete.userId, {
+      onError: (error) => {
+        setErrorMessage(
+          error.response?.data?.error ||
+            "Erreur lors de la suppression de l'utilisateur."
+        );
+      },
+      onSuccess: () => {
+        setConfirmDelete({ isOpen: false, userId: null });
+      },
+    });
   };
 
-  if (isLoading) return <p>Chargement...</p>;
-  if (isError) return <p>Erreur lors du chargement</p>;
+  if (isLoading || isLoadingRoles) return <p>Chargement...</p>;
+  if (isError || isErrorRoles)
+    return <p className="text-red-500">Erreur lors du chargement</p>;
 
   return (
     <div className="px-4 mb-10">
-      <div className="mb-6 p-4 border rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-4">Ajouter un utilisateur</h3>
+      {errorMessage && (
+        <p className="text-red-500 text-sm mb-3 text-center">{errorMessage}</p>
+      )}
+      <div className="mb-6 p-4 border rounded-lg">
+        <h3 className="text-lg font-semibold mb-4 text-center">
+          Ajouter un utilisateur
+        </h3>
+
         <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
-          {["Prénom", "Nom", "Email", "Mot de passe", "Rôle"].map(
-            (label, index) => (
-              <div key={index}>
-                <label className="block text-sm font-medium mb-1">
-                  {label}
-                </label>
-                <Input
-                  type={
-                    label === "Mot de passe"
-                      ? "password"
-                      : label === "Rôle"
-                      ? "number"
-                      : "text"
-                  }
-                  placeholder={label}
-                  value={
-                    newUser[
-                      label === "Prénom"
-                        ? "firstName"
-                        : label === "Nom"
-                        ? "lastName"
-                        : label === "Email"
-                        ? "email"
-                        : label === "Mot de passe"
-                        ? "password"
-                        : "roleId"
-                    ]
-                  }
-                  onChange={(e) =>
-                    setNewUser({
-                      ...newUser,
-                      [label === "Prénom"
-                        ? "firstName"
-                        : label === "Nom"
-                        ? "lastName"
-                        : label === "Email"
-                        ? "email"
-                        : label === "Mot de passe"
-                        ? "password"
-                        : "roleId"]:
-                        label === "Nom"
-                          ? e.target.value.toUpperCase()
-                          : e.target.value,
-                    })
-                  }
-                />
-              </div>
-            )
-          )}
+          {["Prénom", "Nom", "Email", "Mot de passe"].map((label, index) => (
+            <div key={index}>
+              <label className="block text-sm font-medium mb-1">{label}</label>
+              <Input
+                type={label === "Mot de passe" ? "password" : "text"}
+                placeholder={label}
+                value={newUser[label.toLowerCase()]}
+                onChange={(e) =>
+                  setNewUser({
+                    ...newUser,
+                    [label === "Prénom"
+                      ? "firstName"
+                      : label === "Nom"
+                      ? "lastName"
+                      : label === "Email"
+                      ? "email"
+                      : "password"]: e.target.value,
+                  })
+                }
+              />
+            </div>
+          ))}
+          <div>
+            <label className="block text-sm font-medium mb-1">Rôle</label>
+            <select
+              className="block w-full border p-2 rounded-md"
+              value={newUser.roleId}
+              onChange={(e) =>
+                setNewUser({ ...newUser, roleId: Number(e.target.value) })
+              }
+            >
+              {roles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="mt-4 text-center">
           <Button onClick={handleAddUser}>Ajouter</Button>
@@ -150,29 +191,26 @@ export default function UserPermissions() {
         <Table className="min-w-full text-center">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-1/5 text-center">Prénom</TableHead>
-              <TableHead className="w-1/5 text-center">Nom</TableHead>
-              <TableHead className="w-1/3 text-center">Email</TableHead>
-              <TableHead className="w-1/6 text-center">Rôle</TableHead>
-              <TableHead className="w-1/6 text-center">Actions</TableHead>
+              <TableHead className="text-center">Prénom</TableHead>
+              <TableHead className="text-center">Nom</TableHead>
+              <TableHead className="text-center">Email</TableHead>
+              <TableHead className="text-center">Rôle</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.id}>
-                {["firstName", "lastName", "email", "roleId"].map((field) => (
-                  <TableCell key={field} className="w-1/5">
+                {["firstName", "lastName", "email"].map((field) => (
+                  <TableCell key={field} className="text-center">
                     {editUserId === user.id ? (
                       <Input
-                        type={field === "roleId" ? "number" : "text"}
+                        type="text"
                         value={editedUser[field]}
                         onChange={(e) =>
                           setEditedUser({
                             ...editedUser,
-                            [field]:
-                              field === "lastName"
-                                ? e.target.value.toUpperCase()
-                                : e.target.value,
+                            [field]: e.target.value,
                           })
                         }
                       />
@@ -181,7 +219,29 @@ export default function UserPermissions() {
                     )}
                   </TableCell>
                 ))}
-                <TableCell className="w-1/6 flex space-x-2">
+                <TableCell className="text-center">
+                  {editUserId === user.id ? (
+                    <select
+                      className="block w-full border p-2 rounded-md"
+                      value={editedUser.roleId}
+                      onChange={(e) =>
+                        setEditedUser({
+                          ...editedUser,
+                          roleId: Number(e.target.value),
+                        })
+                      }
+                    >
+                      {roles.map((role) => (
+                        <option key={role.id} value={role.id}>
+                          {role.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    roles.find((r) => r.id === user.roleId)?.name || "Inconnu"
+                  )}
+                </TableCell>
+                <TableCell className="flex space-x-2 justify-center">
                   {editUserId === user.id ? (
                     <>
                       <Button variant="success" onClick={handleUpdateUser}>

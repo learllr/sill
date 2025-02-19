@@ -17,6 +17,19 @@ export const useUsers = () => {
     },
   });
 
+  // Récupérer les rôles
+  const {
+    data: roles,
+    isLoading: isLoadingRoles,
+    isError: isErrorRoles,
+  } = useQuery({
+    queryKey: ["roles"],
+    queryFn: async () => {
+      const { data } = await axios.get("/user/role");
+      return data;
+    },
+  });
+
   // Ajouter un utilisateur
   const addMutation = useMutation({
     mutationFn: async (userData) => {
@@ -30,8 +43,8 @@ export const useUsers = () => {
 
   // Modifier un utilisateur
   const updateMutation = useMutation({
-    mutationFn: async ({ id, field, value }) => {
-      await axios.put(`/user/${id}`, { [field]: value });
+    mutationFn: async ({ id, updatedData }) => {
+      await axios.put(`/user/${id}`, updatedData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["users"]);
@@ -50,8 +63,11 @@ export const useUsers = () => {
 
   return {
     users,
+    roles,
     isLoading,
     isError,
+    isLoadingRoles,
+    isErrorRoles,
     addMutation,
     updateMutation,
     deleteMutation,

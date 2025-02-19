@@ -1,5 +1,5 @@
 import db from "../orm/models/index.js";
-const { User } = db;
+const { User, Role } = db;
 
 export default class UserDAO {
   static async getUserById(id) {
@@ -20,5 +20,9 @@ export default class UserDAO {
 
   static async deleteUser(user) {
     return await user.destroy();
+  }
+
+  static async getAllRoles() {
+    return await Role.findAll();
   }
 }

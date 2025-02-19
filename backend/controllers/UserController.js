@@ -99,3 +99,15 @@ export const deleteUserById = async (req, res) => {
       .json({ error: "Erreur lors de la suppression de l'utilisateur" });
   }
 };
+
+export const getAllRoles = async (req, res) => {
+  try {
+    const roles = await UserDAO.getAllRoles();
+    res.status(200).json(roles);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des rôles:", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des rôles." });
+  }
+};
