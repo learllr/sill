@@ -70,7 +70,11 @@ function AppSidebar({ ...props }) {
         (section) =>
           !(
             roleId >= 3 &&
-            ["Administration", "Comptabilité"].includes(section.title)
+            [
+              "Services administratifs",
+              "Administration",
+              "Comptabilité",
+            ].includes(section.title)
           )
       );
 

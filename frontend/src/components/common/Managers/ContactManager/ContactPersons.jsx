@@ -29,7 +29,11 @@ export default function ContactPersons({ contactPersons }) {
             <strong>Email :</strong>{" "}
             {person.email ? (
               <a
-                href={`mailto:${person.email}`}
+                href={`https://mail.orange.fr/appsuite/#!!&app=io.ox/mail&folder=default0/INBOX&to=${encodeURIComponent(
+                  person.email
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-blue-600 underline"
               >
                 {person.email}

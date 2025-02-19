@@ -46,7 +46,7 @@ export default function ProjectInfo({ projectId }) {
   return (
     <div className="border p-4 w-full">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-semibold">Informations du projet</h2>
+        <h2 className="text-lg font-semibold">Informations du chantier</h2>
         <div className="flex space-x-2">
           {roleId < 3 && (
             <IconButton

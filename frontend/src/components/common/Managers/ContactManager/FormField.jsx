@@ -1,5 +1,6 @@
 import { Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
+import { formatPhoneNumber } from "../../../../../../shared/utils/formatUtils.js";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 
 export default function FormField({
@@ -31,7 +32,10 @@ export default function FormField({
 
   const handleContactChange = (index, field, val) => {
     const updatedContacts = [...contacts];
-    updatedContacts[index][field] = val;
+
+    const formattedValue = field === "phone" ? formatPhoneNumber(val) : val;
+
+    updatedContacts[index][field] = formattedValue;
     setContacts(updatedContacts);
     onChange({
       target: {

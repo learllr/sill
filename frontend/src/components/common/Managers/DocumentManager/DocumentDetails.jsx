@@ -11,8 +11,8 @@ export default function DocumentDetails({ document, employeeId }) {
   const isQuote = document?.type === "Devis";
   const isPV = document?.type === "PV";
 
-  const invoiceInfo = document?.invoiceInfos?.[0] || {};
-  const quoteInfo = document?.quoteInfos?.[0] || {};
+  const invoiceInfo = document?.invoiceInfos || {};
+  const quoteInfo = document?.quoteInfos || {};
 
   const { participants } = useParticipants();
   const { projects } = useProjects();

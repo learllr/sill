@@ -50,7 +50,8 @@ export default function NewContactForm({ onSave, contactType, addMutation }) {
   return (
     <div className="p-2 space-y-3">
       <h1 className="text-lg font-semibold text-center mb-5">
-        Ajouter un {contactType === "Salarié" ? "salarié" : "contact"}
+        Ajouter un{" "}
+        {contactType === "employee" ? "salarié" : contactType.toLowerCase()}
       </h1>
 
       {fields.map(({ name, label, type, options, required }) => (

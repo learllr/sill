@@ -82,7 +82,7 @@ export default function ParticipantSelector({
   return (
     <div className="p-4">
       <h2 className="text-lg font-semibold text-center mb-4">
-        {`Modifier les ${participantType.toLowerCase()}s du projet`}
+        {`Modifier les ${participantType.toLowerCase()}s du chantier`}
       </h2>
 
       {isLoading && <p>Chargement...</p>}

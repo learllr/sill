@@ -24,32 +24,14 @@ export default (sequelize) => {
       employeeId: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        references: {
-          model: "Employees",
-          key: "id",
-        },
-        onDelete: "SET NULL",
-        defaultValue: null,
       },
       participantId: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        references: {
-          model: "Participants",
-          key: "id",
-        },
-        onDelete: "SET NULL",
-        defaultValue: null,
       },
       projectId: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        references: {
-          model: "Projects",
-          key: "id",
-        },
-        onDelete: "SET NULL",
-        defaultValue: null,
       },
       date: {
         type: DataTypes.DATEONLY,
@@ -74,6 +56,11 @@ export default (sequelize) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      deleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
@@ -84,29 +71,37 @@ export default (sequelize) => {
   );
 
   Document.associate = (models) => {
+    // Si un Employee est supprimé, supprimer aussi les Documents associés
     Document.belongsTo(models.Employee, {
-      foreignKey: "employeeId",
+      foreignKey: { name: "employeeId", allowNull: true },
       as: "employee",
+      onDelete: "CASCADE",
     });
 
+    // Si un Participant est supprimé, supprimer aussi les Documents associés
     Document.belongsTo(models.Participant, {
-      foreignKey: "participantId",
+      foreignKey: { name: "participantId", allowNull: true },
       as: "participant",
+      onDelete: "CASCADE",
     });
 
+    // Si un Project est supprimé, supprimer aussi les Documents associés
     Document.belongsTo(models.Project, {
-      foreignKey: "projectId",
+      foreignKey: { name: "projectId", allowNull: true },
       as: "project",
+      onDelete: "CASCADE",
     });
 
-    Document.hasMany(models.InvoiceInfos, {
-      foreignKey: "documentId",
+    // Un Document peut avoir un seul InvoiceInfos (CASCADE si supprimé)
+    Document.hasOne(models.InvoiceInfos, {
+      foreignKey: { name: "documentId", allowNull: false },
       as: "invoiceInfos",
       onDelete: "CASCADE",
     });
 
-    Document.hasMany(models.QuoteInfos, {
-      foreignKey: "documentId",
+    // Un Document peut avoir un seul QuoteInfos (CASCADE si supprimé)
+    Document.hasOne(models.QuoteInfos, {
+      foreignKey: { name: "documentId", allowNull: false },
       as: "quoteInfos",
       onDelete: "CASCADE",
     });

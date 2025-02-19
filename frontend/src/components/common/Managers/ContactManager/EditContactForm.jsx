@@ -16,6 +16,10 @@ export default function EditContactForm({
   isUpdating,
   sections,
 }) {
+  const [openSections, setOpenSections] = useState(
+    sections.map((_, index) => index === 0)
+  );
+
   const [formData, setFormData] = useState(
     sections.reduce((acc, { fields }) => {
       fields.forEach(({ name, type, defaultValue }) => {
@@ -31,10 +35,15 @@ export default function EditContactForm({
 
   const [error, setError] = useState("");
 
+  const toggleSection = (index) => {
+    setOpenSections((prev) =>
+      prev.map((isOpen, i) => (i === index ? !isOpen : isOpen))
+    );
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     let formattedValue = value;
-
     if (name.includes("phone")) formattedValue = formatPhoneNumber(value);
     if (name.includes("postal")) formattedValue = formatPostalCode(value);
     if (name.includes("Secu"))
@@ -63,7 +72,9 @@ export default function EditContactForm({
 
     if (formData.contactPersons) {
       formData.contactPersons = formData.contactPersons.filter((contact) =>
-        Object.values(contact).some((val) => val.trim() !== "")
+        Object.values(contact).some(
+          (val) => typeof val === "string" && val.trim() !== ""
+        )
       );
     }
 
@@ -87,8 +98,8 @@ export default function EditContactForm({
           fields={fields}
           formData={formData}
           handleChange={handleChange}
-          isOpen={true}
-          onToggle={() => {}}
+          isOpen={openSections[index]}
+          onToggle={() => toggleSection(index)}
           setFormData={setFormData}
         />
       ))}

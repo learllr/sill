@@ -82,7 +82,7 @@ export const ALL_CONTACT_FIELDS = [
 ];
 
 export const PROJECT_FIELDS = [
-  { name: "name", label: "Nom du projet", type: "text", required: true },
+  { name: "name", label: "Nom du chantier", type: "text", required: true },
   {
     name: "status",
     label: "Statut",

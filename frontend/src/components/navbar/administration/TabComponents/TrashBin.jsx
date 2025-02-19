@@ -14,7 +14,6 @@ export default function TrashBin() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Corbeille</h2>
       {deletedItems.length === 0 ? (
         <p>Aucun élément dans la corbeille.</p>
       ) : (

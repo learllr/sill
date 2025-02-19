@@ -35,6 +35,11 @@ export default (sequelize) => {
         },
         onDelete: "SET NULL",
       },
+      deleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
@@ -45,12 +50,14 @@ export default (sequelize) => {
   );
 
   Project.associate = (models) => {
+    // Un projet a un client principal (Participant), qui peut être NULL si supprimé
     Project.belongsTo(models.Participant, {
       foreignKey: "clientId",
       as: "client",
       onDelete: "SET NULL",
     });
 
+    // Un projet peut avoir plusieurs clients associés via une table intermédiaire (ProjectParticipant)
     Project.belongsToMany(models.Participant, {
       through: models.ProjectParticipant,
       foreignKey: "projectId",
@@ -60,6 +67,7 @@ export default (sequelize) => {
       onDelete: "CASCADE",
     });
 
+    // Un projet peut avoir plusieurs fournisseurs associés via une table intermédiaire (ProjectParticipant)
     Project.belongsToMany(models.Participant, {
       through: models.ProjectParticipant,
       foreignKey: "projectId",
@@ -69,6 +77,7 @@ export default (sequelize) => {
       onDelete: "CASCADE",
     });
 
+    // Un projet peut avoir plusieurs sous-traitants via une table intermédiaire (ProjectParticipant)
     Project.belongsToMany(models.Participant, {
       through: models.ProjectParticipant,
       foreignKey: "projectId",
@@ -78,12 +87,20 @@ export default (sequelize) => {
       onDelete: "CASCADE",
     });
 
+    // Un projet peut avoir plusieurs architectes via une table intermédiaire (ProjectParticipant)
     Project.belongsToMany(models.Participant, {
       through: models.ProjectParticipant,
       foreignKey: "projectId",
       otherKey: "participantId",
       as: "architects",
       scope: { type: ParticipantType.ARCHITECTE },
+      onDelete: "CASCADE",
+    });
+
+    // Un projet peut avoir plusieurs documents (Factures, Devis, etc.), supprimés en cascade si le projet est supprimé
+    Project.hasMany(models.Document, {
+      foreignKey: { name: "projectId", allowNull: true },
+      as: "documents",
       onDelete: "CASCADE",
     });
   };

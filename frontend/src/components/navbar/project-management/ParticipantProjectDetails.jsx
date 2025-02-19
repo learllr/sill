@@ -27,7 +27,7 @@ export default function ParticipantProjectDetails({ participantType }) {
         title={`Détails du ${getTypeName(
           participantType,
           "singular"
-        )} du projet`}
+        )} du chantier`}
         selectedMainTab={selectedMainTab}
         setSelectedMainTab={setSelectedMainTab}
         selectedSubTab={selectedSubTab}

@@ -37,7 +37,6 @@ export default function UserPermissions() {
   });
 
   const handleAddUser = () => {
-    console.log(newUser);
     if (
       !newUser.firstName ||
       !newUser.lastName ||

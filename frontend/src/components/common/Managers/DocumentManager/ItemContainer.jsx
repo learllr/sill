@@ -86,13 +86,13 @@ export default function ItemContainer({
           } else {
             if (employeeId) return true;
             if (item.type === DocumentType.DEVIS) {
-              const status = item.quoteInfos[0]?.status;
+              const status = item.quoteInfos?.status;
               if (selectedSubTab === "En attente")
                 return status === "En attente";
               if (selectedSubTab === "Acceptés") return status === "Accepté";
               if (selectedSubTab === "Rejetés") return status === "Rejeté";
             } else if (item.type === DocumentType.FACTURES) {
-              const paidOn = item.invoiceInfos[0]?.paidOn;
+              const paidOn = item.invoiceInfos?.paidOn;
               if (selectedSubTab === "Payés") return !!paidOn;
               if (selectedSubTab === "Non payés") return !paidOn;
             } else if (item.type === DocumentType.PV) {
@@ -116,10 +116,9 @@ export default function ItemContainer({
           const formattedDate = formatDate(
             employeeId ? item.createdAt : item.date
           );
-          const quoteNumber =
-            item.quoteInfos?.[0]?.quoteNumber?.toLowerCase() || "";
+          const quoteNumber = item.quoteInfos?.quoteNumber?.toLowerCase() || "";
           const invoiceNumber =
-            item.invoiceInfos?.[0]?.invoiceNumber?.toLowerCase() || "";
+            item.invoiceInfos?.invoiceNumber?.toLowerCase() || "";
           const name = item.name?.toLowerCase() || "";
 
           return searchTerms.every(

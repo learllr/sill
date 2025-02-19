@@ -1,11 +1,8 @@
 import { Trash2 } from "lucide-react";
+import { formatPhoneNumber } from "../../../../../../shared/utils/formatUtils";
 import IconButton from "../../Design/Buttons/IconButton";
 
-export default function EditContactPersons({
-  contactPersons,
-  formData,
-  setFormData,
-}) {
+export default function EditContactPersons({ contactPersons, setFormData }) {
   const handleAddPerson = () => {
     const newPerson = { name: "", phone: "", email: "" };
     setFormData((prevData) => ({
@@ -16,10 +13,12 @@ export default function EditContactPersons({
 
   const handleChangePerson = (index, e) => {
     const { name, value } = e.target;
+    const formattedValue = name === "phone" ? formatPhoneNumber(value) : value;
+
     const updatedContactPersons = [...contactPersons];
     updatedContactPersons[index] = {
       ...updatedContactPersons[index],
-      [name]: value,
+      [name]: formattedValue,
     };
 
     setFormData((prevData) => ({

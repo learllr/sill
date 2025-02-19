@@ -76,7 +76,11 @@ export default function ContactSection({
               if (key.includes("email") && value !== "Non renseigné") {
                 value = (
                   <a
-                    href={`mailto:${value}`}
+                    href={`https://mail.orange.fr/appsuite/#!!&app=io.ox/mail&folder=default0/INBOX&to=${encodeURIComponent(
+                      value
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-blue-600 underline"
                   >
                     {value}

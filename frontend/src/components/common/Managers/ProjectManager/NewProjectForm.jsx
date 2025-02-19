@@ -38,7 +38,7 @@ export default function NewProjectForm({ onSave, addMutation }) {
   return (
     <div className="p-2 space-y-3">
       <h1 className="text-lg font-semibold text-center mb-5">
-        Ajouter un projet
+        Ajouter un chantier
       </h1>
 
       {PROJECT_FIELDS.map((field) => (

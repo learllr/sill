@@ -59,6 +59,6 @@ export const downloadFiles = async (document, documentIds, documents) => {
 
 export const sendMail = async (document, documentIds, documents) => {
   await downloadFiles(document, documentIds, documents);
-  const mailUrl = `https://mail.google.com/mail/?view=cm&fs=1`;
-  window.open(mailUrl);
+  const mailUrl = `https://mail.orange.fr/appsuite/#!!&app=io.ox/mail&folder=default0/INBOX&to=`;
+  window.open(mailUrl, "_blank");
 };

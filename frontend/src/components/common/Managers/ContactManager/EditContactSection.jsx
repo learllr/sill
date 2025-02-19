@@ -34,7 +34,6 @@ export default function EditContactSection({
         {title === "Interlocuteurs" ? (
           <EditContactPersons
             contactPersons={formData.contactPersons || []}
-            formData={formData}
             setFormData={setFormData}
           />
         ) : (

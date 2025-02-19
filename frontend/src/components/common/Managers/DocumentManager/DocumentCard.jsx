@@ -44,7 +44,7 @@ export default function DocumentCard({
     }
 
     if (isQuote) {
-      switch (document.quoteInfos[0]?.status) {
+      switch (document.quoteInfos?.status) {
         case "En attente":
           return "border-yellow-500";
         case "Accepté":
@@ -57,7 +57,7 @@ export default function DocumentCard({
     }
 
     if (isInvoice) {
-      return !document.invoiceInfos[0]?.paidOn
+      return !document.invoiceInfos?.paidOn
         ? "border-red-500"
         : "border-green-500";
     }
@@ -112,20 +112,20 @@ export default function DocumentCard({
       <p className="mt-2 text-gray-700 text-sm">
         {employeeId ? (
           formatDate(document.updatedAt)
-        ) : isInvoice && document.invoiceInfos[0]?.invoiceNumber ? (
+        ) : isInvoice && document.invoiceInfos?.invoiceNumber ? (
           <>
             {formatDate(document.date)}
             <br />
             <span className="text-gray-500 text-xs">
-              {document.invoiceInfos[0]?.invoiceNumber}
+              {document.invoiceInfos?.invoiceNumber}
             </span>
           </>
-        ) : isQuote && document.quoteInfos[0]?.quoteNumber ? (
+        ) : isQuote && document.quoteInfos?.quoteNumber ? (
           <>
             {formatDate(document.date)}
             <br />
             <span className="text-gray-500 text-xs">
-              {document.quoteInfos[0]?.quoteNumber}
+              {document.quoteInfos?.quoteNumber}
             </span>
           </>
         ) : (
