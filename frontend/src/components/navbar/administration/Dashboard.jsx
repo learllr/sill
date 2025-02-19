@@ -5,6 +5,7 @@ import Section from "../../common/Managers/Section.jsx";
 import { useUser } from "../../contexts/UserContext.jsx";
 import LoginHistory from "./TabComponents/LoginHistory.jsx";
 import SignatureStamp from "./TabComponents/SignatureStamp.jsx";
+import TeamOverview from "./TabComponents/TeamOverview.jsx";
 import TrashBin from "./TabComponents/TrashBin.jsx";
 import UserPermissions from "./TabComponents/UserPermissions.jsx";
 
@@ -19,6 +20,7 @@ export default function Dashboard() {
 
   const tabComponents = {
     ...(roleId === 1 && { "Gestion des droits": <UserPermissions /> }),
+    Équipe: <TeamOverview />,
     "Historique des connexions": <LoginHistory />,
     Corbeille: <TrashBin />,
     "Tampon de signature": <SignatureStamp />,
