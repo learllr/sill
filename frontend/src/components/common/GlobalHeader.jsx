@@ -30,6 +30,7 @@ export default function GlobalHeader() {
           size="icon"
           aria-label="Settings"
           className="flex items-center justify-center rounded-full [&_svg]:!size-6 text-gray-600"
+          onClick={() => navigate("/settings")}
         >
           <Settings />
         </Button>

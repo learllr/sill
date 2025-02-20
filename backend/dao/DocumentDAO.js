@@ -3,7 +3,8 @@ import path from "path";
 import { DocumentType } from "../../shared/constants/types.js";
 import db from "../orm/models/index.js";
 
-const { Document, Project, InvoiceInfos, QuoteInfos, Sending } = db;
+const { Document, Project, InvoiceInfos, QuoteInfos, Sending, Participant } =
+  db;
 
 export default class DocumentDAO {
   static async getAllDocuments() {
@@ -12,6 +13,10 @@ export default class DocumentDAO {
         {
           model: Project,
           as: "project",
+        },
+        {
+          model: Participant,
+          as: "participant",
         },
         {
           model: InvoiceInfos,

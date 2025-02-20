@@ -13,7 +13,8 @@ export default function ParticipantSelector({
   const [selectedParticipants, setSelectedParticipants] = useState([]);
 
   const filteredParticipants = participants.filter(
-    (participant) => participant.type === participantType
+    (participant) =>
+      participant.type === participantType && participant.deleted === false
   );
 
   useEffect(() => {

@@ -1,6 +1,7 @@
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2, Undo2, X } from "lucide-react";
 import { useState } from "react";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog.jsx";
+import MessageDialog from "../../../dialogs/MessageDialog.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentDetails from "./DocumentDetails.jsx";
 import EditDocumentForm from "./EditDocumentForm.jsx";
@@ -30,6 +31,12 @@ export default function DetailContainer({
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
+  const [messageDialog, setMessageDialog] = useState({
+    isOpen: false,
+    type: "info",
+    message: "",
+  });
+
   const handleDelete = () => {
     setIsConfirmOpen(true);
   };
@@ -55,6 +62,28 @@ export default function DetailContainer({
     }
   };
 
+  const handleRestore = () => {
+    if (document.participant?.deleted || document.project?.deleted) {
+      setMessageDialog({
+        isOpen: true,
+        type: "error",
+        message:
+          "Impossible de restaurer ce document. Veuillez d'abord restaurer le projet et/ou l'intervenant associé.",
+      });
+      return;
+    }
+
+    updateMutation.mutate(
+      { documentId: document.id, formData: { deleted: false } },
+      {
+        onSuccess: () => {
+          onClose();
+          setIsConfirmOpen(false);
+        },
+      }
+    );
+  };
+
   return (
     <div
       className={`p-4 flex flex-col space-y-3 h-[80vh] overflow-auto ${
@@ -62,6 +91,15 @@ export default function DetailContainer({
       }`}
     >
       <div className="flex justify-end space-x-2">
+        {isTrash && (
+          <IconButton
+            onClick={handleRestore}
+            variant="green"
+            disabled={updateMutation.isLoading}
+          >
+            {updateMutation.isLoading ? "Restauration..." : <Undo2 />}
+          </IconButton>
+        )}
         {!isNew &&
           !isEditing &&
           !isSending &&
@@ -130,7 +168,11 @@ export default function DetailContainer({
             isCEDIG={isCEDIG}
           />
         ) : (
-          <DocumentDetails document={document} employeeId={employeeId} />
+          <DocumentDetails
+            document={document}
+            employeeId={employeeId}
+            isTrash={isTrash}
+          />
         )}
       </div>
 
@@ -144,6 +186,13 @@ export default function DetailContainer({
         } ce document ?`}
         confirmText="Supprimer"
         cancelText="Annuler"
+      />
+
+      <MessageDialog
+        isOpen={messageDialog.isOpen}
+        onClose={() => setMessageDialog({ ...messageDialog, isOpen: false })}
+        type={messageDialog.type}
+        message={messageDialog.message}
       />
     </div>
   );

@@ -2,6 +2,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Login from "./components/authentification/Login.jsx";
 import ProtectedRoute from "./components/authentification/ProtectedRoute.jsx";
 
+import Settings from "./components/common/Settings.jsx";
 import DocumentSigning from "./components/navbar/accounting/DocumentSigning";
 import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting";
 import LoginHistory from "./components/navbar/administration/LoginHistory.jsx";
@@ -62,6 +63,8 @@ export default function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/" element={<ProtectedRoute />}>
+          <Route path="/settings" element={<Settings />} />
+
           <Route path="/gestion-droits" element={<UserPermissions />} />
           <Route path="/equipe" element={<TeamOverview />} />
           <Route path="/historique-connexions" element={<LoginHistory />} />

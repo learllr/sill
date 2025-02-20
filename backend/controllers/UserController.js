@@ -25,7 +25,12 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ error: "Utilisateur non trouvé." });
     }
 
-    const updatedUser = await UserDAO.updateUser(user, req.body);
+    const updatedData = { ...req.body };
+    if (!updatedData.password) {
+      delete updatedData.password;
+    }
+
+    const updatedUser = await UserDAO.updateUser(user, updatedData);
 
     res.status(200).json({
       message: "Informations de l'utilisateur mises à jour avec succès",

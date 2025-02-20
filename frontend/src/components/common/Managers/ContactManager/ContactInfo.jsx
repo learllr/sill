@@ -1,4 +1,4 @@
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2, Undo2, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useContacts } from "../../../../hooks/useContacts.jsx";
@@ -79,6 +79,28 @@ export default function ContactInfo({
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Informations générales</h2>
         <div className="flex space-x-2">
+          {isTrash && (
+            <IconButton
+              onClick={() =>
+                updateMutation.mutate(
+                  { contactId: contact.id, formData: { deleted: false } },
+                  {
+                    onSuccess: () => {
+                      navigate(
+                        contactType === "employee"
+                          ? "/salariés"
+                          : `/${contactType.toLowerCase()}s`
+                      );
+                    },
+                  }
+                )
+              }
+              variant="green"
+              disabled={updateMutation.isLoading}
+            >
+              {updateMutation.isLoading ? "Restauration..." : <Undo2 />}
+            </IconButton>
+          )}
           <IconButton
             onClick={handleDelete}
             variant="red"

@@ -6,7 +6,7 @@ import { useParticipants } from "../../../../hooks/useParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
-export default function DocumentDetails({ document, employeeId }) {
+export default function DocumentDetails({ document, employeeId, isTrash }) {
   const isInvoice = document?.type === "Factures";
   const isQuote = document?.type === "Devis";
   const isPV = document?.type === "PV";
@@ -26,6 +26,13 @@ export default function DocumentDetails({ document, employeeId }) {
     <div className="p-2 space-y-4">
       <h2 className="text-lg text-center font-semibold">Détails du document</h2>
       <DocumentPreview file={document} />
+
+      {isTrash && (
+        <p>
+          <strong>Type de document :</strong>{" "}
+          {document?.type || "Non renseigné"}
+        </p>
+      )}
 
       <div className="flex flex-col">
         {!employeeId && (
