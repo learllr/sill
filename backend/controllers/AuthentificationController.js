@@ -52,7 +52,6 @@ export const login = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.error("Erreur lors de la connexion:", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la connexion de l'utilisateur" });
@@ -69,10 +68,6 @@ export const getLoginHistory = async (req, res) => {
     const history = await AuthentificationDAO.getAllLoginHistory();
     res.status(200).json(history);
   } catch (error) {
-    console.error(
-      "Erreur lors de la récupération de l'historique des connexions:",
-      error
-    );
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération de l'historique" });
@@ -92,7 +87,6 @@ export const deleteLoginHistory = async (req, res) => {
     await AuthentificationDAO.deleteLoginRecords(ids);
     res.status(200).json({ message: "Historique supprimé avec succès" });
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'historique:", error);
     res.status(500).json({ error: "Erreur lors de la suppression" });
   }
 };

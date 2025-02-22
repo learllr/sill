@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { PROJECT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
+import { useMessageDialog } from "../../../contexts/MessageDialogContext.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 
 export default function NewProjectForm({ onSave, addMutation }) {
+  const { showMessage } = useMessageDialog();
   const [formFields, setFormFields] = useState({
     name: "",
     status: "Non commencé",
@@ -30,8 +32,13 @@ export default function NewProjectForm({ onSave, addMutation }) {
     }
 
     addMutation.mutate(formFields, {
-      onSuccess: onSave,
-      onError: () => setErrors({ name: "Erreur lors de l'ajout du projet." }),
+      onSuccess: () => {
+        showMessage("success", "Le chantier est ajouté avec succès.");
+        onSave();
+      },
+      onError: () => {
+        showMessage("error", "Erreur lors de l'ajout du chantier");
+      },
     });
   };
 

@@ -90,7 +90,7 @@ function AppSidebar({ ...props }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to="/">
+              <Link to="/chantiers">
                 <GalleryVerticalEnd />
                 <span className="font-semibold">SILL</span>
               </Link>

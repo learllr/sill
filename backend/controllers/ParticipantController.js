@@ -36,7 +36,6 @@ export const createParticipant = async (req, res) => {
       message: "Participant créé avec succès",
     });
   } catch (error) {
-    console.error("Erreur serveur :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la création du participant" });
@@ -79,7 +78,6 @@ export const deleteParticipantById = async (req, res) => {
     await ParticipantDAO.deleteParticipant(participant);
     res.status(200).json({ message: "Participant supprimé avec succès" });
   } catch (error) {
-    console.error("Erreur serveur :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la suppression du participant" });

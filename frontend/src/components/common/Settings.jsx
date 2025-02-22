@@ -1,13 +1,17 @@
 import { Edit } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import { useUsers } from "../../hooks/useUsers";
-import IconButton from "../common/Design/Buttons/IconButton.jsx";
+import ActionButton from "../common/Design/Buttons/ActionButton.jsx";
+import { useMessageDialog } from "../contexts/MessageDialogContext";
 import { useUser } from "../contexts/UserContext.jsx";
-import MessageDialog from "../dialogs/MessageDialog.jsx";
+import IconButton from "./Design/Buttons/IconButton.jsx";
 
 export default function Settings() {
   const { updateMutation } = useUsers();
   const { user } = useUser();
+  const { showMessage } = useMessageDialog();
+  const queryClient = useQueryClient();
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -18,13 +22,33 @@ export default function Settings() {
     confirmPassword: "",
   });
 
-  const [messageDialog, setMessageDialog] = useState({
-    isOpen: false,
-    type: "info",
-    message: "",
-  });
-
+  const [isModified, setIsModified] = useState(false);
   const isUpdating = updateMutation.isLoading;
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        email: user.email || "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      const isFieldsModified =
+        formData.firstName !== user.firstName ||
+        formData.lastName !== user.lastName ||
+        formData.email !== user.email ||
+        formData.password ||
+        formData.confirmPassword;
+
+      setIsModified(isFieldsModified);
+    }
+  }, [formData, user]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,11 +58,7 @@ export default function Settings() {
     e.preventDefault();
 
     if (formData.password && formData.password !== formData.confirmPassword) {
-      setMessageDialog({
-        isOpen: true,
-        type: "error",
-        message: "Les mots de passe ne correspondent pas.",
-      });
+      showMessage("error", "Les mots de passe ne correspondent pas.");
       return;
     }
 
@@ -48,19 +68,15 @@ export default function Settings() {
       { id: user.id, updatedData: dataToSend },
       {
         onSuccess: () => {
-          setMessageDialog({
-            isOpen: true,
-            type: "success",
-            message: "Votre compte a été mis à jour avec succès.",
-          });
+          showMessage("success", "Votre compte a été mis à jour avec succès.");
+          queryClient.invalidateQueries("userProfile");
           setIsEditing(false);
         },
         onError: () => {
-          setMessageDialog({
-            isOpen: true,
-            type: "error",
-            message: "Une erreur est survenue lors de la mise à jour.",
-          });
+          showMessage(
+            "error",
+            "Une erreur est survenue lors de la mise à jour."
+          );
         },
       }
     );
@@ -69,7 +85,7 @@ export default function Settings() {
   return (
     <div>
       <div className="flex justify-center items-center mt-10">
-        <div className="p-8 bg-white rounded-lg border max-w-md w-full relative">
+        <div className="p-5 bg-white rounded-lg border max-w-md w-full relative">
           {!isEditing && (
             <IconButton
               onClick={() => setIsEditing(true)}
@@ -143,34 +159,25 @@ export default function Settings() {
               />
 
               <div className="flex space-x-2">
-                <IconButton
-                  onClick={handleSubmit}
-                  disabled={isUpdating}
+                <ActionButton
+                  type="submit"
+                  disabled={isUpdating || !isModified}
                   variant="blue"
-                  className="w-full"
                 >
                   {isUpdating ? "Modification en cours..." : "Enregistrer"}
-                </IconButton>
+                </ActionButton>
 
-                <IconButton
+                <ActionButton
                   onClick={() => setIsEditing(false)}
                   variant="gray"
-                  className="w-full"
                 >
                   Annuler
-                </IconButton>
+                </ActionButton>
               </div>
             </form>
           )}
         </div>
       </div>
-
-      <MessageDialog
-        isOpen={messageDialog.isOpen}
-        onClose={() => setMessageDialog({ ...messageDialog, isOpen: false })}
-        type={messageDialog.type}
-        message={messageDialog.message}
-      />
     </div>
   );
 }

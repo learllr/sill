@@ -2,26 +2,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMessageDialog } from "../contexts/MessageDialogContext";
 import { useUser } from "../contexts/UserContext";
 
 export default function Login() {
   const { loginUser } = useUser();
   const navigate = useNavigate();
+  const { showMessage } = useMessageDialog();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     const response = await loginUser(email, password);
     if (response.success) {
       navigate("/chantiers");
     } else {
-      setError(response.message);
+      showMessage("error", response.message);
     }
 
     setLoading(false);
@@ -34,7 +35,6 @@ export default function Login() {
         className="w-96 p-10 bg-white shadow-lg rounded-lg"
       >
         <h2 className="text-xl font-semibold mb-4">Connexion</h2>
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
         <Input
           type="email"

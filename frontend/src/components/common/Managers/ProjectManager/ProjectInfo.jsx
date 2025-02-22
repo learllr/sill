@@ -2,6 +2,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
+import { useMessageDialog } from "../../../contexts/MessageDialogContext.jsx";
 import { useUser } from "../../../contexts/UserContext";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
@@ -13,6 +14,7 @@ export default function ProjectInfo({ projectId, isTrash }) {
     useProjects();
   const { roleId } = useUser();
   const project = projects?.find((p) => p.id === parseInt(projectId, 10));
+  const { showMessage } = useMessageDialog();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -30,13 +32,25 @@ export default function ProjectInfo({ projectId, isTrash }) {
   const confirmDelete = () => {
     if (isTrash) {
       deleteProject.mutate(project.id, {
-        onSuccess: () => navigate("/corbeille"),
+        onSuccess: () => {
+          showMessage("success", "Chantier supprimé avec succès.");
+          navigate("/corbeille");
+        },
+        onError: () => {
+          showMessage("error", "Erreur lors de la suppression du chantier.");
+        },
       });
     } else {
       updateProject.mutate(
         { projectId: project.id, updatedData: { deleted: true } },
         {
-          onSuccess: () => navigate("/chantiers"),
+          onSuccess: () => {
+            showMessage("success", "Chantier déplacé vers la corbeille.");
+            navigate("/chantiers");
+          },
+          onError: () => {
+            showMessage("error", "Erreur lors de la mise à jour du chantier.");
+          },
         }
       );
     }
@@ -47,7 +61,10 @@ export default function ProjectInfo({ projectId, isTrash }) {
     updateProject.mutate(
       { projectId: project.id, updatedData },
       {
-        onSuccess: () => setIsEditing(false),
+        onSuccess: () => {
+          showMessage("success", "Le chantier a été mis à jour avec succès.");
+          setIsEditing(false);
+        },
       }
     );
   };

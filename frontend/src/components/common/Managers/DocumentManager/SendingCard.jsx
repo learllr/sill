@@ -3,6 +3,7 @@ import { useState } from "react";
 import { sendMail } from "../../../../../../shared/utils/documentUtils";
 import { formatDate } from "../../../../../../shared/utils/formatUtils";
 import { useDocuments } from "../../../../hooks/useDocuments";
+import { useMessageDialog } from "../../../contexts/MessageDialogContext";
 
 export default function SendingCard({
   document,
@@ -16,6 +17,7 @@ export default function SendingCard({
   const [editedDate, setEditedDate] = useState(document.date || "");
   const [editedRemarks, setEditedRemarks] = useState(document.remarks || "");
   const { updateSending } = useDocuments();
+  const { showMessage } = useMessageDialog();
 
   let documentIds = document.documentIds;
   try {
@@ -52,11 +54,25 @@ export default function SendingCard({
     count === 1 ? singular : plural;
 
   const handleSave = () => {
-    updateSending.mutate({
-      sendingId: document.id,
-      formData: { name: editedName, remarks: editedRemarks, date: editedDate },
-    });
-    setIsEditing(false);
+    updateSending.mutate(
+      {
+        sendingId: document.id,
+        formData: {
+          name: editedName,
+          remarks: editedRemarks,
+          date: editedDate,
+        },
+      },
+      {
+        onSuccess: () => {
+          showMessage("success", "Envoi mis à jour avec succès !");
+          setIsEditing(false);
+        },
+        onError: () => {
+          showMessage("error", "Erreur lors de la mise à jour de l'envoi.");
+        },
+      }
+    );
   };
 
   const handleCancel = () => {

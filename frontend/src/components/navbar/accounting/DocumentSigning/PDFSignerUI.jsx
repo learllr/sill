@@ -1,9 +1,9 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import Section from "../../common/Managers/Section.jsx";
-import ConfirmDialog from "../../dialogs/ConfirmDialog.jsx";
-import PDFViewer from "./PDFViewer";
-import ToolBar from "./ToolBar";
+import Section from "../../../common/Managers/Section.jsx";
+import ConfirmDialog from "../../../dialogs/ConfirmDialog.jsx";
+import PDFViewer from "./PDFViewer.jsx";
+import ToolBar from "./ToolBar.jsx";
 
 export default function PDFSignerUI({
   pdfDoc,

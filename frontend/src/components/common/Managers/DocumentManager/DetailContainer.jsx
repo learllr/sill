@@ -1,7 +1,6 @@
 import { Pencil, Trash2, Undo2, X } from "lucide-react";
 import { useState } from "react";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog.jsx";
-import MessageDialog from "../../../dialogs/MessageDialog.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import DocumentDetails from "./DocumentDetails.jsx";
 import EditDocumentForm from "./EditDocumentForm.jsx";
@@ -27,15 +26,10 @@ export default function DetailContainer({
   isAddingSending,
   isDOE,
   isTrash,
+  showMessage,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-  const [messageDialog, setMessageDialog] = useState({
-    isOpen: false,
-    type: "info",
-    message: "",
-  });
 
   const handleDelete = () => {
     setIsConfirmOpen(true);
@@ -45,8 +39,18 @@ export default function DetailContainer({
     if (isTrash) {
       deleteMutation.mutate(document.id, {
         onSuccess: () => {
-          onClose();
+          showMessage(
+            "success",
+            "Le document a été supprimé définitivement avec succès."
+          );
           setIsConfirmOpen(false);
+          onClose();
+        },
+        onError: () => {
+          showMessage(
+            "error",
+            "Une erreur est survenue lors de la suppression du document."
+          );
         },
       });
     } else {
@@ -54,8 +58,18 @@ export default function DetailContainer({
         { documentId: document.id, formData: { deleted: true } },
         {
           onSuccess: () => {
-            onClose();
+            showMessage(
+              "success",
+              "Le document a été déplacé dans la corbeille."
+            );
             setIsConfirmOpen(false);
+            onClose();
+          },
+          onError: () => {
+            showMessage(
+              "error",
+              "Impossible de déplacer le document dans la corbeille."
+            );
           },
         }
       );
@@ -64,12 +78,10 @@ export default function DetailContainer({
 
   const handleRestore = () => {
     if (document.participant?.deleted || document.project?.deleted) {
-      setMessageDialog({
-        isOpen: true,
-        type: "error",
-        message:
-          "Impossible de restaurer ce document. Veuillez d'abord restaurer le projet et/ou l'intervenant associé.",
-      });
+      showMessage(
+        "error",
+        "Impossible de restaurer ce document. Veuillez d'abord restaurer le projet et/ou l'intervenant associé."
+      );
       return;
     }
 
@@ -77,8 +89,14 @@ export default function DetailContainer({
       { documentId: document.id, formData: { deleted: false } },
       {
         onSuccess: () => {
+          showMessage("success", "Le document a été restauré avec succès.");
           onClose();
-          setIsConfirmOpen(false);
+        },
+        onError: () => {
+          showMessage(
+            "error",
+            "Une erreur est survenue lors de la restauration du document."
+          );
         },
       }
     );
@@ -113,7 +131,6 @@ export default function DetailContainer({
               {deleteMutation.isLoading ? "Suppression..." : <Trash2 />}
             </IconButton>
           )}
-
         {!isNew &&
           !isEditing &&
           !isSending &&
@@ -124,7 +141,6 @@ export default function DetailContainer({
               <Pencil />
             </IconButton>
           )}
-
         <IconButton onClick={onClose} variant="gray">
           <X />
         </IconButton>
@@ -140,6 +156,7 @@ export default function DetailContainer({
               isCEDIG={isCEDIG}
               isDOE={isDOE}
               projectId={projectId}
+              showMessage={showMessage}
             />
           ) : (
             <NewDocumentForm
@@ -152,6 +169,7 @@ export default function DetailContainer({
               isCEDIG={isCEDIG}
               selectedDocuments={selectedDocuments}
               isSending={isSending}
+              showMessage={showMessage}
             />
           )
         ) : isEditing ? (
@@ -160,8 +178,24 @@ export default function DetailContainer({
             onSave={onClose}
             documentType={documentType}
             onUpdate={(documentId, formData) => {
-              updateMutation.mutate({ documentId, formData });
-              onClose();
+              updateMutation.mutate(
+                { documentId, formData },
+                {
+                  onSuccess: () => {
+                    showMessage(
+                      "success",
+                      "Le document a été mis à jour avec succès."
+                    );
+                    onClose();
+                  },
+                  onError: () => {
+                    showMessage(
+                      "error",
+                      "Une erreur est survenue lors de la mise à jour du document."
+                    );
+                  },
+                }
+              );
             }}
             isUpdating={updateMutation.isLoading}
             employeeId={employeeId}
@@ -186,13 +220,6 @@ export default function DetailContainer({
         } ce document ?`}
         confirmText="Supprimer"
         cancelText="Annuler"
-      />
-
-      <MessageDialog
-        isOpen={messageDialog.isOpen}
-        onClose={() => setMessageDialog({ ...messageDialog, isOpen: false })}
-        type={messageDialog.type}
-        message={messageDialog.message}
       />
     </div>
   );

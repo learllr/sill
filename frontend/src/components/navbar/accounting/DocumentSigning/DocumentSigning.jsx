@@ -3,12 +3,14 @@ import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "../../../axiosConfig.js";
+import axios from "../../../../axiosConfig.js";
+import { useMessageDialog } from "../../../contexts/MessageDialogContext.jsx";
 import PDFSignerUI from "./PDFSignerUI.jsx";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const DocumentSigning = () => {
+  const { showMessage } = useMessageDialog();
   const location = useLocation();
   const initialFile = location.state?.document?.path || null;
   const initialId = location.state?.document?.id || null;
@@ -44,7 +46,6 @@ const DocumentSigning = () => {
         });
       }
     } catch (error) {
-      console.error("Erreur lors du chargement du logo :", error);
       return null;
     }
   };
@@ -65,19 +66,8 @@ const DocumentSigning = () => {
           const loadingTask = pdfjsLib.getDocument({ data: typedarray });
           const pdf = await loadingTask.promise;
 
-          const firstPage = await pdf.getPage(1);
-          const isWindows = navigator.userAgent.includes("Windows");
-
-          let rotation = firstPage._pageInfo?.rotate?.angle ?? 0;
-          if (isWindows) {
-            rotation = (rotation + 180) % 360;
-          }
-
-          console.log(isWindows, rotation, firstPage);
-
           setPdfDoc(pdf);
           setTotalPages(pdf.numPages);
-
           setSignatures([]);
           setModifiedPdfBytes(null);
           setSignaturesApplied(false);
@@ -86,9 +76,10 @@ const DocumentSigning = () => {
           const logoData = await fetchLogoPath();
           if (logoData) setPreviewLogo(logoData);
         } catch (error) {
-          console.error("Erreur de chargement du PDF :", error);
+          showMessage("error", "Échec du chargement du document PDF.");
         }
       };
+
       fetchPdf();
     }
   }, [initialFile]);
@@ -176,9 +167,17 @@ const DocumentSigning = () => {
   };
 
   const handleDownload = () => {
-    if (!modifiedPdfBytes || !file) return;
+    if (!modifiedPdfBytes || !file) {
+      showMessage(
+        "warning",
+        "Aucun document signé disponible pour le téléchargement."
+      );
+      return;
+    }
+
     const fileName = file.name.replace(/\.pdf$/, "") + "_signé.pdf";
     saveAs(new Blob([modifiedPdfBytes], { type: "application/pdf" }), fileName);
+    showMessage("success", "Téléchargement réussi !");
   };
 
   const handleNewPdf = () => {
@@ -209,36 +208,39 @@ const DocumentSigning = () => {
       });
 
       if (response.status === 200) {
+        showMessage("success", "Document mis à jour avec succès !");
         handleNewPdf();
       }
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du document :", error);
+      showMessage("error", "Échec de la mise à jour du document.");
     }
   };
 
   return (
-    <PDFSignerUI
-      pdfDoc={pdfDoc}
-      scale={scale}
-      setScale={setScale}
-      handleFileChange={handleFileChange}
-      handlePrevPage={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
-      handleNextPage={() =>
-        setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))
-      }
-      currentPage={currentPage}
-      totalPages={totalPages}
-      handleCanvasClick={handleCanvasClick}
-      previewLogo={previewLogo}
-      signatures={signatures}
-      signaturesApplied={signaturesApplied}
-      handleUndo={handleUndo}
-      applySignatures={applySignatures}
-      handleDownload={handleDownload}
-      handleNewPdf={handleNewPdf}
-      initialFile={initialFile}
-      handleNewDocument={handleNewDocument}
-    />
+    <>
+      <PDFSignerUI
+        pdfDoc={pdfDoc}
+        scale={scale}
+        setScale={setScale}
+        handleFileChange={handleFileChange}
+        handlePrevPage={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+        handleNextPage={() =>
+          setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))
+        }
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handleCanvasClick={handleCanvasClick}
+        previewLogo={previewLogo}
+        signatures={signatures}
+        signaturesApplied={signaturesApplied}
+        handleUndo={handleUndo}
+        applySignatures={applySignatures}
+        handleDownload={handleDownload}
+        handleNewPdf={handleNewPdf}
+        initialFile={initialFile}
+        handleNewDocument={handleNewDocument}
+      />
+    </>
   );
 };
 

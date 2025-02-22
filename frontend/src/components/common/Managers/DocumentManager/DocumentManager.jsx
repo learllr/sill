@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDocuments } from "../../../../hooks/useDocuments.jsx";
 import { useParticipants } from "../../../../hooks/useParticipants.jsx";
+import { useMessageDialog } from "../../../contexts/MessageDialogContext.jsx";
 import NavigationTabs from "../../Design/Buttons/NavigationTabs.jsx";
 import Loading from "../../Design/Loading.jsx";
 import Section from "../Section.jsx";
@@ -25,6 +26,7 @@ export default function DocumentManager({
 }) {
   const currentMenu = menuItems?.find((item) => item.label === selectedMainTab);
   const currentSubMenu = currentMenu?.subMenu || [];
+  const { showMessage } = useMessageDialog();
 
   const [checkboxVisible, setCheckboxVisible] = useState(false);
   const [selectedDocuments, setSelectedDocuments] = useState([]);
@@ -32,9 +34,8 @@ export default function DocumentManager({
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isAddingSending, setIsAddingSending] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
-  const [error, setError] = useState("");
-  const isDOE = selectedMainTab === "DOE";
 
+  const isDOE = selectedMainTab === "DOE";
   const documentType =
     documentScope === "sub" && selectedSubTab
       ? selectedSubTab
@@ -120,12 +121,12 @@ export default function DocumentManager({
         />
       )}
 
-      {error && <p className="text-red-500 text-center">{error}</p>}
-
       <div className="flex space-x-2">
         <div className={isDetailVisible ? "w-2/3" : "w-full"}>
           {isLoading && <Loading />}
-          {isError && <p>Erreur lors du chargement des documents.</p>}
+          {isError &&
+            showMessage("error", "Erreur lors du chargement des documents.")}
+
           {!isLoading && !isError && (
             <ItemContainer
               items={isSending && sendings ? sendings : filteredDocuments}
@@ -161,6 +162,7 @@ export default function DocumentManager({
               isDOE={isDOE}
               typeSpending={typeSpending}
               isTrash={isTrash}
+              showMessage={showMessage}
             />
           )}
         </div>
@@ -191,6 +193,7 @@ export default function DocumentManager({
               isAddingSending={isAddingSending}
               isDOE={isDOE}
               isTrash={isTrash}
+              showMessage={showMessage}
             />
           </div>
         )}

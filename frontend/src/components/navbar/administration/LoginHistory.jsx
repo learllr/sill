@@ -9,20 +9,37 @@ import {
 } from "@/components/ui/table";
 import { useHistory } from "@/hooks/useHistory";
 import { useState } from "react";
+import { useMessageDialog } from "../../contexts/MessageDialogContext";
+import ConfirmDialog from "../../dialogs/ConfirmDialog";
 
 export default function LoginHistory() {
   const { history, isLoading, isError, deleteMutation } = useHistory();
   const [selectedRows, setSelectedRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const { showMessage } = useMessageDialog();
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    confirmText: "",
+    cancelText: "",
+    onConfirm: () => {},
+  });
+
   const rowsPerPage = 10;
-  const totalPages = Math.ceil(history?.length / rowsPerPage);
+  const totalPages =
+    history?.length > 0 ? Math.ceil(history.length / rowsPerPage) : 0;
   const paginatedHistory = history?.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
 
   if (isLoading) return <p>Chargement...</p>;
-  if (isError) return <p>Erreur lors du chargement</p>;
+  if (isError)
+    return showMessage(
+      "error",
+      "Erreur lors du chargement de l'historique des connexions."
+    );
 
   const toggleSelectAll = () => {
     const pageIds = paginatedHistory.map((h) => h.id);
@@ -35,11 +52,36 @@ export default function LoginHistory() {
     );
   };
 
+  const confirmDeleteSelected = () => {
+    setConfirmDialog({
+      isOpen: true,
+      title: "Confirmer la suppression",
+      message: `Êtes-vous sûr de vouloir supprimer ${selectedRows.length} ${
+        selectedRows.length > 1 ? "lignes" : "ligne"
+      } ? Cette action est irréversible.`,
+      confirmText: "Supprimer",
+      cancelText: "Annuler",
+      onConfirm: handleDeleteSelected,
+    });
+  };
+
   const handleDeleteSelected = () => {
-    if (selectedRows.length === 0) return;
     deleteMutation.mutate(selectedRows, {
       onSuccess: () => {
+        showMessage(
+          "success",
+          `${
+            selectedRows.length > 1
+              ? `${selectedRows.length} lignes supprimées`
+              : `${selectedRows.length} ligne supprimée`
+          } avec succès.`
+        );
         setSelectedRows([]);
+        setConfirmDialog({ isOpen: false });
+      },
+      onError: () => {
+        showMessage("error", "Erreur lors de la suppression des lignes.");
+        setConfirmDialog({ isOpen: false });
       },
     });
   };
@@ -57,7 +99,7 @@ export default function LoginHistory() {
 
         <Button
           variant="destructive"
-          onClick={handleDeleteSelected}
+          onClick={confirmDeleteSelected}
           disabled={selectedRows.length <= 0}
         >
           Supprimer
@@ -122,22 +164,32 @@ export default function LoginHistory() {
       <div className="mt-4 flex justify-center space-x-2">
         <Button
           variant="secondary"
-          disabled={currentPage === 1}
+          disabled={currentPage === 1 || totalPages === 0}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Précédent
         </Button>
         <span className="flex items-center">
-          {currentPage} / {totalPages}
+          {history?.length > 0 ? `${currentPage} / ${totalPages}` : "0 / 0"}
         </span>
         <Button
           variant="secondary"
-          disabled={currentPage === totalPages}
+          disabled={currentPage === totalPages || totalPages === 0}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           Suivant
         </Button>
       </div>
+
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog({ isOpen: false })}
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        confirmText={confirmDialog.confirmText}
+        cancelText={confirmDialog.cancelText}
+      />
     </div>
   );
 }

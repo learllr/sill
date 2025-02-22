@@ -7,6 +7,7 @@ export default function NewSendingForm({
   selectedDocuments,
   isDOE,
   projectId,
+  showMessage,
 }) {
   const [formFields, setFormFields] = useState({
     name: "",
@@ -24,12 +25,12 @@ export default function NewSendingForm({
 
   const handleSubmit = () => {
     if (selectedDocuments.length === 0) {
-      alert("Veuillez sélectionner au moins un document.");
+      showMessage("error", "Veuillez sélectionner au moins un document.");
       return;
     }
 
     if (!formFields.date) {
-      alert("La date est obligatoire.");
+      showMessage("error", "La date est obligatoire.");
       return;
     }
 
@@ -42,8 +43,13 @@ export default function NewSendingForm({
     formData.append("type", isDOE ? "DOE" : "CEDIG");
 
     addMutation.mutate(formData, {
-      onSuccess: onSave,
-      onError: () => alert("Erreur lors de l'ajout de l'envoi."),
+      onSuccess: () => {
+        showMessage("success", "L'envoi a été ajouté avec succès.");
+        onSave();
+      },
+      onError: () => {
+        showMessage("error", "Erreur lors de l'ajout de l'envoi.");
+      },
     });
   };
 

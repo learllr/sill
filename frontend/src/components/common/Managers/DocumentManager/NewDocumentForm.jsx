@@ -16,6 +16,7 @@ export default function NewDocumentForm({
   projectId,
   isCEDIG,
   selectedDocuments,
+  showMessage,
 }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
@@ -128,8 +129,13 @@ export default function NewDocumentForm({
     formData.append("remarks", formFields.remarks);
 
     addMutation.mutate(formData, {
-      onSuccess: onSave,
-      onError: () => setError("Erreur lors de l'ajout du document."),
+      onSuccess: () => {
+        showMessage("success", "Le document a été ajouté avec succès.");
+        onSave();
+      },
+      onError: () => {
+        showMessage("error", "Erreur lors de l'ajout du document.");
+      },
     });
   };
 

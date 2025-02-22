@@ -33,6 +33,7 @@ export default function ItemContainer({
   isDOE,
   typeSpending,
   isTrash,
+  showMessage,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { documents } = useDocuments();
@@ -54,7 +55,14 @@ export default function ItemContainer({
 
   const confirmDelete = () => {
     if (documentToDelete) {
-      onDelete(documentToDelete.id);
+      onDelete(documentToDelete.id, {
+        onSuccess: () => {
+          showMessage("success", "L'envoi a été supprimé avec succès.");
+        },
+        onError: () => {
+          showMessage("error", "Erreur lors de la suppression de l'envoi.");
+        },
+      });
       setIsConfirmOpen(false);
       setDocumentToDelete(null);
     }

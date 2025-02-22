@@ -15,7 +15,6 @@ export const uploadSignatureStamp = async (req, res) => {
       filePath: signatureStamp.filePath,
     });
   } catch (error) {
-    console.error("Erreur lors de l'upload du tampon :", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
@@ -29,7 +28,6 @@ export const getSignatureStamp = async (req, res) => {
 
     res.status(200).json({ filePath: signatureStamp.filePath });
   } catch (error) {
-    console.error("Erreur lors de la récupération du tampon :", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };

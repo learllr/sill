@@ -39,7 +39,6 @@ export const createDocument = async (req, res) => {
 
     res.status(201).json({ message: "Document ajouté avec succès", document });
   } catch (error) {
-    console.error("Erreur lors de l'ajout du document :", error);
     res.status(500).json({ error: "Erreur lors de l'ajout du document" });
   }
 };
@@ -69,7 +68,6 @@ export const updateDocument = async (req, res) => {
       updatedDocument,
     });
   } catch (error) {
-    console.error("Erreur serveur :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la mise à jour du document" });
@@ -101,7 +99,6 @@ export const getAllSendings = async (req, res) => {
     const sendings = await DocumentDAO.getAllSendings();
     res.status(200).json(sendings);
   } catch (error) {
-    console.error("Erreur lors de la récupération des envois :", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération des envois" });
@@ -127,7 +124,6 @@ export const createSending = async (req, res) => {
 
     res.status(201).json({ message: "Envoi ajouté avec succès", sending });
   } catch (error) {
-    console.error("Erreur lors de l'ajout de l'envoi :", error);
     res.status(500).json({ error: "Erreur lors de l'ajout de l'envoi" });
   }
 };
@@ -155,7 +151,6 @@ export const updateSending = async (req, res) => {
       updatedSending,
     });
   } catch (error) {
-    console.error("Erreur lors de la mise à jour de l'envoi :", error);
     res.status(500).json({ error: "Erreur lors de la mise à jour de l'envoi" });
   }
 };
@@ -167,7 +162,6 @@ export const deleteSending = async (req, res) => {
     await DocumentDAO.deleteSending(id);
     res.status(200).json({ message: "Envoi supprimé avec succès" });
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'envoi :", error);
     res.status(500).json({ error: "Erreur lors de la suppression de l'envoi" });
   }
 };

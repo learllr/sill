@@ -6,6 +6,7 @@ import {
   formatSocialSecurityNumber,
   isDate,
 } from "../../../../../../shared/utils/formatUtils";
+import { useMessageDialog } from "../../../contexts/MessageDialogContext";
 import IconButton from "../../Design/Buttons/IconButton";
 import EditContactSection from "./EditContactSection";
 
@@ -15,10 +16,12 @@ export default function EditContactForm({
   onUpdate,
   isUpdating,
   sections,
+  contactType,
 }) {
   const [openSections, setOpenSections] = useState(
     sections.map((_, index) => index === 0)
   );
+  const { showMessage } = useMessageDialog();
 
   const [formData, setFormData] = useState(
     sections.reduce((acc, { fields }) => {
@@ -81,8 +84,16 @@ export default function EditContactForm({
     onUpdate(
       { contactId: contact.id, formData },
       {
-        onSuccess: onSave,
-        onError: () => setError("Erreur lors de la modification du contact."),
+        onSuccess: () => {
+          showMessage("success", `${contactType} mis à jour avec succès.`);
+          onSave();
+        },
+        onError: () => {
+          showMessage(
+            "error",
+            `Erreur lors de la mise à jour du ${contactType.toLowerCase()}.`
+          );
+        },
       }
     );
   };

@@ -2,8 +2,9 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Login from "./components/authentification/Login.jsx";
 import ProtectedRoute from "./components/authentification/ProtectedRoute.jsx";
 
+import { Navigate } from "react-router-dom";
 import Settings from "./components/common/Settings.jsx";
-import DocumentSigning from "./components/navbar/accounting/DocumentSigning";
+import DocumentSigning from "./components/navbar/accounting/DocumentSigning/DocumentSigning.jsx";
 import ZiedAccounting from "./components/navbar/accounting/ZiedAccounting";
 import LoginHistory from "./components/navbar/administration/LoginHistory.jsx";
 import SignatureStamp from "./components/navbar/administration/SignatureStamp.jsx";
@@ -92,7 +93,7 @@ export default function App() {
           ))}
         </Route>
 
-        {/* <Route path="*" element={<Navigate to="/login" />} /> */}
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );

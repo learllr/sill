@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../../../axiosConfig.js";
 import IconButton from "../../common/Design/Buttons/IconButton.jsx";
+import { useMessageDialog } from "../../contexts/MessageDialogContext.jsx";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -12,6 +13,7 @@ export default function SignatureStamp() {
   const [isEditing, setIsEditing] = useState(false);
   const [hasNewFile, setHasNewFile] = useState(false);
   const queryClient = useQueryClient();
+  const { showMessage } = useMessageDialog();
 
   const {
     data: signatureData,
@@ -34,6 +36,14 @@ export default function SignatureStamp() {
       setIsEditing(false);
       setFile(null);
       setHasNewFile(false);
+      showMessage("success", "Tampon de signature mis à jour avec succès !");
+    },
+    onError: (error) => {
+      showMessage(
+        "error",
+        error.response?.data?.error ||
+          "Erreur lors du téléchargement du tampon."
+      );
     },
   });
 

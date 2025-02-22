@@ -6,18 +6,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useEffect } from "react";
 import { useUsers } from "../../../hooks/useUsers";
+import { useMessageDialog } from "../../contexts/MessageDialogContext";
 
 export default function TeamOverview() {
   const { users, roles, isLoading, isError } = useUsers();
+  const { showMessage } = useMessageDialog();
+
+  useEffect(() => {
+    if (isError) {
+      showMessage("error", "Erreur lors du chargement des utilisateurs.");
+    }
+  }, [isError, showMessage]);
 
   if (isLoading) return <p>Chargement...</p>;
-  if (isError)
-    return (
-      <p className="text-red-500">Erreur lors du chargement des utilisateurs</p>
-    );
 
-  const groupedUsers = roles.map((role) => ({
+  const groupedUsers = roles?.map((role) => ({
     roleName: role.name,
     users: users.filter((user) => user.roleId === role.id),
   }));
@@ -31,7 +36,9 @@ export default function TeamOverview() {
           <div key={roleName} className="border p-4 rounded-lg">
             <h3 className="text-lg font-semibold mb-2">{roleName}</h3>
             {users.length === 0 ? (
-              <p className="text-gray-500">Aucun utilisateur</p>
+              <p className="text-gray-500 text-center mt-2">
+                Aucun utilisateur
+              </p>
             ) : (
               <Table className="w-full text-center">
                 <TableHeader>

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "../../axiosConfig.js";
+import { useMessageDialog } from "../contexts/MessageDialogContext";
 
 const UserContext = createContext();
 export const useUser = () => useContext(UserContext);
@@ -10,6 +11,7 @@ export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [roleId, setRoleId] = useState(null);
   const queryClient = useQueryClient();
+  const { showMessage } = useMessageDialog();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -64,12 +66,17 @@ export const UserProvider = ({ children }) => {
       localStorage.setItem("token", response.data.token);
       setIsAuthenticated(true);
       queryClient.invalidateQueries("userProfile");
+      showMessage("success", "Connexion réussie !");
       return { success: true, message: "Connexion réussie !" };
     } catch (error) {
       setIsAuthenticated(false);
+      showMessage(
+        "error",
+        error.response?.data?.error || "Erreur lors de la connexion."
+      );
       return {
         success: false,
-        message: error.response?.data?.error || "Erreur lors de la connexion",
+        message: error.response?.data?.error || "Erreur lors de la connexion.",
       };
     }
   };
@@ -81,8 +88,9 @@ export const UserProvider = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
       queryClient.clear();
+      showMessage("success", "Déconnexion réussie !");
     } catch (error) {
-      console.error("Erreur lors de la déconnexion :", error);
+      showMessage("error", "Erreur lors de la déconnexion.");
     }
   };
 

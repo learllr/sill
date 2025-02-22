@@ -2,6 +2,7 @@ import { Pencil, Trash2, Undo2, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useContacts } from "../../../../hooks/useContacts.jsx";
+import { useMessageDialog } from "../../../contexts/MessageDialogContext.jsx";
 import { useUser } from "../../../contexts/UserContext";
 import ConfirmDialog from "../../../dialogs/ConfirmDialog";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
@@ -21,6 +22,7 @@ export default function ContactInfo({
     useContacts(contactType);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { roleId } = useUser();
+  const { showMessage } = useMessageDialog();
 
   const contact = contacts?.find((c) => c.id === parseInt(contactId));
 
@@ -40,17 +42,41 @@ export default function ContactInfo({
   };
 
   const confirmDelete = () => {
+    const contactTypeUrl =
+      contactType === "employee"
+        ? "/salariés"
+        : `/${contactType.toLowerCase()}s`;
+    const contactTypeText =
+      contactType === "employee" ? "Salarié" : `${contactType}`;
+
     if (isTrash) {
       deleteMutation.mutate(contact.id, {
-        onSuccess: () => navigate("/corbeille"),
+        onSuccess: () => {
+          showMessage("success", `${contactTypeText} supprimé avec succès.`);
+          navigate("/corbeille");
+        },
+        onError: () => {
+          showMessage(
+            "error",
+            `Erreur lors de la suppression du ${contactTypeText.toLowerCase()}.`
+          );
+        },
       });
     } else {
       updateMutation.mutate(
         { contactId: contact.id, formData: { deleted: true } },
         {
           onSuccess: () => {
-            navigate(
-              contactType === "employee" ? "/salariés" : `/${contactType}s`
+            showMessage(
+              "success",
+              `${contactTypeText} déplacé vers la corbeille.`
+            );
+            navigate(contactTypeUrl);
+          },
+          onError: () => {
+            showMessage(
+              "error",
+              `Erreur lors de la mise à jour du ${contactTypeText.toLowerCase()}.`
             );
           },
         }
@@ -86,10 +112,26 @@ export default function ContactInfo({
                   { contactId: contact.id, formData: { deleted: false } },
                   {
                     onSuccess: () => {
+                      showMessage(
+                        "success",
+                        `${
+                          contactType === "employee" ? "Salarié" : contactType
+                        } restauré avec succès.`
+                      );
                       navigate(
                         contactType === "employee"
                           ? "/salariés"
                           : `/${contactType.toLowerCase()}s`
+                      );
+                    },
+                    onError: () => {
+                      showMessage(
+                        "error",
+                        `Erreur lors de la restauration du ${
+                          contactType === "employee"
+                            ? "Salarié"
+                            : contactType.toLowerCase()
+                        }.`
                       );
                     },
                   }
@@ -125,6 +167,9 @@ export default function ContactInfo({
           onSave={() => setIsEditing(false)}
           onUpdate={updateMutation.mutate}
           isUpdating={updateMutation.isLoading}
+          contactType={
+            contactType === "employee" ? "Salarié" : `${contactType}`
+          }
         />
       ) : (
         filteredSections.map(({ title, fields }, index) => (

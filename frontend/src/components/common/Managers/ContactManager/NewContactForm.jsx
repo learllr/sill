@@ -4,7 +4,12 @@ import { getTypeName } from "../../../../../../shared/constants/types.js";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 import FormField from "./FormField.jsx";
 
-export default function NewContactForm({ onSave, contactType, addMutation }) {
+export default function NewContactForm({
+  onSave,
+  contactType,
+  addMutation,
+  showMessage,
+}) {
   const isEmployee = contactType === "employee";
   const fields =
     CONTACT_FIELDS[
@@ -42,8 +47,23 @@ export default function NewContactForm({ onSave, contactType, addMutation }) {
     }
 
     addMutation.mutate(formData, {
-      onSuccess: onSave,
-      onError: () => setError("Erreur lors de l'ajout du contact."),
+      onSuccess: () => {
+        showMessage(
+          "success",
+          `Le ${
+            contactType === "employee" ? "salarié" : contactType.toLowerCase()
+          } a été ajouté avec succès.`
+        );
+        onSave();
+      },
+      onError: () => {
+        showMessage(
+          "error",
+          `Erreur lors de l'ajout du ${
+            contactType === "employee" ? "salarié" : contactType.toLowerCase()
+          }`
+        );
+      },
     });
   };
 

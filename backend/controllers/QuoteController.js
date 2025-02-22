@@ -5,7 +5,6 @@ export const getAllQuotes = async (req, res) => {
     const quotes = await QuoteDAO.getAllQuotes();
     res.status(200).json(quotes);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Erreur lors de la récupération des devis" });
   }
 };
@@ -40,7 +39,6 @@ export const getQuotesByProjectAndParticipant = async (req, res) => {
 
     res.status(200).json(quotes);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Erreur lors de la récupération des devis" });
   }
 };

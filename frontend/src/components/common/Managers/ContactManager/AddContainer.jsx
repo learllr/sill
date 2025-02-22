@@ -7,6 +7,7 @@ export default function AddContainer({
   isNew,
   contactType,
   addMutation,
+  showMessage,
 }) {
   return (
     <div className="border p-4 flex flex-col space-y-3 h-[80vh] overflow-auto">
@@ -22,6 +23,7 @@ export default function AddContainer({
             onSave={onClose}
             contactType={contactType}
             addMutation={addMutation}
+            showMessage={showMessage}
           />
         )}
       </div>
