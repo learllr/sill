@@ -2,7 +2,7 @@ import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../../../axiosConfig.js";
-import IconButton from "../../common/Design/Buttons/IconButton.jsx";
+import ActionButton from "../../common/Design/Buttons/ActionButton.jsx";
 import { useMessageDialog } from "../../contexts/MessageDialogContext.jsx";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -129,7 +129,7 @@ export default function SignatureStamp() {
                   </div>
                 )}
                 <div className="flex space-x-2">
-                  <IconButton
+                  <ActionButton
                     onClick={handleSave}
                     disabled={!file || uploadMutation.isLoading}
                     variant="green"
@@ -137,10 +137,10 @@ export default function SignatureStamp() {
                     {uploadMutation.isLoading
                       ? "Enregistrement..."
                       : "Enregistrer"}
-                  </IconButton>
-                  <IconButton onClick={handleCancel} variant="red">
+                  </ActionButton>
+                  <ActionButton onClick={handleCancel} variant="red">
                     Annuler
-                  </IconButton>
+                  </ActionButton>
                 </div>
               </>
             )}

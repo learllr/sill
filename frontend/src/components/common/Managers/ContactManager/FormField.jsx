@@ -1,6 +1,7 @@
 import { Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatPhoneNumber } from "../../../../../../shared/utils/formatUtils.js";
+import ActionButton from "../../Design/Buttons/ActionButton.jsx";
 import IconButton from "../../Design/Buttons/IconButton.jsx";
 
 export default function FormField({
@@ -131,9 +132,9 @@ export default function FormField({
               </div>
             </div>
           ))}
-          <IconButton onClick={addContact} variant="blue" className="w-full">
+          <ActionButton onClick={addContact} variant="blue" className="w-full">
             <Plus size={16} /> Ajouter un interlocuteur
-          </IconButton>
+          </ActionButton>
         </div>
       ) : (
         <input

@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ActionButton from "../common/Design/Buttons/ActionButton";
 import { useMessageDialog } from "../contexts/MessageDialogContext";
 import { useUser } from "../contexts/UserContext";
 
@@ -52,9 +52,9 @@ export default function Login() {
           required
           className="mb-4"
         />
-        <Button type="submit" className="w-full" disabled={loading}>
+        <ActionButton type="submit" className="w-full" disabled={loading}>
           {loading ? "Connexion..." : "Se connecter"}
-        </Button>
+        </ActionButton>
       </form>
     </div>
   );

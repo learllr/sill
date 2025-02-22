@@ -2,7 +2,7 @@ import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { useProjectParticipants } from "../../../../hooks/useProjectParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
+import ActionButton from "../../Design/Buttons/ActionButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
 const MAX_FILE_SIZE_MB = 5;
@@ -343,14 +343,14 @@ export default function EditDocumentForm({
         />
       </label>
 
-      <IconButton
+      <ActionButton
         onClick={handleSubmit}
         disabled={isUpdating}
         variant="blue"
         className="w-full"
       >
         Modifier
-      </IconButton>
+      </ActionButton>
     </div>
   );
 }

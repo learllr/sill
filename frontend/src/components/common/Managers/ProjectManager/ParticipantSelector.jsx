@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParticipants } from "../../../../hooks/useParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
+import ActionButton from "../../Design/Buttons/ActionButton.jsx";
 
 export default function ParticipantSelector({
   participantType,
@@ -109,12 +109,12 @@ export default function ParticipantSelector({
       )}
 
       <div className="flex justify-center w-full space-x-2 mt-4">
-        <IconButton onClick={onClose} variant="gray" className="w-full">
-          Annuler
-        </IconButton>
-        <IconButton onClick={handleAssign} variant="blue" className="w-full">
+        <ActionButton onClick={handleAssign} variant="blue" className="w-full">
           Modifier
-        </IconButton>
+        </ActionButton>
+        <ActionButton onClick={onClose} variant="gray" className="w-full">
+          Annuler
+        </ActionButton>
       </div>
     </div>
   );

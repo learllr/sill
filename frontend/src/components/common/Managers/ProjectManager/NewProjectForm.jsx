@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { PROJECT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
 import { useMessageDialog } from "../../../contexts/MessageDialogContext.jsx";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
+import ActionButton from "../../Design/Buttons/ActionButton.jsx";
 
 export default function NewProjectForm({ onSave, addMutation }) {
   const { showMessage } = useMessageDialog();
@@ -88,9 +88,9 @@ export default function NewProjectForm({ onSave, addMutation }) {
         </div>
       ))}
 
-      <IconButton onClick={handleSubmit} variant="green" className="w-full">
+      <ActionButton onClick={handleSubmit} variant="green" className="w-full">
         Ajouter
-      </IconButton>
+      </ActionButton>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import {
   isDate,
 } from "../../../../../../shared/utils/formatUtils";
 import { useMessageDialog } from "../../../contexts/MessageDialogContext";
-import IconButton from "../../Design/Buttons/IconButton";
+import ActionButton from "../../Design/Buttons/ActionButton";
 import EditContactSection from "./EditContactSection";
 
 export default function EditContactForm({
@@ -115,14 +115,14 @@ export default function EditContactForm({
         />
       ))}
 
-      <IconButton
+      <ActionButton
         onClick={handleSubmit}
         className="w-full"
         variant="blue"
         disabled={isUpdating}
       >
         {isUpdating ? "Modification en cours..." : "Modifier"}
-      </IconButton>
+      </ActionButton>
     </div>
   );
 }

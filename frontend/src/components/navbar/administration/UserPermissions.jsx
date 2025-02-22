@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useUsers } from "../../../hooks/useUsers";
+import ActionButton from "../../common/Design/Buttons/ActionButton";
 import { useMessageDialog } from "../../contexts/MessageDialogContext";
 import ConfirmDialog from "../../dialogs/ConfirmDialog";
 import UserTable from "./UserTable";
@@ -112,7 +112,10 @@ export default function UserPermissions() {
         );
       },
       onSuccess: () => {
-        showMessage("success", "Utilisateur supprimé avec succès !");
+        showMessage(
+          "success",
+          "L'utilisateur a été supprimé définitivement avec succès !"
+        );
         setConfirmDelete({ isOpen: false, userId: null });
       },
     });
@@ -195,7 +198,7 @@ export default function UserPermissions() {
           </div>
         </div>
         <div className="mt-4 text-center">
-          <Button onClick={handleAddUser}>Ajouter</Button>
+          <ActionButton onClick={handleAddUser}>Ajouter</ActionButton>
         </div>
       </div>
 

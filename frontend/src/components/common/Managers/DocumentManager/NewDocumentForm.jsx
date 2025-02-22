@@ -2,7 +2,7 @@ import { useState } from "react";
 import { DocumentType } from "../../../../../../shared/constants/types.js";
 import { useProjectParticipants } from "../../../../hooks/useProjectParticipants.jsx";
 import { useProjects } from "../../../../hooks/useProjects.jsx";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
+import ActionButton from "../../Design/Buttons/ActionButton.jsx";
 import DocumentPreview from "./DocumentPreview.jsx";
 
 const MAX_FILE_SIZE_MB = 5;
@@ -371,9 +371,9 @@ export default function NewDocumentForm({
         />
       </label>
 
-      <IconButton onClick={handleSubmit} className="w-full" variant="green">
+      <ActionButton onClick={handleSubmit} className="w-full" variant="green">
         Ajouter
-      </IconButton>
+      </ActionButton>
     </div>
   );
 }

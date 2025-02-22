@@ -1,5 +1,5 @@
 import { useState } from "react";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
+import ActionButton from "../../Design/Buttons/ActionButton.jsx";
 
 export default function NewSendingForm({
   onSave,
@@ -98,9 +98,9 @@ export default function NewSendingForm({
         />
       </label>
 
-      <IconButton onClick={handleSubmit} className="w-full" variant="blue">
+      <ActionButton onClick={handleSubmit} className="w-full" variant="blue">
         Valider l'envoi
-      </IconButton>
+      </ActionButton>
     </div>
   );
 }

@@ -33,7 +33,10 @@ export default function ProjectInfo({ projectId, isTrash }) {
     if (isTrash) {
       deleteProject.mutate(project.id, {
         onSuccess: () => {
-          showMessage("success", "Chantier supprimé avec succès.");
+          showMessage(
+            "success",
+            "Le chantier a été supprimé définitivement avec succès."
+          );
           navigate("/corbeille");
         },
         onError: () => {

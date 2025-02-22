@@ -2,13 +2,15 @@ import React from "react";
 
 const ActionButton = ({
   onClick,
-  variant,
+  variant = "primary",
   disabled,
   children,
   type = "button",
 }) => {
   const buttonStyles = {
+    primary: "bg-primary text-white hover:bg-primary/80",
     blue: "bg-blue-500 text-white hover:bg-blue-600",
+    green: "bg-green-500 text-white hover:bg-green-600",
     gray: "bg-gray-300 text-gray-700 hover:bg-gray-400",
   };
 

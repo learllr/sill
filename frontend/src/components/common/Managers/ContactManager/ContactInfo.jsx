@@ -52,7 +52,10 @@ export default function ContactInfo({
     if (isTrash) {
       deleteMutation.mutate(contact.id, {
         onSuccess: () => {
-          showMessage("success", `${contactTypeText} supprimé avec succès.`);
+          showMessage(
+            "success",
+            `${contactTypeText} a été supprimé définitivement avec succès.`
+          );
           navigate("/corbeille");
         },
         onError: () => {

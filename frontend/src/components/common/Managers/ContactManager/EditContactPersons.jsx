@@ -1,5 +1,6 @@
 import { Trash2 } from "lucide-react";
 import { formatPhoneNumber } from "../../../../../../shared/utils/formatUtils";
+import ActionButton from "../../Design/Buttons/ActionButton";
 import IconButton from "../../Design/Buttons/IconButton";
 
 export default function EditContactPersons({ contactPersons, setFormData }) {
@@ -90,13 +91,13 @@ export default function EditContactPersons({ contactPersons, setFormData }) {
           </div>
         </div>
       ))}
-      <IconButton
+      <ActionButton
         onClick={handleAddPerson}
         variant="green"
         className="px-5 flex items-center mx-auto"
       >
         Ajouter un interlocuteur
-      </IconButton>
+      </ActionButton>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { PROJECT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
+import ActionButton from "../../Design/Buttons/ActionButton.jsx";
 import Combobox from "../../Design/Buttons/Combobox.jsx";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
 
 export default function EditProjectForm({
   project,
@@ -77,14 +77,14 @@ export default function EditProjectForm({
         />
       </label>
 
-      <IconButton
+      <ActionButton
         onClick={handleSubmit}
         disabled={isUpdating}
         variant="blue"
         className="w-full"
       >
         {isUpdating ? "Modification en cours..." : "Modifier"}
-      </IconButton>
+      </ActionButton>
     </div>
   );
 }

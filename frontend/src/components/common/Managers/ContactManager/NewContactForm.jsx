@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CONTACT_FIELDS } from "../../../../../../shared/constants/contactFields.js";
 import { getTypeName } from "../../../../../../shared/constants/types.js";
-import IconButton from "../../Design/Buttons/IconButton.jsx";
+import ActionButton from "../../Design/Buttons/ActionButton.jsx";
 import FormField from "./FormField.jsx";
 
 export default function NewContactForm({
@@ -89,14 +89,14 @@ export default function NewContactForm({
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      <IconButton
+      <ActionButton
         onClick={handleSubmit}
         className="w-full"
         variant="green"
         disabled={addMutation.isLoading}
       >
         {addMutation.isLoading ? "Ajout en cours..." : "Ajouter"}
-      </IconButton>
+      </ActionButton>
     </div>
   );
 }
